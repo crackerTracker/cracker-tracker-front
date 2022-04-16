@@ -1,0 +1,175 @@
+.container {
+  margin: 0 auto;
+  background: #fff8f3;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.wrapper {
+  margin: 0 auto;
+  max-width: 85vw;
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  column-gap: 50px;
+  font-family: inherit;
+}
+
+/*+ Левая часть */
+
+.textContent {
+  max-width: 590px;
+  min-height: 85vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: inherit;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: inherit;
+}
+
+.logo * {
+  user-select: none;
+}
+
+.logo img {
+  max-width: 200px;
+  max-height: 200px;
+  text-align: center;
+  margin-bottom: 11px;
+}
+
+.logo__name {
+  font-weight: 600;
+  font-size: 42px;
+  line-height: 59px;
+
+  font-family: inherit;
+  color: #383838;
+}
+
+.motto {
+  font-family: inherit;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 136px;
+  line-height: 152px;
+  text-align: center;
+  opacity: 0.3;
+  user-select: none;
+}
+
+/*+ Правая часть */
+
+.authForm {
+  max-width: 710px;
+  max-height: 500px;
+  background: #ffffff;
+  box-shadow: 0px 0px 20px 1px rgba(174, 102, 54, 0.15);
+  border-radius: 8px;
+  padding: 30px 48px;
+
+  display: flex;
+  flex-direction: column;
+  color: #383838;
+  font-family: inherit;
+}
+
+.authForm__title {
+  text-align: center;
+  font-family: inherit;
+
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 44px;
+  margin-bottom: 25px;
+}
+
+.authForm__userData {
+  font-family: inherit;
+  max-width: 614px;
+}
+
+.authForm__userData form {
+  font-family: inherit;
+}
+
+.authForm__userData label {
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 23px;
+  opacity: 0.6;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.authForm__userData input {
+  width: 100%;
+  height: 48px;
+  box-shadow: 0px 1px 4px rgba(56, 56, 56, 0.1);
+  border-radius: 8px;
+  margin-bottom: 25px;
+  border: 1px solid #ffe0cc;
+  padding: 0 12px;
+}
+
+.authForm__userData input:last-of-type {
+  margin-bottom: 0;
+}
+
+.authForm__userData input:focus {
+  outline: 1px solid #d0936a;
+}
+
+.authForm__button {
+  text-align: center;
+  font-family: inherit;
+  margin: 42px 0;
+}
+
+.authForm__button button {
+  font-family: inherit;
+  min-width: 218.5px;
+  height: 80px;
+  padding: 19px 35px;
+  background: #d0936a;
+  border-radius: 4px;
+
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 26px;
+  color: #ffffff;
+}
+
+.authForm__button button:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.authForm__button button:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.authForm__changeForm {
+  font-family: inherit;
+  text-align: center;
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 23px;
+  opacity: 0.5;
+}
+
+.authForm__changeForm:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
