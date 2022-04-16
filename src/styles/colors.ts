@@ -8,4 +8,9 @@ const colors = {
   darkBrown: '#ae6636',
 };
 
+export const shadowColors = {
+  darkBrown: 'rgba(174, 102, 54, 0.15)',
+  grey: 'rgba(56, 56, 56, 0.1)',
+};
+
 export default colors;

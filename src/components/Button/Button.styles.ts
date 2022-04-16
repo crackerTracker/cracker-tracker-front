@@ -5,32 +5,29 @@ type StyledButtonProps = {
   margin?: string;
 };
 
-export const StyledButton = styled.div<StyledButtonProps>`
-  margin: ${({ margin }) => margin || '42px'} 0;
-  text-align: center;
+export const StyledButton = styled.button<StyledButtonProps>`
+  margin: ${({ margin }) => margin || '42px'} auto;
+  display: block;
 
-  button {
-    min-width: 218px;
-    padding: 27px 35px;
+  min-width: 218px;
+  height: 80px;
+  padding: 19px 35px;
 
-    background: ${colors.brown};
-    border-radius: 4px;
+  background: ${colors.brown};
+  border-radius: 4px;
 
-    font-weight: 500;
-    font-size: 28px;
-    line-height: 26px;
+  font-weight: 500;
+  font-size: 28px;
 
-    font-family: inherit;
-    color: ${colors.white};
+  color: ${colors.white};
 
-    :hover {
-      cursor: pointer;
-      opacity: 0.8;
-    }
+  :hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
 
-    :disabled {
-      cursor: default;
-      opacity: 0.8;
-    }
+  :disabled {
+    cursor: default;
+    opacity: 0.8;
   }
 `;

@@ -1,50 +1,25 @@
-import Button from 'components/Button/Button';
+import Button from 'components/Button';
+import motto from 'config/motto';
 import { images } from 'img/common';
-import React, { FormEvent, useState } from 'react';
+import React from 'react';
 import {
   AuthForm,
+  ChangeForm,
   Container,
+  Input,
+  Label,
   Logo,
   Motto,
   TextContent,
+  Title,
   UserData,
   Wrapper,
 } from './Auth.styles';
-
-// // todo переписать на styled components
-// // todo подумать над вынесением кнопки в отдельный компонент
-// // todo вынести цвета
-// ? переименовать ли папку Button в Buttons и вообще сам компонент
-// ? флекс миксин ок / не ок
-// ? фонт миксин ок / не ок
+import useForm from './useForm';
 
 const Auth = () => {
-  const [isAuth, setIsAuth] = useState<boolean>(true);
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-
-  const inputHadler = (e: FormEvent<HTMLInputElement>) => {
-    e.currentTarget.name === 'email'
-      ? setEmail(e.currentTarget.value)
-      : setPassword(e.currentTarget.value);
-  };
-
-  const clickHandler = (e: FormEvent<HTMLDivElement>) => {
-    e.preventDefault();
-
-    // *какой-то запрос*
-    console.log('отправляю данные...');
-    console.log('email', email);
-    console.log('password', password);
-    //
-
-    setEmail('');
-    setPassword('');
-  };
-
-  const data = {
-    motto: 'crack your work',
-  };
+  const { inputHandler, clickHandler, onChangeForm, email, password, isAuth } =
+    useForm();
 
   return (
     <Wrapper>
@@ -54,43 +29,34 @@ const Auth = () => {
             <img src={images.logo} alt="logo" />
             <div>CrackerTracker</div>
           </Logo>
-          <Motto>{data.motto}</Motto>
+          <Motto>{motto[0]}</Motto>
         </TextContent>
 
         <AuthForm>
-          <div className="title">{isAuth ? 'Авторизация' : 'Регистрация'}</div>
+          <Title>{isAuth ? 'Авторизация' : 'Регистрация'}</Title>
 
           <UserData>
             <form action="">
-              <label htmlFor="email">Электронная почта</label>
-              <input
-                type="text"
-                name="email"
-                value={email}
-                onChange={inputHadler}
-              />
+              <Label htmlFor="email">Электронная почта</Label>
+              <Input name="email" value={email} onChange={inputHandler} />
 
-              <label htmlFor="password">Пароль</label>
-              <input
+              <Label htmlFor="password">Пароль</Label>
+              <Input
                 type="password"
                 name="password"
                 value={password}
-                onChange={inputHadler}
+                onChange={inputHandler}
               />
 
-              <Button
-                text={isAuth ? 'Войти' : 'Зарегистрироваться'}
-                onClick={clickHandler}
-              />
+              <Button onClick={clickHandler}>
+                {isAuth ? 'Войти' : 'Зарегистрироваться'}
+              </Button>
             </form>
           </UserData>
 
-          <div
-            className="change-form"
-            onClick={() => setIsAuth((isAuth) => !isAuth)}
-          >
+          <ChangeForm onClick={onChangeForm}>
             {isAuth ? 'Хотите зарегистрироваться?' : 'Уже есть аккаунт?'}
-          </div>
+          </ChangeForm>
         </AuthForm>
       </Container>
     </Wrapper>
