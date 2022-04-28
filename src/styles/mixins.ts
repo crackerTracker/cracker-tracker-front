@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { shadowColors } from './colors';
+import colors, { shadowColors } from './colors';
 
 export const square = (value: string) => css`
   width: ${value};
@@ -39,7 +39,28 @@ export const lightElementShadow = css`
   box-shadow: 0px 1px 4px ${shadowColors.grey};
 `;
 
+export const inputShadow = css`
+  box-shadow: 0px 1px 6px ${shadowColors.grey};
+`;
+
 export const text = css`
   font-size: 19px;
   line-height: 23px;
+`;
+
+export const scroller = css`
+  ::-webkit-scrollbar {
+    width: 0.5em;
+  }
+  ::-webkit-scrollbar-track {
+    outline: 1px solid ${colors.lightBrown};
+    border-radius: 4px;
+    background-color: ${colors.white};
+    box-shadow: inset 0px 0px 20px 1px ${shadowColors.darkBrown};
+    -webkit-box-shadow: inset 0px 0px 20px 1px ${shadowColors.darkBrown};
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: ${colors.scrollBrown};
+    border-radius: 4px;
+  }
 `;
