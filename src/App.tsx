@@ -5,7 +5,7 @@ import StoresProvider from './stores/StoresProvider';
 import 'styles/styles.scss';
 
 const App = () => {
-  const isAuthenticated = false;
+  const isAuthenticated = true;
 
   return (
     <StoresProvider>

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Test from './Test';
 import Auth from './Auth/Auth';
 import Test2 from './Test2';
+import PomodoroPage from './PomodoroPage';
 
 type Props = {
   isAuthenticated: boolean;
@@ -16,7 +17,8 @@ const Router: React.FC<Props> = ({ isAuthenticated }) => {
         <Routes>
           <Route path="/test" element={<Test />} />
           <Route path="/test2" element={<Test2 />} />
-          <Route path="*" element={<Navigate to="/test" replace />} />
+          <Route path="/pomodoro" element={<PomodoroPage />} />
+          <Route path="*" element={<Navigate to="/pomodoro" replace />} />
         </Routes>
       ) : (
         <Routes>

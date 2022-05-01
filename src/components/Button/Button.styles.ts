@@ -1,25 +1,26 @@
 import styled from 'styled-components';
 import colors from 'styles/colors';
-
-type StyledButtonProps = {
-  margin?: string;
-};
+import { animate } from 'styles/mixins';
+import { StyledButtonProps } from './Button';
 
 export const StyledButton = styled.button<StyledButtonProps>`
-  margin: ${({ margin }) => margin || '42px'} auto;
+  margin: ${({ verticalMargins }) => verticalMargins || '42px'} auto;
   display: block;
 
-  min-width: 218px;
+  min-width: ${({ minWidth }) => minWidth || '218px'};
   height: 80px;
   padding: 19px 35px;
 
-  background: ${colors.brown};
+  background: ${({ bgCol }) => bgCol || colors.brown};
   border-radius: 4px;
 
   font-weight: 500;
   font-size: 28px;
+  font-family: 'Montserrat', sans-serif;
 
   color: ${colors.white};
+
+  ${animate('opacity')};
 
   :hover {
     cursor: pointer;
