@@ -20,7 +20,6 @@ export const Container = styled.div`
     :last-child {
       ${flex({ direction: 'column' })};
 
-      // attaching footer to the bottom
       .ant-spin-nested-loading {
         flex: 1 1 auto;
       }

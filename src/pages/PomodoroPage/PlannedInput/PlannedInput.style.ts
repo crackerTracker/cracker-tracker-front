@@ -3,11 +3,7 @@ import styled from 'styled-components';
 import colors from 'styles/colors';
 import { inputShadow } from 'styles/mixins';
 
-type Props = {
-  isDisabled?: boolean;
-};
-
-export const InputGroup = styled(Input.Group)<Props>`
+export const InputGroup = styled(Input.Group)<{ isDisabled?: boolean }>`
   padding: 5px 8px 5px 0;
 
   color: ${colors.textBlack};
@@ -33,12 +29,17 @@ export const StyledInputNumber = styled(InputNumber)`
 
   input:disabled {
     color: ${colors.textBlack};
+    cursor: default;
   }
 `;
 
 export const StyledInput = styled(Input)`
   :disabled {
     color: ${colors.textBlack};
+    cursor: default;
+  }
+  :focus::placeholder {
+    color: transparent;
   }
 `;
 

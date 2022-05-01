@@ -1,9 +1,9 @@
-import React, { FC, FormEvent } from 'react';
+import React, { FC, FormEvent, memo } from 'react';
 
 import { StyledButton } from './Button.styles';
 
 export type StyledButtonProps = {
-  margin?: string;
+  verticalMargins?: string;
   bgCol?: string;
   minWidth?: string;
 };
@@ -34,4 +34,4 @@ const Button: FC<ButtonProps> = ({
   );
 };
 
-export default Button;
+export default memo(Button);

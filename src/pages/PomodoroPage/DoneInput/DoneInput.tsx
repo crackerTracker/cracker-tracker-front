@@ -1,6 +1,6 @@
 import { Col, Dropdown, Menu, Row } from 'antd';
 import moment from 'moment';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { DonePomoType } from '../ListComponent/ListComponent';
 import { useInput } from '../useInput';
 import {
@@ -52,6 +52,7 @@ const DoneInput: FC<DonePomoType> = ({ task, minutes, startTime, endTime }) => {
               bordered={false}
               disabled={!isEdit}
               onChange={changeHandler}
+              placeholder="Без названия"
             />
           </Col>
 
@@ -117,4 +118,4 @@ const DoneInput: FC<DonePomoType> = ({ task, minutes, startTime, endTime }) => {
   );
 };
 
-export default DoneInput;
+export default memo(DoneInput);

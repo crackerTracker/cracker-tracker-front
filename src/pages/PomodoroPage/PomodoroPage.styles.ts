@@ -6,7 +6,6 @@ type Props = {
 };
 
 export const Wrapper = styled.div<Props>`
-  margin: 0 auto;
   width: 100vw;
   height: 100vh;
 

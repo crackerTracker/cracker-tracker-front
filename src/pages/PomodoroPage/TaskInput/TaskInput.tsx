@@ -1,10 +1,15 @@
 import { Col, Input, Row } from 'antd';
-import React, { FC, FormEvent, useState } from 'react';
-import { InputGroup, StyledButton, StyledInputNumber } from './TaskInput.style';
+import React, { FC, FormEvent, memo, useState } from 'react';
+import {
+  InputGroup,
+  StyledButton,
+  StyledInput,
+  StyledInputNumber,
+} from './TaskInput.style';
 
 const TaskInput: FC = () => {
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [value, setValue] = useState<string>('');
+  const [isEdit, setIsEdit] = useState(false);
+  const [value, setValue] = useState('');
   const [amount, setAmount] = useState<string | number>('');
 
   const clickHandler = () => {
@@ -13,12 +18,6 @@ const TaskInput: FC = () => {
 
     setValue('');
     setAmount('');
-    setIsEdit(false);
-  };
-
-  const approveChanges = () => {
-    setValue(value);
-    setAmount(amount);
     setIsEdit(false);
   };
 
@@ -37,13 +36,14 @@ const TaskInput: FC = () => {
   return (
     <>
       <InputGroup compact>
-        <Row>
+        <Row align="middle">
           <Col>
             <StyledInputNumber
               size="large"
               min={1}
               bordered={false}
               value={amount}
+              isEdit={isEdit}
               onChange={setAmount}
               onFocus={focusHandler}
               onBlur={blurHandler}
@@ -51,23 +51,17 @@ const TaskInput: FC = () => {
           </Col>
 
           <Col flex="1 1 auto">
-            <Input
+            <StyledInput
               size="large"
               bordered={false}
               value={value}
+              isEdit={isEdit}
               onChange={changeHandler}
               onFocus={focusHandler}
               onBlur={blurHandler}
+              placeholder="Введите название новой задачи"
             />
           </Col>
-
-          {isEdit && (
-            <Col>
-              <StyledButton onClick={approveChanges} size="large" type="text">
-                &#10003;
-              </StyledButton>
-            </Col>
-          )}
 
           <Col>
             <StyledButton onClick={clickHandler} size="large" type="text">
@@ -80,4 +74,4 @@ const TaskInput: FC = () => {
   );
 };
 
-export default TaskInput;
+export default memo(TaskInput);

@@ -1,5 +1,5 @@
 import { Button, Col, Row, Select } from 'antd';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import {
   Container,
   CurrentTask,
@@ -51,7 +51,7 @@ const TimerSection: FC = () => {
           <CustomButton
             onClick={startTimer}
             styles={{
-              margin: '0px',
+              verticalMargins: '0px',
               bgCol: `${colors.green}`,
               minWidth: '180px',
             }}
@@ -64,7 +64,7 @@ const TimerSection: FC = () => {
           <CustomButton
             onClick={stopTimer}
             styles={{
-              margin: '0px',
+              verticalMargins: '0px',
               bgCol: `${colors.red}`,
               minWidth: '180px',
             }}
@@ -145,4 +145,4 @@ const TimerSection: FC = () => {
   );
 };
 
-export default TimerSection;
+export default memo(TimerSection);

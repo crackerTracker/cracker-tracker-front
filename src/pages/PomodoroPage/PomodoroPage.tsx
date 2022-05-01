@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd';
 import ListComponent from 'pages/PomodoroPage/ListComponent';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import 'antd/dist/antd.css';
 import { Container, Wrapper } from './PomodoroPage.styles';
 import TimerSection from './TimerSection';
@@ -25,4 +25,4 @@ const PomodoroPage: FC = () => {
   );
 };
 
-export default PomodoroPage;
+export default memo(PomodoroPage);

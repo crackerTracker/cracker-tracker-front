@@ -1,4 +1,4 @@
-import { MenuProps, message } from 'antd';
+import { message } from 'antd';
 import { FormEvent, useState } from 'react';
 
 type UseInputProps = {
@@ -12,12 +12,12 @@ export const useInput = ({ task, amount }: UseInputProps) => {
   const [initial, setInitial] = useState({ value, amounts });
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const menuEditClick: MenuProps['onClick'] = () => {
+  const menuEditClick = () => {
     setIsEdit(true);
   };
 
-  const menuDeleteClick: MenuProps['onClick'] = (e) => {
-    message.info('Deleted');
+  const menuDeleteClick = () => {
+    message.info('Удалено');
     setValue('');
     setAmount(0);
     setInitial({ value: '', amounts: 0 });

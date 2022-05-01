@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import colors from 'styles/colors';
+import { animate } from 'styles/mixins';
 import { StyledButtonProps } from './Button';
 
 export const StyledButton = styled.button<StyledButtonProps>`
-  margin: ${({ margin }) => margin || '42px'} auto;
+  margin: ${({ verticalMargins }) => verticalMargins || '42px'} auto;
   display: block;
 
   min-width: ${({ minWidth }) => minWidth || '218px'};
@@ -18,6 +19,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
   font-family: 'Montserrat', sans-serif;
 
   color: ${colors.white};
+
+  ${animate('opacity')};
 
   :hover {
     cursor: pointer;

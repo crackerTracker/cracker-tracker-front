@@ -3,11 +3,7 @@ import styled from 'styled-components';
 import colors from 'styles/colors';
 import { inputShadow } from 'styles/mixins';
 
-type Props = {
-  isDisabled?: boolean;
-};
-
-export const InputGroup = styled(Input.Group)<Props>`
+export const InputGroup = styled(Input.Group)<{ isDisabled?: boolean }>`
   padding: 5px 8px 5px 0;
 
   color: ${colors.textBlack};
@@ -25,6 +21,10 @@ export const InputGroup = styled(Input.Group)<Props>`
 export const StyledInput = styled(Input)`
   :disabled {
     color: ${colors.textBlack};
+    cursor: default;
+  }
+  :focus::placeholder {
+    color: transparent;
   }
 `;
 
@@ -38,6 +38,7 @@ export const StyledInputNumber = styled(InputNumber)`
   input:disabled {
     text-align: right;
     color: ${colors.brown};
+    cursor: default;
   }
 `;
 
@@ -47,7 +48,6 @@ export const StyledText = styled.span`
 `;
 
 export const StyledTimeRange = styled.div`
-  // removing first clock svg
   .ant-picker {
     .ant-picker-input .ant-picker-suffix {
       display: none;
@@ -56,11 +56,12 @@ export const StyledTimeRange = styled.div`
       display: flex;
     }
   }
+  .ant-picker.ant-picker-disabled {
+    cursor: default;
+  }
 `;
 
 export const StyledTimePicker = styled(TimePicker)`
-  div:last-child span {
-  }
   input {
     width: 2.5vw;
     text-align: center;
@@ -68,6 +69,7 @@ export const StyledTimePicker = styled(TimePicker)`
   input:disabled,
   svg {
     color: ${colors.brown};
+    cursor: default;
   }
 `;
 

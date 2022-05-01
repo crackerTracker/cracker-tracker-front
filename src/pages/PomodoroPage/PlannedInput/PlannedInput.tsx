@@ -1,5 +1,5 @@
 import { Col, Dropdown, Menu, Row } from 'antd';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { PlannedPomoType } from '../ListComponent/ListComponent';
 import { useInput } from '../useInput';
 import {
@@ -41,7 +41,7 @@ const PlannedInput: FC<PlannedPomoType> = ({ task, amount }) => {
       <Menu.Item key="2" onClick={menuAddPomo}>
         Прибавить помидор
       </Menu.Item>
-      <Menu.Item key="3" onClick={menuDeletePomo}>
+      <Menu.Item key="3" onClick={menuDeletePomo} disabled={amounts <= 1}>
         Убавить помидор
       </Menu.Item>
       <Menu.Item key="4" onClick={menuDeleteClick}>
@@ -70,6 +70,7 @@ const PlannedInput: FC<PlannedPomoType> = ({ task, amount }) => {
               bordered={false}
               disabled={!isEdit}
               onChange={changeHandler}
+              placeholder="Без названия"
             />
           </Col>
 
@@ -97,4 +98,4 @@ const PlannedInput: FC<PlannedPomoType> = ({ task, amount }) => {
   );
 };
 
-export default PlannedInput;
+export default memo(PlannedInput);

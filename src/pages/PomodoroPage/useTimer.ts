@@ -34,7 +34,7 @@ export const useTimer = () => {
   };
 
   const resetTimeout = () => {
-    if (timerId.current !== null) {
+    if (timerId.current) {
       clearTimeout(timerId.current);
     }
   };
@@ -42,7 +42,6 @@ export const useTimer = () => {
   const addMinutes = () => {
     let currentValue = option.add;
 
-    // changing default option value to number type
     if (typeof option.add === 'string') {
       currentValue = String(option.add).split(' ')[0];
     }
@@ -53,7 +52,6 @@ export const useTimer = () => {
   const diffMinutes = () => {
     let currentValue = option.diff;
 
-    // changing default option value to number type
     if (typeof option.diff === 'string') {
       currentValue = String(option.diff).split(' ')[0];
     }

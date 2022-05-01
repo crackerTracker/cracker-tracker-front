@@ -64,3 +64,9 @@ export const scroller = css`
     border-radius: 4px;
   }
 `;
+
+export const animate = (...styles: string[]) => css`
+  ${styles.length
+    ? `transition: ${styles.map((style) => `${style} 0.1s linear`)}`
+    : null}
+`;
