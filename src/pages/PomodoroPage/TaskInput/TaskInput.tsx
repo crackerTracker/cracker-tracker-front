@@ -1,5 +1,6 @@
-import { Col, Input, Row } from 'antd';
+import { Col, message, Row } from 'antd';
 import React, { FC, FormEvent, memo, useState } from 'react';
+import { usePomodoroStore } from 'stores/hooks';
 import {
   InputGroup,
   StyledButton,
@@ -12,13 +13,29 @@ const TaskInput: FC = () => {
   const [value, setValue] = useState('');
   const [amount, setAmount] = useState<string | number>('');
 
-  const clickHandler = () => {
-    console.log('sending data...');
-    console.log(value, amount);
+  const { createPlannedPomo, plannedPomosData, editPlannedPomo } =
+    usePomodoroStore();
+  const lastPomo = plannedPomosData[plannedPomosData.length - 1];
 
-    setValue('');
-    setAmount('');
-    setIsEdit(false);
+  const clickHandler = () => {
+    if (value && amount && +amount - Math.trunc(+amount) === 0) {
+      // stack with last pomo
+      if (lastPomo && value === lastPomo.name) {
+        editPlannedPomo(
+          lastPomo._id,
+          lastPomo.name,
+          Number(amount) + lastPomo.pomodorosAmount
+        );
+      } else {
+        createPlannedPomo(value, Number(amount));
+      }
+
+      setValue('');
+      setAmount('');
+      setIsEdit(false);
+    } else {
+      message.warning('Заполните все поля');
+    }
   };
 
   const changeHandler = (e: FormEvent<HTMLInputElement>) => {
@@ -43,7 +60,7 @@ const TaskInput: FC = () => {
               min={1}
               bordered={false}
               value={amount}
-              isEdit={isEdit}
+              $isEdit={isEdit}
               onChange={setAmount}
               onFocus={focusHandler}
               onBlur={blurHandler}
@@ -55,7 +72,7 @@ const TaskInput: FC = () => {
               size="large"
               bordered={false}
               value={value}
-              isEdit={isEdit}
+              $isEdit={isEdit}
               onChange={changeHandler}
               onFocus={focusHandler}
               onBlur={blurHandler}

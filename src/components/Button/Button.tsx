@@ -10,7 +10,7 @@ export type StyledButtonProps = {
 
 interface ButtonProps {
   children: React.ReactNode;
-  onClick: (e: FormEvent<HTMLButtonElement>) => void;
+  onClick?: (e: FormEvent<HTMLButtonElement>) => void;
   isLoading?: boolean;
   isDisabled?: boolean;
   styles?: StyledButtonProps;
@@ -18,10 +18,10 @@ interface ButtonProps {
 
 const Button: FC<ButtonProps> = ({
   children,
-  onClick,
-  isLoading,
-  isDisabled,
-  styles,
+  onClick = () => {},
+  isLoading = false,
+  isDisabled = false,
+  styles = {},
 }) => {
   return (
     <StyledButton

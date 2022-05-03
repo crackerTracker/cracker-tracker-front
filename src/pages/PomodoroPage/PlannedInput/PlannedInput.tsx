@@ -1,6 +1,8 @@
 import { Col, Dropdown, Menu, Row } from 'antd';
-import React, { FC, memo } from 'react';
-import { PlannedPomoType } from '../ListComponent/ListComponent';
+import { observer } from 'mobx-react-lite';
+import React, { FC, useEffect } from 'react';
+import { usePomodoroStore } from 'stores/hooks';
+import { PlannedPomoType } from 'stores/PomodoroStore';
 import { useInput } from '../useInput';
 import {
   InputGroup,
@@ -9,7 +11,11 @@ import {
   StyledInputNumber,
 } from './PlannedInput.style';
 
-const PlannedInput: FC<PlannedPomoType> = ({ task, amount }) => {
+const PlannedInput: FC<PlannedPomoType> = ({
+  _id,
+  name: task,
+  pomodorosAmount: amount,
+}) => {
   const {
     value,
     amounts,
@@ -25,17 +31,52 @@ const PlannedInput: FC<PlannedPomoType> = ({ task, amount }) => {
     task,
   });
 
+  const {
+    deletePlannedPomo,
+    deleteAllPlanned,
+    editPlannedPomo,
+    plannedPomosData,
+    isTick,
+  } = usePomodoroStore();
+
+  useEffect(() => {
+    // updating first pomo amount on markPomoDone
+    if (_id === plannedPomosData[0]._id) {
+      setAmount(plannedPomosData[0].pomodorosAmount);
+    }
+    // stack pomo amount on createPlannedPomo
+    if (_id === plannedPomosData[plannedPomosData.length - 1]._id) {
+      setAmount(plannedPomosData[plannedPomosData.length - 1].pomodorosAmount);
+    }
+  }, [plannedPomosData, setAmount, _id]);
+
   const menuAddPomo = () => {
     setAmount((amounts) => Number(amounts) + 1);
+    editPlannedPomo(_id, value, Number(amounts) + 1);
   };
 
   const menuDeletePomo = () => {
     setAmount((amounts) => Number(amounts) - 1);
+    deletePlannedPomo(_id);
+  };
+
+  const approveEditing = () => {
+    approveChanges();
+    editPlannedPomo(_id, value, Number(amounts));
+  };
+
+  const deletePomoStack = () => {
+    deleteAllPlanned(_id);
+    menuDeleteClick();
+  };
+
+  const isSetDisabled = () => {
+    return plannedPomosData[0]._id === _id && isTick;
   };
 
   const menu = (
     <Menu>
-      <Menu.Item key="1" onClick={menuEditClick}>
+      <Menu.Item key="1" onClick={menuEditClick} disabled={isSetDisabled()}>
         Редактировать
       </Menu.Item>
       <Menu.Item key="2" onClick={menuAddPomo}>
@@ -44,7 +85,7 @@ const PlannedInput: FC<PlannedPomoType> = ({ task, amount }) => {
       <Menu.Item key="3" onClick={menuDeletePomo} disabled={amounts <= 1}>
         Убавить помидор
       </Menu.Item>
-      <Menu.Item key="4" onClick={menuDeleteClick}>
+      <Menu.Item key="4" onClick={deletePomoStack} disabled={isSetDisabled()}>
         Удалить
       </Menu.Item>
     </Menu>
@@ -86,7 +127,7 @@ const PlannedInput: FC<PlannedPomoType> = ({ task, amount }) => {
                 <StyledButton type="text" onClick={cancelChanges}>
                   &times;
                 </StyledButton>
-                <StyledButton type="text" onClick={approveChanges}>
+                <StyledButton type="text" onClick={approveEditing}>
                   &#10003;
                 </StyledButton>
               </>
@@ -98,4 +139,4 @@ const PlannedInput: FC<PlannedPomoType> = ({ task, amount }) => {
   );
 };
 
-export default memo(PlannedInput);
+export default observer(PlannedInput);

@@ -1,11 +1,7 @@
 import styled from 'styled-components';
 import colors from 'styles/colors';
 
-type Props = {
-  isTick: boolean;
-};
-
-export const Wrapper = styled.div<Props>`
+export const Wrapper = styled.div<{ isTick: boolean }>`
   width: 100vw;
   height: 100vh;
 
