@@ -1,9 +1,12 @@
 import { FormEvent, useCallback, useState } from 'react';
+import { useAuthStore } from 'stores/hooks';
 
 const useForm = () => {
-  const [isAuth, setIsAuth] = useState<boolean>(true);
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [isAuth, setIsAuth] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const { loginHandler, registerHandler } = useAuthStore();
 
   const inputHandler = useCallback((e: FormEvent<HTMLInputElement>) => {
     e.currentTarget.name === 'email'
@@ -15,16 +18,12 @@ const useForm = () => {
     (e: FormEvent<HTMLButtonElement>) => {
       e.preventDefault();
 
-      // *какой-то запрос*
-      console.log('отправляю данные...');
-      console.log('email', email);
-      console.log('password', password);
-      //
+      isAuth ? loginHandler(email, password) : registerHandler(email, password);
 
       setEmail('');
       setPassword('');
     },
-    [email, password]
+    [email, password, isAuth, loginHandler, registerHandler]
   );
 
   const onChangeForm = useCallback(() => {
