@@ -19,15 +19,14 @@ const TaskInput: FC = () => {
 
   const clickHandler = () => {
     if (value && amount && +amount - Math.trunc(+amount) === 0) {
-      // stack with last pomo
-      if (lastPomo && value === lastPomo.name) {
+      if (lastPomo && value.trim() === lastPomo.name) {
         editPlannedPomo(
           lastPomo._id,
           lastPomo.name,
           Number(amount) + lastPomo.pomodorosAmount
         );
       } else {
-        createPlannedPomo(value, Number(amount));
+        createPlannedPomo(value.trim(), Number(amount));
       }
 
       setValue('');

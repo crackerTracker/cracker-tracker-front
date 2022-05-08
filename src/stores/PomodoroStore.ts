@@ -1,6 +1,8 @@
-import request from 'hooks/request';
+import request from 'utils/request';
 import { makeAutoObservable, runInAction } from 'mobx';
 import RootStore from './RootStore';
+import { endpoints } from 'config/endpoints';
+import { defaultPomoTime } from 'config/pomoconf';
 
 export type PlannedPomoType = {
   _id: string;
@@ -21,12 +23,8 @@ type PrivateFields = 'rootStore';
 class PomodoroStore {
   private rootStore: RootStore;
 
-  private _token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjZjNjFhYzhhOTI4MTNjMTBmOTYyZWQiLCJpYXQiOjE2NTEyNzAzMjR9.ucKvwTZpeKNmNW8ssZLxGKk_fvL7mU5bbfnGym1eWOE';
-
   public isLoading = false;
-  private _isTick = false;
-  private _request = request;
+  public isTick = false;
 
   private _plannedPomosData: PlannedPomoType[] = [];
   private _donePomosData: DonePomoType[] = [];
@@ -40,22 +38,12 @@ class PomodoroStore {
   }
 
   get token() {
-    return this._token;
+    return this.rootStore.authStore.token;
   }
 
-  set token(token: string) {
+  setIsTick(tick: boolean) {
     runInAction(() => {
-      this._token = token;
-    });
-  }
-
-  get isTick() {
-    return this._isTick;
-  }
-
-  set isTick(tick: boolean) {
-    runInAction(() => {
-      this._isTick = tick;
+      this.isTick = tick;
     });
   }
 
@@ -69,28 +57,28 @@ class PomodoroStore {
 
   requestAllPomos = async () => {
     this.isLoading = true;
+
     try {
-      const data = await this._request?.({
-        url: '/api/pomodoro/pomodoros',
-        method: 'GET',
+      const data = await request({
+        url: endpoints.requestAll.url,
+        method: endpoints.requestAll.method,
         headers: {
-          Authorization: `Bearer ${this._token}`,
+          Authorization: `Bearer ${this.token}`,
         },
       });
 
       runInAction(() => {
         if (data) {
-          this._plannedPomosData = data?.plan;
-          this._donePomosData = data?.done;
+          this._plannedPomosData = data.plan;
+          this._donePomosData = data.done;
         }
-
-        this.isLoading = false;
       });
     } catch (e: any) {
       runInAction(() => {
         this.isLoading = false;
       });
     }
+    this.isLoading = false;
   };
 
   markPomoDone = async (
@@ -100,20 +88,18 @@ class PomodoroStore {
     endTime: string
   ) => {
     try {
-      await this._request({
-        url: '/api/pomodoro/markDone',
-        method: 'POST',
+      await request({
+        url: endpoints.markDone.url,
+        method: endpoints.markDone.method,
         headers: {
-          Authorization: `Bearer ${this._token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         body: { plannedId, minutesSpent, startTime, endTime },
       });
 
-      runInAction(() => {
-        this.requestAllPomos();
-      });
+      this.requestAllPomos();
     } catch (e: any) {
-      console.log(e);
+      console.log('PomodoroStore.markPomoDone:', e.message);
     }
   };
 
@@ -121,58 +107,52 @@ class PomodoroStore {
 
   createPlannedPomo = async (name: string, pomodorosAmount: number) => {
     try {
-      await this._request({
-        url: '/api/pomodoro/createPlanned',
-        method: 'POST',
+      await request({
+        url: endpoints.createPlanned.url,
+        method: endpoints.createPlanned.method,
         headers: {
-          Authorization: `Bearer ${this._token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         body: { name, pomodorosAmount },
       });
 
-      runInAction(() => {
-        this.requestAllPomos();
-      });
+      this.requestAllPomos();
     } catch (e: any) {
-      console.log(e);
+      console.log('PomodoroStore.createPlannedPomo:', e.message);
     }
   };
 
   deletePlannedPomo = async (toDeleteId: string) => {
     try {
-      await this._request({
-        url: '/api/pomodoro/deletePlanned',
-        method: 'POST',
+      await request({
+        url: endpoints.deletePlanned.url,
+        method: endpoints.deletePlanned.method,
         headers: {
-          Authorization: `Bearer ${this._token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         body: { toDeleteId },
       });
 
-      runInAction(() => {
-        this.requestAllPomos();
-      });
+      this.requestAllPomos();
     } catch (e: any) {
-      console.log(e);
+      console.log('PomodoroStore.deletePlannedPomo:', e.message);
     }
   };
 
   deleteAllPlanned = async (toDeleteId: string) => {
     try {
-      await this._request({
-        url: '/api/pomodoro/deleteAllPlanned',
-        method: 'POST',
+      await request({
+        url: endpoints.deleteAllPlanned.url,
+        method: endpoints.deleteAllPlanned.method,
         headers: {
-          Authorization: `Bearer ${this._token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         body: { toDeleteId },
       });
 
-      runInAction(() => {
-        this.requestAllPomos();
-      });
+      this.requestAllPomos();
     } catch (e: any) {
-      console.log(e);
+      console.log('PomodoroStore.deleteAllPlanned:', e.message);
     }
   };
 
@@ -182,20 +162,18 @@ class PomodoroStore {
     pomodorosAmount?: number
   ) => {
     try {
-      await this._request({
-        url: '/api/pomodoro/editPlanned',
-        method: 'POST',
+      await request({
+        url: endpoints.editPlanned.url,
+        method: endpoints.editPlanned.method,
         headers: {
-          Authorization: `Bearer ${this._token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         body: { toEditId, name, pomodorosAmount },
       });
 
-      runInAction(() => {
-        this.requestAllPomos();
-      });
-    } catch (e) {
-      console.log(e);
+      this.requestAllPomos();
+    } catch (e: any) {
+      console.log('PomodoroStore.editPlannedPomo:', e.message);
     }
   };
 
@@ -203,20 +181,18 @@ class PomodoroStore {
 
   deleteDonePomo = async (id: string) => {
     try {
-      await this._request({
-        url: '/api/pomodoro/deleteDone',
-        method: 'POST',
+      await request({
+        url: endpoints.deleteDone.url,
+        method: endpoints.deleteDone.method,
         headers: {
-          Authorization: `Bearer ${this._token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         body: { toDeleteId: id },
       });
 
-      runInAction(() => {
-        this.requestAllPomos();
-      });
+      this.requestAllPomos();
     } catch (e: any) {
-      console.log(e);
+      console.log('PomodoroStore.deleteDonePomo:', e.message);
     }
   };
 
@@ -228,46 +204,55 @@ class PomodoroStore {
     endTime?: string
   ) => {
     try {
-      await this._request({
-        url: '/api/pomodoro/editDone',
-        method: 'POST',
+      await request({
+        url: endpoints.editDone.url,
+        method: endpoints.editDone.method,
         headers: {
-          Authorization: `Bearer ${this._token}`,
+          Authorization: `Bearer ${this.token}`,
         },
         body: { toEditId, name, minutesSpent, startTime, endTime },
       });
 
-      runInAction(() => {
-        this.requestAllPomos();
-      });
+      this.requestAllPomos();
     } catch (e: any) {
-      console.log(e);
+      console.log('PomodoroStore.editDonePomo:', e.message);
     }
   };
 
   // Stats
 
-  computeStatsTime = (pomosAmount: number, pomoTime = 50) => {
-    const resultTime = pomosAmount * pomoTime;
-    const hours = Math.trunc(resultTime / 60) || 0;
-    const mins = resultTime - hours * 60 || 0;
+  computePlanTime = (pomoTime = defaultPomoTime) => {
+    const resultTime = this.plannedPomosAmount * pomoTime;
+    return this._printTime(resultTime);
+  };
+
+  computeDoneTime = () => {
+    const resultTime = this.donePomosData
+      .map((pomo) => pomo.minutesSpent)
+      .reduce((time, mins) => mins + time);
+    return this._printTime(resultTime);
+  };
+
+  _printTime = (resultTime: number) => {
+    const hours = Math.trunc(resultTime / 60);
+    const mins = resultTime - hours * 60;
     return `${hours}ч ${mins}м`;
   };
 
   get taskName() {
-    return this.plannedPomosData?.length ? this.plannedPomosData[0].name : '';
+    return this.plannedPomosData.length ? this.plannedPomosData[0].name : '';
   }
 
   get plannedPomosAmount() {
-    return this.plannedPomosData?.length
+    return this.plannedPomosData.length
       ? this.plannedPomosData
           .map((item) => item.pomodorosAmount)
-          .reduce((item, sum) => item + sum)
+          .reduce((sum, item) => sum + item)
       : 0;
   }
 
   get donePomosAmount() {
-    return this._donePomosData?.length;
+    return this._donePomosData.length;
   }
 }
 

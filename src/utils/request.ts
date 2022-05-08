@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { BASE_URL } from 'config/links';
 
 type RequestParams = {
@@ -9,8 +10,8 @@ type RequestParams = {
 
 const request = async ({
   url,
-  method = 'GET',
-  headers = {},
+  method,
+  headers,
   body = null,
 }: RequestParams) => {
   try {
@@ -24,16 +25,15 @@ const request = async ({
       body,
       headers,
     });
-    const data = response.json();
+    const data = await response.json();
 
     if (!response.ok) {
-      const msg = await data.then((d) => d.message);
-      throw new Error(msg || 'Что-то пошло не так');
+      throw new Error(data.message || 'Что-то пошло не так');
     }
 
     return data;
   } catch (e: any) {
-    console.log(e.message);
+    message.error(e.message);
     throw e;
   }
 };
