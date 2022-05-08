@@ -18,7 +18,7 @@ export const InputGroup = styled(Input.Group)<{ isDisabled?: boolean }>`
   }
 `;
 
-export const StyledInputNumber = styled(InputNumber)<{ isEdit?: boolean }>`
+export const StyledInputNumber = styled(InputNumber)<{ $isEdit?: boolean }>`
   max-width: 4vw;
 
   background-color: ${colors.lightBrown};
@@ -28,13 +28,13 @@ export const StyledInputNumber = styled(InputNumber)<{ isEdit?: boolean }>`
 
   input {
     text-align: center;
-    opacity: ${({ isEdit }) => (isEdit ? 1 : 0.7)};
+    opacity: ${({ $isEdit }) => ($isEdit ? 1 : 0.7)};
   }
 `;
 
-export const StyledInput = styled(Input)<{ isEdit?: boolean }>`
+export const StyledInput = styled(Input)<{ $isEdit?: boolean }>`
   color: inherit;
-  opacity: ${({ isEdit }) => (isEdit ? 1 : 0.7)};
+  opacity: ${({ $isEdit }) => ($isEdit ? 1 : 0.7)};
 `;
 
 export const StyledButton = styled(Button)`

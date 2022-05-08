@@ -7,20 +7,17 @@ type UseInputProps = {
 };
 
 export const useInput = ({ task, amount }: UseInputProps) => {
-  const [value, setValue] = useState<string>(task);
+  const [value, setValue] = useState(task);
   const [amounts, setAmount] = useState<number | string>(amount);
   const [initial, setInitial] = useState({ value, amounts });
-  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState(false);
 
   const menuEditClick = () => {
     setIsEdit(true);
   };
 
   const menuDeleteClick = () => {
-    message.info('Удалено');
-    setValue('');
-    setAmount(0);
-    setInitial({ value: '', amounts: 0 });
+    message.success('Удалено');
   };
 
   const changeHandler = (e: FormEvent<HTMLInputElement>) => {
