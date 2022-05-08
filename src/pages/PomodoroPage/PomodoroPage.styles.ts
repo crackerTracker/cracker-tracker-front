@@ -6,7 +6,7 @@ export const Wrapper = styled.div<{ isTick: boolean }>`
   height: 100vh;
 
   background-color: ${({ isTick }) =>
-    isTick ? colors.green : colors.lightBrown};
+    isTick ? colors.red : colors.lightBrown};
 `;
 
 export const Container = styled.div`

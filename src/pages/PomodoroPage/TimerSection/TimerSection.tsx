@@ -15,7 +15,8 @@ import { observer } from 'mobx-react-lite';
 
 const TimerSection: FC = () => {
   const {
-    computeStatsTime,
+    computePlanTime,
+    computeDoneTime,
     donePomosAmount,
     plannedPomosAmount,
     taskName,
@@ -52,7 +53,7 @@ const TimerSection: FC = () => {
         <Col span={10}>
           <CustomButton
             onClick={startTimer}
-            isDisabled={!plannedPomosAmount}
+            isDisabled={!plannedPomosAmount || isTick}
             styles={{
               verticalMargins: '0px',
               bgCol: `${colors.green}`,
@@ -73,7 +74,7 @@ const TimerSection: FC = () => {
               minWidth: '180px',
             }}
           >
-            Стоп
+            {isTick ? 'Готово' : 'Стоп'}
           </CustomButton>
         </Col>
 
@@ -123,7 +124,7 @@ const TimerSection: FC = () => {
             <div>
               <span>{plannedPomosAmount}&times;&#127813;</span>
               {plannedPomosAmount > 0 && (
-                <span> &#8226; {computeStatsTime(plannedPomosAmount)}</span>
+                <span> &#8226; {computePlanTime()}</span>
               )}
             </div>
           </StatsContainer>
@@ -133,9 +134,7 @@ const TimerSection: FC = () => {
             <div>Выполнено</div>
             <div>
               <span>{donePomosAmount}&times;&#127813;</span>
-              {donePomosAmount > 0 && (
-                <span> &#8226; {computeStatsTime(donePomosAmount)}</span>
-              )}
+              {donePomosAmount > 0 && <span> &#8226; {computeDoneTime()}</span>}
             </div>
           </StatsContainer>
         </Col>

@@ -40,10 +40,12 @@ export const useTimer = () => {
     const startTime = new Date(endTime.getTime() - spentMs);
     const startTimeStamp = startTime.toISOString();
 
+    const minDiff = initialMinutes - minutes > 0 ? initialMinutes - minutes : 1;
+
     if (store.isTick) {
       markPomoDone(
         plannedPomosData[0]._id,
-        initialMinutes - minutes,
+        minDiff,
         startTimeStamp,
         endTimeStamp
       );
@@ -82,6 +84,13 @@ export const useTimer = () => {
 
     setMinutes((t) => t - Number(currentValue));
     setInitialMinutes((t) => t - Number(currentValue));
+    if (minutes - Number(currentValue) > 0) {
+      setMinutes((t) => t - Number(currentValue));
+      setInitialMinutes((t) => t - Number(currentValue));
+    } else {
+      setMinutes(1);
+      setInitialMinutes(1);
+    }
   };
 
   useEffect(() => {

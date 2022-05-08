@@ -35,6 +35,7 @@ const PlannedPomoItem: FC<PlannedPomoType> = ({
     deletePlannedPomo,
     deleteAllPlanned,
     editPlannedPomo,
+    markPomoDone,
     plannedPomosData,
     isTick,
   } = usePomodoroStore();
@@ -72,18 +73,37 @@ const PlannedPomoItem: FC<PlannedPomoType> = ({
     return plannedPomosData[0]._id === _id && isTick;
   };
 
+  const calculateTime = () => {
+    const spentMs = 50 * 60000;
+    const endTime = new Date();
+    const endTimeStamp = endTime.toISOString();
+
+    const startTime = new Date(endTime.getTime() - spentMs);
+    const startTimeStamp = startTime.toISOString();
+
+    return { endTimeStamp, startTimeStamp };
+  };
+
+  const menuMarkDone = () => {
+    const { endTimeStamp, startTimeStamp } = calculateTime();
+    return markPomoDone(_id, 50, startTimeStamp, endTimeStamp);
+  };
+
   const menu = (
     <Menu>
       <Menu.Item key="1" onClick={menuEditClick} disabled={isSetDisabled()}>
         Редактировать
       </Menu.Item>
-      <Menu.Item key="2" onClick={menuAddPomo}>
+      <Menu.Item key="2" onClick={menuMarkDone} disabled={isSetDisabled()}>
+        Отметить выполненным
+      </Menu.Item>
+      <Menu.Item key="3" onClick={menuAddPomo}>
         Прибавить помидор
       </Menu.Item>
-      <Menu.Item key="3" onClick={menuDeletePomo} disabled={amount <= 1}>
+      <Menu.Item key="4" onClick={menuDeletePomo} disabled={amount <= 1}>
         Убавить помидор
       </Menu.Item>
-      <Menu.Item key="4" onClick={deletePomoStack} disabled={isSetDisabled()}>
+      <Menu.Item key="5" onClick={deletePomoStack} disabled={isSetDisabled()}>
         Удалить
       </Menu.Item>
     </Menu>

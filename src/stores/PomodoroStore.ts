@@ -2,6 +2,7 @@ import request from 'utils/request';
 import { makeAutoObservable, runInAction } from 'mobx';
 import RootStore from './RootStore';
 import { endpoints } from 'config/endpoints';
+import { defaultPomoTime } from 'config/pomoconf';
 
 export type PlannedPomoType = {
   _id: string;
@@ -220,10 +221,21 @@ class PomodoroStore {
 
   // Stats
 
-  computeStatsTime = (pomosAmount: number, pomoTime = 50) => {
-    const resultTime = pomosAmount * pomoTime;
-    const hours = Math.trunc(resultTime / 60) || 0;
-    const mins = resultTime - hours * 60 || 0;
+  computePlanTime = (pomoTime = defaultPomoTime) => {
+    const resultTime = this.plannedPomosAmount * pomoTime;
+    return this._printTime(resultTime);
+  };
+
+  computeDoneTime = () => {
+    const resultTime = this.donePomosData
+      .map((pomo) => pomo.minutesSpent)
+      .reduce((time, mins) => mins + time);
+    return this._printTime(resultTime);
+  };
+
+  _printTime = (resultTime: number) => {
+    const hours = Math.trunc(resultTime / 60);
+    const mins = resultTime - hours * 60;
     return `${hours}ч ${mins}м`;
   };
 

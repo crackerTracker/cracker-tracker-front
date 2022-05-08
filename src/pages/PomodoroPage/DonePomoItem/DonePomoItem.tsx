@@ -53,7 +53,12 @@ const DonePomoItem: FC<DonePomoType> = ({
   }, [endTime]);
 
   const approveEditing = () => {
-    editDonePomo(_id, pomoName, Number(amount));
+    const newSpentMs = Number(amount) * 60000;
+    const newStartTime = new Date(new Date(endTime).getTime() - newSpentMs);
+    const newStartStamp = newStartTime.toISOString();
+    const newEndStamp = new Date(endTime).toISOString();
+
+    editDonePomo(_id, pomoName, Number(amount), newStartStamp, newEndStamp);
     approveChanges();
   };
 

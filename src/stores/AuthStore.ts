@@ -40,7 +40,7 @@ class AuthStore {
       });
       this.loginHandler(email, password);
     } catch (e: any) {
-      console.log('AuthStore.registerHandler:', e.message);
+      console.log('AuthStore.registerHandler', e);
     }
   };
 
@@ -54,7 +54,7 @@ class AuthStore {
       });
       this.login(data.token, data.userId);
     } catch (e: any) {
-      console.log('AuthStore.loginHandler:', e.message);
+      console.log('AuthStore.loginHandler', e);
     }
   };
 
