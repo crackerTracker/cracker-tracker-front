@@ -1,10 +1,11 @@
 import { Col, Dropdown, Menu, Row } from 'antd';
+import { format } from 'config/pomoconf';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
 import { DonePomoType } from 'stores/PomodoroStore';
-import { useInput } from '../useInput';
+import { usePomoItem } from '../usePomoItem';
 import {
   InputGroup,
   StyledButton,
@@ -13,22 +14,20 @@ import {
   StyledText,
   StyledTimePicker,
   StyledTimeRange,
-} from './DoneInput.style';
+} from './DonePomoItem.style';
 
-const DoneInput: FC<DonePomoType> = ({
+const DonePomoItem: FC<DonePomoType> = ({
   _id,
   name,
   minutesSpent,
   startTime,
   endTime,
 }) => {
-  const format = 'HH:mm';
-
   const { editDonePomo, deleteDonePomo } = usePomodoroStore();
 
   const {
-    value,
-    amounts,
+    pomoName,
+    amount,
     isEdit,
     setAmount,
     menuEditClick,
@@ -36,16 +35,25 @@ const DoneInput: FC<DonePomoType> = ({
     changeHandler,
     cancelChanges,
     approveChanges,
-  } = useInput({
-    amount: minutesSpent,
-    task: name,
+  } = usePomoItem({
+    defaultAmount: minutesSpent,
+    name,
   });
 
-  const endTimeString = new Date(endTime).toLocaleTimeString().slice(0, -3);
-  const startTimeString = new Date(startTime).toLocaleTimeString().slice(0, -3);
+  const memoStartMoment = useMemo(() => {
+    const startTimeString = new Date(startTime)
+      .toLocaleTimeString()
+      .slice(0, -3);
+    return moment(startTimeString, format);
+  }, [startTime]);
+
+  const memoEndMoment = useMemo(() => {
+    const endTimeString = new Date(endTime).toLocaleTimeString().slice(0, -3);
+    return moment(endTimeString, format);
+  }, [endTime]);
 
   const approveEditing = () => {
-    editDonePomo(_id, value, Number(amounts));
+    editDonePomo(_id, pomoName, Number(amount));
     approveChanges();
   };
 
@@ -70,7 +78,7 @@ const DoneInput: FC<DonePomoType> = ({
       <Row align="middle" wrap={false}>
         <Col flex="1 1 auto">
           <StyledInput
-            value={value}
+            value={pomoName}
             bordered={false}
             disabled={!isEdit}
             onChange={changeHandler}
@@ -83,7 +91,7 @@ const DoneInput: FC<DonePomoType> = ({
             <Col>
               <StyledInputNumber
                 min={1}
-                value={amounts}
+                value={amount}
                 bordered={false}
                 disabled={!isEdit}
                 onChange={setAmount}
@@ -96,7 +104,7 @@ const DoneInput: FC<DonePomoType> = ({
               <StyledTimeRange>
                 <StyledTimePicker
                   format={format}
-                  value={moment(startTimeString, format)}
+                  value={memoStartMoment}
                   bordered={false}
                   allowClear={false}
                   disabled
@@ -104,7 +112,7 @@ const DoneInput: FC<DonePomoType> = ({
                 <StyledText>-</StyledText>
                 <StyledTimePicker
                   format={format}
-                  value={moment(endTimeString, format)}
+                  value={memoEndMoment}
                   bordered={false}
                   allowClear={false}
                   disabled
@@ -137,4 +145,4 @@ const DoneInput: FC<DonePomoType> = ({
   );
 };
 
-export default observer(DoneInput);
+export default observer(DonePomoItem);

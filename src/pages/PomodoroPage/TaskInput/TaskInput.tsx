@@ -19,7 +19,6 @@ const TaskInput: FC = () => {
 
   const clickHandler = () => {
     if (value && amount && +amount - Math.trunc(+amount) === 0) {
-      // stack with last pomo
       if (lastPomo && value === lastPomo.name) {
         editPlannedPomo(
           lastPomo._id,

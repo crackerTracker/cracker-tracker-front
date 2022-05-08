@@ -1,7 +1,7 @@
 import { Empty, List } from 'antd';
 import { observer } from 'mobx-react-lite';
-import DoneInput from 'pages/PomodoroPage/DoneInput';
-import PlannedInput from 'pages/PomodoroPage/PlannedInput';
+import DoneInput from 'pages/PomodoroPage/DonePomoItem';
+import PlannedInput from 'pages/PomodoroPage/PlannedPomoItem';
 import TaskInput from 'pages/PomodoroPage/TaskInput';
 import React, { FC, useEffect } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
@@ -26,18 +26,19 @@ const TaskPlaceholder = ({ isPlanned }: PlaceholderProps) => {
 };
 
 const ListComponent: FC = () => {
-  const store = usePomodoroStore();
+  const { requestAllPomos, plannedPomosData, donePomosData } =
+    usePomodoroStore();
 
   useEffect(() => {
-    store.requestAllPomos();
-  }, [store]);
+    requestAllPomos();
+  }, []);
 
   return (
     <Container>
       <StyledList
         header={<Title>Запланировано</Title>}
         bordered
-        dataSource={store.plannedPomosData}
+        dataSource={plannedPomosData}
         renderItem={(item) => (
           <List.Item key={(item as PlannedPomoType)._id}>
             <PlannedInput {...(item as PlannedPomoType)} />
@@ -52,7 +53,7 @@ const ListComponent: FC = () => {
         header={<Title>Выполнено</Title>}
         footer={<TaskInput />}
         bordered
-        dataSource={store.donePomosData}
+        dataSource={donePomosData}
         renderItem={(item) => (
           <List.Item key={(item as DonePomoType)._id}>
             <DoneInput {...(item as DonePomoType)} />

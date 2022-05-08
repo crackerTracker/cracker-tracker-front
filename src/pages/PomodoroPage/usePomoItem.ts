@@ -1,15 +1,15 @@
 import { message } from 'antd';
 import { FormEvent, useState } from 'react';
 
-type UseInputProps = {
-  task: string;
-  amount: number;
+type UsePomoItemProps = {
+  name: string;
+  defaultAmount: number;
 };
 
-export const useInput = ({ task, amount }: UseInputProps) => {
-  const [value, setValue] = useState(task);
-  const [amounts, setAmount] = useState<number | string>(amount);
-  const [initial, setInitial] = useState({ value, amounts });
+export const usePomoItem = ({ name, defaultAmount }: UsePomoItemProps) => {
+  const [pomoName, setPomoName] = useState(name);
+  const [amount, setAmount] = useState<number | string>(defaultAmount);
+  const [initial, setInitial] = useState({ pomoName, amount });
   const [isEdit, setIsEdit] = useState(false);
 
   const menuEditClick = () => {
@@ -21,23 +21,23 @@ export const useInput = ({ task, amount }: UseInputProps) => {
   };
 
   const changeHandler = (e: FormEvent<HTMLInputElement>) => {
-    setValue(e.currentTarget.value);
+    setPomoName(e.currentTarget.value);
   };
 
   const cancelChanges = () => {
-    setValue(initial.value);
-    setAmount(initial.amounts);
+    setPomoName(initial.pomoName);
+    setAmount(initial.amount);
     setIsEdit(false);
   };
 
   const approveChanges = () => {
-    setInitial({ value, amounts });
+    setInitial({ pomoName, amount });
     setIsEdit(false);
   };
 
   return {
-    value,
-    amounts,
+    pomoName,
+    amount,
     isEdit,
     setAmount,
     menuEditClick,

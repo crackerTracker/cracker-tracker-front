@@ -23,7 +23,7 @@ const useForm = () => {
       setEmail('');
       setPassword('');
     },
-    [email, password, isAuth, loginHandler, registerHandler]
+    [email, password, isAuth]
   );
 
   const onChangeForm = useCallback(() => {

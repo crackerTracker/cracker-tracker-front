@@ -1,6 +1,5 @@
-import { message } from 'antd';
-import request from 'hooks/request';
-import { makeAutoObservable, runInAction } from 'mobx';
+import request from 'utils/request';
+import { makeAutoObservable } from 'mobx';
 import RootStore from './RootStore';
 
 type PrivateFields = 'rootStore';
@@ -22,6 +21,15 @@ class AuthStore {
     this.rootStore = rootStore;
   }
 
+  initUser = () => {
+    const storageData = localStorage.getItem(this.storageName);
+    const data = JSON.parse(String(storageData));
+
+    if (data && data.token) {
+      this.login(data.token, data.userId);
+    }
+  };
+
   registerHandler = async (email: string, password: string) => {
     try {
       await request({
@@ -30,11 +38,9 @@ class AuthStore {
         headers: {},
         body: { email, password },
       });
-      runInAction(() => {
-        this.loginHandler(email, password);
-      });
+      this.loginHandler(email, password);
     } catch (e: any) {
-      message.error(e.message);
+      console.log('AuthStore.registerHandler:', e.message);
     }
   };
 
@@ -46,11 +52,9 @@ class AuthStore {
         headers: {},
         body: { email, password },
       });
-      runInAction(() => {
-        this.login(data.token, data.userId);
-      });
+      this.login(data.token, data.userId);
     } catch (e: any) {
-      message.error(e.message);
+      console.log('AuthStore.loginHandler:', e.message);
     }
   };
 
