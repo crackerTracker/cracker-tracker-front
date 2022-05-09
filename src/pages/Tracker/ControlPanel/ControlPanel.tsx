@@ -1,13 +1,12 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
-import { Date, DateDisplay, Panel, StyledInput } from './ControlPanel.styles';
+import React, { ChangeEvent, useState } from 'react';
+import { Panel, StyledInput } from './ControlPanel.styles';
 import { Col, DatePicker, Divider, Row, Select } from 'antd';
-import colors from '../../../styles/colors';
+import colors from 'styles/colors';
 
-import IconButton from '../../../components/IconButton/IconButton';
-import { images } from '../../../img/icons';
-import { PickerComponentClass } from 'antd/es/date-picker/generatePicker/interface';
-import { PickerProps } from 'antd/lib/date-picker/generatePicker';
-import moment, { Moment } from 'moment';
+import IconButton from 'components/IconButton/IconButton';
+import { useTrackerStore } from 'stores/hooks';
+import timeValidator from 'utils/timeValidator';
+import { InputStatusesEnum } from 'types/antd';
 
 const mockOptions: { label: string; value: string }[] = [
   {
@@ -25,6 +24,7 @@ const mockOptions: { label: string; value: string }[] = [
 ];
 
 const ControlPanel = () => {
+  const { arrayActiveCategoriesToSelect } = useTrackerStore();
   const [category, setCategory] = useState(mockOptions[0].value);
   const [time, setTime] = useState('');
   const [timeError, setTimeError] = useState(false);
@@ -36,13 +36,25 @@ const ControlPanel = () => {
 
   const onChangeTime = (e: ChangeEvent<HTMLInputElement>) => {
     setTime(e.target.value);
+
+    if (timeError) {
+      setTimeError(false);
+    }
   };
 
   const onChangeDate = (_: any, dateString: string) => {
     setDate(dateString);
   };
 
-  const onClick = () => {};
+  const onClickAdd = () => {
+    if (!timeValidator(time)) {
+      setTimeError(true);
+    } else {
+      setTimeError(false);
+    }
+
+    // todo
+  };
 
   return (
     <Panel>
@@ -50,7 +62,7 @@ const ControlPanel = () => {
         <Col>
           <Select
             size="large"
-            options={mockOptions}
+            options={arrayActiveCategoriesToSelect}
             value={category}
             style={{ width: '140px' }}
             onChange={onChangeCategory}
@@ -62,6 +74,7 @@ const ControlPanel = () => {
             placeholder="Время, например 2ч 15м"
             value={time}
             onChange={onChangeTime}
+            status={timeError ? InputStatusesEnum.error : undefined}
           />
         </Col>
 
@@ -73,7 +86,7 @@ const ControlPanel = () => {
           <IconButton
             backgroundColor={colors.peach}
             color={colors.white}
-            onClick={onClick}
+            onClick={onClickAdd}
           >
             +
           </IconButton>

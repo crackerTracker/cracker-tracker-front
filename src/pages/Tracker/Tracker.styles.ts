@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import colors from '../../styles/colors';
-import { Row } from 'antd';
-import { flex } from '../../styles/mixins';
+import colors from 'styles/colors';
+import { flex } from 'styles/mixins';
 
 export const Container = styled.div`
   width: 100vw;

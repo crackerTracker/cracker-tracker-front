@@ -7,4 +7,6 @@ export const useTestStore2 = () => useContext(StoresContext).testStore2;
 
 export const usePomodoroStore = () => useContext(StoresContext).pomodoroStore;
 
+export const useTrackerStore = () => useContext(StoresContext).trackerStore;
+
 export const useAuthStore = () => useContext(StoresContext).authStore;

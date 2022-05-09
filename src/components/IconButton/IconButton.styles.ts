@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { animate, square } from '../../styles/mixins';
+import { animate, square } from 'styles/mixins';
 
 export const StyledButton = styled.div<{
   backgroundColor: string;
