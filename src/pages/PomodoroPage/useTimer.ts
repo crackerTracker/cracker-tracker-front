@@ -1,4 +1,6 @@
+import { defaultInitialMinutes } from 'config/pomoconf';
 import { useEffect, useRef, useState } from 'react';
+import { usePomodoroStore } from 'stores/hooks';
 
 type OptionType = {
   add: string | number;
@@ -6,9 +8,12 @@ type OptionType = {
 };
 
 export const useTimer = () => {
+  const [initialMinutes, setInitialMinutes] = useState(defaultInitialMinutes);
   const [seconds, setSeconds] = useState(0);
-  const [minutes, setMinutes] = useState(50);
-  const [isTick, setIsTick] = useState(false);
+  const [minutes, setMinutes] = useState(defaultInitialMinutes);
+
+  const store = usePomodoroStore();
+  const { markPomoDone, plannedPomosData } = usePomodoroStore();
 
   const [option, setOption] = useState<OptionType>({
     add: '1 минута',
@@ -19,7 +24,7 @@ export const useTimer = () => {
 
   const startTimer = () => {
     resetTimeout();
-    setIsTick(true);
+    store.setIsTick(true);
     timerId.current = setTimeout(() => {
       setSeconds((s) => (s <= 0 ? 59 : s - 1));
       startTimer();
@@ -27,10 +32,30 @@ export const useTimer = () => {
   };
 
   const stopTimer = () => {
-    setSeconds(0);
-    setMinutes(50);
-    resetTimeout();
-    setIsTick(false);
+    const spentMs = (initialMinutes * 60 - (minutes * 60 + seconds)) * 1000;
+
+    const endTime = new Date();
+    const endTimeStamp = endTime.toISOString();
+
+    const startTime = new Date(endTime.getTime() - spentMs);
+    const startTimeStamp = startTime.toISOString();
+
+    const minDiff = initialMinutes - minutes > 0 ? initialMinutes - minutes : 1;
+
+    if (store.isTick) {
+      markPomoDone(
+        plannedPomosData[0]._id,
+        minDiff,
+        startTimeStamp,
+        endTimeStamp
+      );
+
+      setSeconds(0);
+      setMinutes(defaultInitialMinutes);
+      setInitialMinutes(defaultInitialMinutes);
+      resetTimeout();
+      store.setIsTick(false);
+    }
   };
 
   const resetTimeout = () => {
@@ -47,6 +72,7 @@ export const useTimer = () => {
     }
 
     setMinutes((t) => t + Number(currentValue));
+    setInitialMinutes((t) => t + Number(currentValue));
   };
 
   const diffMinutes = () => {
@@ -57,6 +83,14 @@ export const useTimer = () => {
     }
 
     setMinutes((t) => t - Number(currentValue));
+    setInitialMinutes((t) => t - Number(currentValue));
+    if (minutes - Number(currentValue) > 0) {
+      setMinutes((t) => t - Number(currentValue));
+      setInitialMinutes((t) => t - Number(currentValue));
+    } else {
+      setMinutes(1);
+      setInitialMinutes(1);
+    }
   };
 
   useEffect(() => {
@@ -77,6 +111,5 @@ export const useTimer = () => {
     seconds,
     minutes,
     option,
-    isTick,
   };
 };

@@ -23,6 +23,11 @@ export const StyledInputNumber = styled(InputNumber)`
   border-right: 1px solid ${colors.brown};
   max-width: 4vw;
 
+  :hover {
+    border-right: 1px solid ${colors.brown};
+    transition: none;
+  }
+
   input {
     text-align: center;
   }

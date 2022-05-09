@@ -31,5 +31,6 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'warn',
     '@typescript-eslint/no-empty-function': 'off',
     'prettier/prettier': 'warn',
+    'react-hooks/exhaustive-deps': 'off',
   },
 };

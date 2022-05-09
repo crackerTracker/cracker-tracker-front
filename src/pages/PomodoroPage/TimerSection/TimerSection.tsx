@@ -1,5 +1,5 @@
 import { Button, Col, Row, Select } from 'antd';
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import {
   Container,
   CurrentTask,
@@ -10,15 +10,19 @@ import {
 import CustomButton from 'components/Button';
 import { useTimer } from '../useTimer';
 import colors from 'styles/colors';
-import {
-  computeStatsTime,
-  donePomosAmount,
-  leftPomosAmount,
-  plannedPomosAmount,
-  taskName,
-} from '../ListComponent/ListComponent';
+import { usePomodoroStore } from 'stores/hooks';
+import { observer } from 'mobx-react-lite';
 
 const TimerSection: FC = () => {
+  const {
+    computePlanTime,
+    computeDoneTime,
+    donePomosAmount,
+    plannedPomosAmount,
+    taskName,
+    isTick,
+  } = usePomodoroStore();
+
   const {
     startTimer,
     stopTimer,
@@ -27,7 +31,6 @@ const TimerSection: FC = () => {
     seconds,
     minutes,
     option,
-    isTick,
     setOption,
   } = useTimer();
 
@@ -50,6 +53,7 @@ const TimerSection: FC = () => {
         <Col span={10}>
           <CustomButton
             onClick={startTimer}
+            isDisabled={!plannedPomosAmount || isTick}
             styles={{
               verticalMargins: '0px',
               bgCol: `${colors.green}`,
@@ -63,13 +67,14 @@ const TimerSection: FC = () => {
         <Col span={10}>
           <CustomButton
             onClick={stopTimer}
+            isDisabled={!isTick}
             styles={{
               verticalMargins: '0px',
               bgCol: `${colors.red}`,
               minWidth: '180px',
             }}
           >
-            Стоп
+            {isTick ? 'Готово' : 'Стоп'}
           </CustomButton>
         </Col>
 
@@ -117,8 +122,10 @@ const TimerSection: FC = () => {
           <StatsContainer>
             <div>Запланировано</div>
             <div>
-              <span>{plannedPomosAmount}&times;&#127813;</span> &#8226;{' '}
-              <span>{computeStatsTime(plannedPomosAmount)}</span>
+              <span>{plannedPomosAmount}&times;&#127813;</span>
+              {plannedPomosAmount > 0 && (
+                <span> &#8226; {computePlanTime()}</span>
+              )}
             </div>
           </StatsContainer>
         </Col>
@@ -126,17 +133,8 @@ const TimerSection: FC = () => {
           <StatsContainer>
             <div>Выполнено</div>
             <div>
-              <span>{donePomosAmount}&times;&#127813;</span> &#8226;{' '}
-              <span>{computeStatsTime(donePomosAmount)}</span>
-            </div>
-          </StatsContainer>
-        </Col>
-        <Col span={16}>
-          <StatsContainer>
-            <div>Осталось</div>
-            <div>
-              <span>{leftPomosAmount}&times;&#127813;</span> &#8226;{' '}
-              <span>{computeStatsTime(leftPomosAmount)}</span>
+              <span>{donePomosAmount}&times;&#127813;</span>
+              {donePomosAmount > 0 && <span> &#8226; {computeDoneTime()}</span>}
             </div>
           </StatsContainer>
         </Col>
@@ -145,4 +143,4 @@ const TimerSection: FC = () => {
   );
 };
 
-export default memo(TimerSection);
+export default observer(TimerSection);

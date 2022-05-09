@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Router from 'pages/router';
 import StoresProvider from './stores/StoresProvider';
 
 import 'styles/styles.scss';
+import { useAuthStore } from 'stores/hooks';
+import { observer } from 'mobx-react-lite';
 
 const App = () => {
-  const isAuthenticated = true;
+  const { isAuthenticated, initUser } = useAuthStore();
+
+  useEffect(() => {
+    initUser();
+  }, []);
 
   return (
     <StoresProvider>
@@ -14,4 +20,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default observer(App);
