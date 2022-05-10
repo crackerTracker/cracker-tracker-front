@@ -7,28 +7,23 @@ import IconButton from 'components/IconButton/IconButton';
 import { useTrackerStore } from 'stores/hooks';
 import timeValidator from 'utils/timeValidator';
 import { InputStatusesEnum } from 'types/antd';
-
-const mockOptions: { label: string; value: string }[] = [
-  {
-    label: 'Frontend',
-    value: 'Frontend',
-  },
-  {
-    label: 'Backend',
-    value: 'Backend',
-  },
-  {
-    label: 'University',
-    value: 'University',
-  },
-];
+import { Moment } from 'moment';
+import convertToZeroTimestamp from 'utils/convertToZeroTimestamp';
+import convertSpentTimeStringToMins from 'utils/convertSpentTimeStringToMins';
+import { observer } from 'mobx-react-lite';
 
 const ControlPanel = () => {
-  const { arrayActiveCategoriesToSelect } = useTrackerStore();
-  const [category, setCategory] = useState(mockOptions[0].value);
-  const [time, setTime] = useState('');
+  const { arrayActiveCategoriesToSelect, createTask } = useTrackerStore();
+  const [category, setCategory] = useState<string | null>(
+    arrayActiveCategoriesToSelect.length
+      ? arrayActiveCategoriesToSelect[0].value
+      : null
+  );
+  const [categoryError, setCategoryError] = useState(false);
+  const [time, setTime] = useState('2h 2m');
   const [timeError, setTimeError] = useState(false);
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState<string | null>(null);
+  const [dateError, setDateError] = useState(false);
 
   const onChangeCategory = (value: string) => {
     setCategory(value);
@@ -42,18 +37,39 @@ const ControlPanel = () => {
     }
   };
 
-  const onChangeDate = (_: any, dateString: string) => {
+  const onChangeDate = (_: Moment | null, dateString: string) => {
+    if (dateError) {
+      setDateError(false);
+    }
+
     setDate(dateString);
   };
 
   const onClickAdd = () => {
-    if (!timeValidator(time)) {
+    if (!timeValidator(time.trim())) {
       setTimeError(true);
-    } else {
-      setTimeError(false);
+      return;
     }
 
-    // todo
+    if (!date || new Date(date) > new Date()) {
+      setDateError(true);
+      return;
+    }
+
+    if (category === null) {
+      setCategoryError(true);
+      return;
+    }
+
+    timeError && setTimeError(false);
+    dateError && setDateError(false);
+
+    const minutesSpent = convertSpentTimeStringToMins(time.trim());
+
+    const zeroTimestamp = convertToZeroTimestamp(new Date(date).getTime());
+
+    // todo доделать обработку создания
+    createTask(category, minutesSpent, zeroTimestamp);
   };
 
   return (
@@ -66,6 +82,7 @@ const ControlPanel = () => {
             value={category}
             style={{ width: '140px' }}
             onChange={onChangeCategory}
+            status={categoryError ? InputStatusesEnum.error : undefined}
           />
         </Col>
 
@@ -79,7 +96,11 @@ const ControlPanel = () => {
         </Col>
 
         <Col>
-          <DatePicker size="large" onChange={onChangeDate} />
+          <DatePicker
+            size="large"
+            onChange={onChangeDate}
+            status={dateError ? InputStatusesEnum.error : undefined}
+          />
         </Col>
 
         <Col>
@@ -106,4 +127,4 @@ const ControlPanel = () => {
   );
 };
 
-export default ControlPanel;
+export default observer(ControlPanel);

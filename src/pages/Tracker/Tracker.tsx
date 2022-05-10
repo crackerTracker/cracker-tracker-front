@@ -1,9 +1,10 @@
 import React from 'react';
-import { Container, Flex } from './Tracker.styles';
+import { Cards, Container, Flex } from './Tracker.styles';
 import { Col, Row } from 'antd';
 import ControlPanel from './ControlPanel';
 import DateCard from './DateCard';
 import { useTrackerStore } from 'stores/hooks';
+import { observer } from 'mobx-react-lite';
 
 const Tracker = () => {
   const { datesArray } = useTrackerStore();
@@ -16,7 +17,7 @@ const Tracker = () => {
             <div>
               <ControlPanel />
             </div>
-            <div>
+            <Cards>
               <Row gutter={[24, 24]}>
                 {datesArray.map((timestamp) => (
                   <Col key={timestamp} span={6}>
@@ -24,7 +25,7 @@ const Tracker = () => {
                   </Col>
                 ))}
               </Row>
-            </div>
+            </Cards>
           </Flex>
         </Col>
       </Row>
@@ -32,4 +33,4 @@ const Tracker = () => {
   );
 };
 
-export default Tracker;
+export default observer(Tracker);

@@ -1,8 +1,7 @@
-import { List } from 'antd';
 import React, { useMemo } from 'react';
 import { getMinsAndHoursStringFromMins } from 'utils/getMinsAndHoursFromMins';
 import { CategoryType } from 'stores/TrackerStore/types';
-import { Category } from './ListItem.styles';
+import { Color, Content, StyledListItem } from './ListItem.styles';
 
 type Props = {
   category: CategoryType;
@@ -10,15 +9,20 @@ type Props = {
 };
 
 const ListItem: React.FC<Props> = ({ category, minutesSpent }) => {
+  const { name, color } = category;
+
   const timeSpent = useMemo(
     () => getMinsAndHoursStringFromMins(minutesSpent),
     [minutesSpent]
   );
 
   return (
-    <List.Item extra={<div>{timeSpent}</div>}>
-      <Category color={category.color}>{category.name}</Category>
-    </List.Item>
+    <StyledListItem extra={<div>{timeSpent}</div>}>
+      <Content>
+        <Color color={color} />
+        {name}
+      </Content>
+    </StyledListItem>
   );
 };
 

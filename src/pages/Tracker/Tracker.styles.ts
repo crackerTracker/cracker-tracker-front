@@ -13,3 +13,7 @@ export const Container = styled.div`
 export const Flex = styled.div`
   ${flex({ direction: 'column' })}
 `;
+
+export const Cards = styled.div`
+  padding: 30px 0;
+`;

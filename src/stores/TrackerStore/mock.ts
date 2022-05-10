@@ -64,6 +64,42 @@ export const mockTasks: TaskType[] = [
     minutesSpent: 70,
     category: mockCategories[3],
   },
+  {
+    id: '7',
+    timestamp: Date.parse('2022-05-03T00:00:00.000Z'),
+    minutesSpent: 40,
+    category: mockCategories[2],
+  },
+  {
+    id: '8',
+    timestamp: Date.parse('2022-05-03T00:00:00.000Z'),
+    minutesSpent: 30,
+    category: mockCategories[1],
+  },
+  {
+    id: '9',
+    timestamp: Date.parse('2022-05-02T00:00:00.000Z'),
+    minutesSpent: 30,
+    category: mockCategories[0],
+  },
+  {
+    id: '10',
+    timestamp: Date.parse('2022-05-02T00:00:00.000Z'),
+    minutesSpent: 30,
+    category: mockCategories[2],
+  },
+  {
+    id: '11',
+    timestamp: Date.parse('2022-05-01T00:00:00.000Z'),
+    minutesSpent: 30,
+    category: mockCategories[2],
+  },
+  {
+    id: '12',
+    timestamp: Date.parse('2022-05-04T00:00:00.000Z'),
+    minutesSpent: 70,
+    category: mockCategories[0],
+  },
 ];
 
 export const mockDatesMap: Record<number, TaskType[]> = {
@@ -100,6 +136,12 @@ export const mockDatesMap: Record<number, TaskType[]> = {
       minutesSpent: 70,
       category: mockCategories[2],
     },
+    {
+      id: '12',
+      timestamp: Date.parse('2022-05-04T00:00:00.000Z'),
+      minutesSpent: 70,
+      category: mockCategories[0],
+    },
   ],
   [Date.parse('2022-03-25T00:00:00.000Z')]: [
     {
@@ -107,6 +149,42 @@ export const mockDatesMap: Record<number, TaskType[]> = {
       timestamp: Date.parse('2022-03-25T00:00:00.000Z'),
       minutesSpent: 70,
       category: mockCategories[3],
+    },
+  ],
+  [Date.parse('2022-05-03T00:00:00.000Z')]: [
+    {
+      id: '7',
+      timestamp: Date.parse('2022-05-03T00:00:00.000Z'),
+      minutesSpent: 40,
+      category: mockCategories[2],
+    },
+    {
+      id: '8',
+      timestamp: Date.parse('2022-05-03T00:00:00.000Z'),
+      minutesSpent: 30,
+      category: mockCategories[1],
+    },
+  ],
+  [Date.parse('2022-05-02T00:00:00.000Z')]: [
+    {
+      id: '9',
+      timestamp: Date.parse('2022-05-02T00:00:00.000Z'),
+      minutesSpent: 30,
+      category: mockCategories[0],
+    },
+    {
+      id: '10',
+      timestamp: Date.parse('2022-05-02T00:00:00.000Z'),
+      minutesSpent: 30,
+      category: mockCategories[2],
+    },
+  ],
+  [Date.parse('2022-05-01T00:00:00.000Z')]: [
+    {
+      id: '11',
+      timestamp: Date.parse('2022-05-01T00:00:00.000Z'),
+      minutesSpent: 30,
+      category: mockCategories[2],
     },
   ],
 };
