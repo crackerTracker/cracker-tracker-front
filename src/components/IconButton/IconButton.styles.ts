@@ -1,10 +1,11 @@
 import styled, { css } from 'styled-components';
-import { animate, square } from '../../styles/mixins';
+import { animate, flex, square } from '../../styles/mixins';
 
 export const StyledButton = styled.div<{
   backgroundColor: string;
   squareSide: string;
   color: string;
+  isDisabled: boolean;
 }>`
   padding: 10px;
   border-radius: 4px;
@@ -24,18 +25,21 @@ export const StyledButton = styled.div<{
     css`
       color: ${color};
     `}
-  
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+  ${flex({ justify: 'center', align: 'center' })}
   overflow: hidden;
 
   ${animate('opacity')};
 
-  :hover {
-    cursor: pointer;
-    opacity: 0.7;
-  }
+  ${({ isDisabled }) =>
+    css`
+      opacity: ${isDisabled ? '0.7' : '1'};
+
+      :hover {
+        cursor: ${isDisabled ? 'default' : 'pointer'};
+        opacity: 0.7;
+      }
+    `}
 `;
 
 export const Image = styled.div<{ image: string }>`

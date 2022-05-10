@@ -25,6 +25,7 @@ const IconButton: React.FC<Props> = ({
   return (
     <StyledButton
       onClick={isLoading || isDisabled ? undefined : onClick}
+      isDisabled={isDisabled}
       squareSide={squareSide}
       backgroundColor={backgroundColor}
       color={color}
