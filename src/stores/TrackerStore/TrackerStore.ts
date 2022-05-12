@@ -1,7 +1,12 @@
 import RootStore from 'stores/RootStore';
 import { makeAutoObservable } from 'mobx';
 import { CategoryType, TaskType } from './types';
-import { mockCategories, mockDatesMap, mockTasks } from './mock';
+import {
+  mockCategories,
+  mockCategoriesMap,
+  mockDatesMap,
+  mockTasks,
+} from './mock';
 import { SelectOptionType } from 'types/antd';
 
 type PrivateFields = 'rootStore';
@@ -9,10 +14,11 @@ type PrivateFields = 'rootStore';
 class TrackerStore {
   private rootStore: RootStore;
 
-  // todo сделать категории мапой
-  public categories: CategoryType[] = mockCategories; // todo заменить
+  public categories: CategoryType[] = mockCategories; // todo возможно, не пригодится
 
-  public tasks: TaskType[] = mockTasks; // todo заменить;
+  public categoriesMap: Record<string, CategoryType> = mockCategoriesMap;
+
+  public tasks: TaskType[] = mockTasks; // todo возможно, не пригодится
 
   public datesMap: Record<number, TaskType[]> = mockDatesMap;
 
@@ -27,7 +33,7 @@ class TrackerStore {
   get arrayActiveCategoriesToSelect(): SelectOptionType[] {
     const activeCategories: SelectOptionType[] = [];
 
-    this.categories.forEach((category) => {
+    Object.values(this.categoriesMap).forEach((category) => {
       !category.isArchived &&
         activeCategories.push({
           label: category.name,
@@ -37,11 +43,6 @@ class TrackerStore {
 
     return activeCategories;
   }
-
-  // 1. в начале делать инициализацию, затем просто методами обновлять мапу
-  // 2. завести функцию, которая будет проходиться по мапе, сверяться с массивами, и делать нужные преобразования мапы
-  // 3. сделать функцию, которая будет и обновлять мапу, и обновлять массив в зависимости от того, что нужно сделать + инициализация мапы
-  // todo сделать нормализацию массива задач сразу в мапу, на основе пришедших категорий, сделать метод добавления, удаления, редактирования задачи
 
   get datesArray() {
     return Object.keys(this.datesMap).sort((a, b) => Number(b) - Number(a));
@@ -53,10 +54,7 @@ class TrackerStore {
     minutesSpent: number,
     zeroTimestamp: number
   ) => {
-    // todo заменить на мапу
-    const existingCategory = this.categories.find(
-      (category) => category.id === categoryId
-    );
+    const existingCategory = this.categoriesMap[categoryId];
 
     if (!existingCategory) {
       return false;

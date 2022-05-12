@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { Panel, StyledInput } from './ControlPanel.styles';
-import { Col, DatePicker, Divider, Row, Select } from 'antd';
+import { Col, DatePicker, Row, Select } from 'antd';
 import colors from 'styles/colors';
 
 import IconButton from 'components/IconButton/IconButton';
@@ -11,6 +11,7 @@ import { Moment } from 'moment';
 import convertToZeroTimestamp from 'utils/convertToZeroTimestamp';
 import convertSpentTimeStringToMins from 'utils/convertSpentTimeStringToMins';
 import { observer } from 'mobx-react-lite';
+import useTimeTrackingInput from 'utils/hooks/useTimeTrackingInput';
 
 const ControlPanel = () => {
   const { arrayActiveCategoriesToSelect, createTask } = useTrackerStore();
@@ -20,21 +21,14 @@ const ControlPanel = () => {
       : null
   );
   const [categoryError, setCategoryError] = useState(false);
-  const [time, setTime] = useState('2h 2m');
-  const [timeError, setTimeError] = useState(false);
   const [date, setDate] = useState<string | null>(null);
   const [dateError, setDateError] = useState(false);
 
+  const { time, timeError, setTimeError, onChangeTime } =
+    useTimeTrackingInput();
+
   const onChangeCategory = (value: string) => {
     setCategory(value);
-  };
-
-  const onChangeTime = (e: ChangeEvent<HTMLInputElement>) => {
-    setTime(e.target.value);
-
-    if (timeError) {
-      setTimeError(false);
-    }
   };
 
   const onChangeDate = (_: Moment | null, dateString: string) => {
@@ -72,6 +66,14 @@ const ControlPanel = () => {
     createTask(category, minutesSpent, zeroTimestamp);
   };
 
+  const onKeyDownEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+
+    onClickAdd();
+  };
+
   return (
     <Panel>
       <Row gutter={18} align="middle">
@@ -92,6 +94,7 @@ const ControlPanel = () => {
             value={time}
             onChange={onChangeTime}
             status={timeError ? InputStatusesEnum.error : undefined}
+            onKeyDown={onKeyDownEnter}
           />
         </Col>
 
@@ -111,16 +114,6 @@ const ControlPanel = () => {
           >
             +
           </IconButton>
-        </Col>
-
-        <Divider
-          type="vertical"
-          style={{ height: '50px', backgroundColor: colors.peach }}
-        />
-
-        {/*todo оставить ли навигацию по дням */}
-        <Col>
-          <DatePicker size="large" picker="month" />
         </Col>
       </Row>
     </Panel>

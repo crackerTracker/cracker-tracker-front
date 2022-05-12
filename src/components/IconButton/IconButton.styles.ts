@@ -4,9 +4,9 @@ import { animate, square } from 'styles/mixins';
 export const StyledButton = styled.div<{
   backgroundColor: string;
   squareSide: string;
+  paddings: string;
   color: string;
 }>`
-  padding: 10px;
   border-radius: 4px;
   font-size: 40px;
 
@@ -18,6 +18,11 @@ export const StyledButton = styled.div<{
   ${({ squareSide }) =>
     css`
       ${square(squareSide)};
+    `}
+
+  ${({ paddings }) =>
+    css`
+      padding: ${paddings};
     `}
 
   ${({ color }) =>

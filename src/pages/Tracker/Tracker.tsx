@@ -9,6 +9,8 @@ import { observer } from 'mobx-react-lite';
 const Tracker = () => {
   const { datesArray } = useTrackerStore();
 
+  const windowWidth = document.documentElement.clientWidth;
+
   return (
     <Container>
       <Row justify="center" style={{ height: '100%' }}>
@@ -20,7 +22,7 @@ const Tracker = () => {
             <Cards>
               <Row gutter={[24, 24]}>
                 {datesArray.map((timestamp) => (
-                  <Col key={timestamp} span={6}>
+                  <Col key={timestamp} span={windowWidth <= 1500 ? 8 : 6}>
                     <DateCard timestamp={Number(timestamp)} />
                   </Col>
                 ))}

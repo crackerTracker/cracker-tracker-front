@@ -8,7 +8,9 @@ const colors = {
   brown: '#d0936a',
   darkBrown: '#ae6636',
   green: '#92a962',
+  lightGreen: '#c4d4a3',
   red: '#f17b81',
+  lightRed: '#f8a4a8',
 };
 
 export const shadowColors = {

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { animate, square } from 'styles/mixins';
-import { List } from 'antd';
-import { hoverColors } from 'styles/colors';
+import { Input, List } from 'antd';
+import colors, { hoverColors } from 'styles/colors';
 
 export const StyledListItem = styled(List.Item)`
   display: flex;
@@ -35,4 +35,32 @@ export const Color = styled.div<{ color?: string }>`
   ${StyledListItem}:hover & {
     ${square('15px')};
   }
+`;
+
+export const EditContainer = styled.div`
+  position: relative;
+
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+export const StyledInput = styled(Input).attrs({ size: 'middle' })`
+  width: 100px;
+  margin-right: 10px;
+
+  ::placeholder {
+    color: ${colors.peach};
+  }
+`;
+
+export const Buttons = styled.div`
+  position: absolute;
+  right: -0px;
+  transform: translate3d(100%, 0, 0);
+  top: 0;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
 `;

@@ -27,6 +27,33 @@ export const mockCategories: CategoryType[] = [
   },
 ];
 
+export const mockCategoriesMap: Record<string, CategoryType> = {
+  '1': {
+    id: '1',
+    name: 'University',
+    color: '#3f3',
+    isArchived: false,
+  },
+  '2': {
+    id: '2',
+    name: 'Frontend',
+    color: '#1272e0',
+    isArchived: false,
+  },
+  '3': {
+    id: '3',
+    name: 'Backend',
+    color: '#d54d00',
+    isArchived: false,
+  },
+  '4': {
+    id: '4',
+    name: 'Project Activity',
+    color: '#17bb66',
+    isArchived: true,
+  },
+};
+
 export const mockTasks: TaskType[] = [
   {
     id: '1',

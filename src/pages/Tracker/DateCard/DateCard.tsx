@@ -13,11 +13,17 @@ type Props = {
 };
 
 const DateCard: React.FC<Props> = ({ timestamp }) => {
-  const { datesMap } = useTrackerStore(); // todo мб лучше отдавать сюда таски или массив задач в пропсах?
+  const { datesMap } = useTrackerStore();
 
   const tasks = datesMap[timestamp];
 
-  const monthDay = useMemo(() => new Date(timestamp).getDate(), [timestamp]);
+  // workaround to observe for updates of tasks array in dataMap
+  const tasksLength = tasks.length;
+
+  const fullDate = useMemo(() => {
+    const date = new Date(timestamp);
+    return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+  }, [timestamp]);
 
   const weekDay = useMemo(
     () => moment(timestamp).format(weekDayFormat),
@@ -31,22 +37,15 @@ const DateCard: React.FC<Props> = ({ timestamp }) => {
     );
 
     return getMinsAndHoursStringFromMins(totalMinutes);
-  }, [tasks]);
+    // workaround to observe for updates of tasks array
+  }, [tasks, tasksLength]);
 
   return (
-    <StyledCard title={`${monthDay}, ${weekDay}`} extra={totalTime}>
-      {tasks.length}
-      {/* todo разобраться, как сделать так, чтобы компонент следил за тасками, ибо без строки выше не обновлется состояние */}
+    <StyledCard title={`${fullDate}, ${weekDay}`} extra={totalTime}>
       <List
         size="small"
         dataSource={tasks}
-        renderItem={({ category, minutesSpent }) => (
-          <ListItem
-            key={category.id}
-            category={category}
-            minutesSpent={minutesSpent}
-          />
-        )}
+        renderItem={(task) => <ListItem key={task.category.id} task={task} />}
       />
     </StyledCard>
   );
