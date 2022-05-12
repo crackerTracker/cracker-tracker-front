@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Card } from 'antd';
-import { hoverColors } from 'styles/colors';
+import { transparentColors } from 'styles/colors';
 import { animate } from 'styles/mixins';
 
 export const StyledCard = styled(Card)`
@@ -10,7 +10,7 @@ export const StyledCard = styled(Card)`
     ${animate('background-color')};
     &:hover {
       cursor: pointer;
-      background-color: ${hoverColors.blueHover};
+      background-color: ${transparentColors.blueHover};
     }
   }
 `;

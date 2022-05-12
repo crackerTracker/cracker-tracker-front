@@ -18,7 +18,10 @@ export const shadowColors = {
   grey: 'rgba(56, 56, 56, 0.15)',
 };
 
-export const hoverColors = {
+export const transparentColors: Record<
+  string,
+  string | Record<number, string>
+> = {
   blueHover: 'rgba(210, 235, 252, 0.5)',
 };
 

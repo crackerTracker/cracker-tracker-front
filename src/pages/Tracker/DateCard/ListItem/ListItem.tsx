@@ -14,7 +14,7 @@ import { useTrackerStore } from 'stores/hooks';
 import { InputStatusesEnum } from 'types/antd';
 import useTimeTrackingInput from 'utils/hooks/useTimeTrackingInput';
 import timeValidator from 'utils/timeValidator';
-import IconButton from 'components/IconButton/IconButton';
+import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
 import colors from 'styles/colors';
 

@@ -3,7 +3,7 @@ import { Panel, StyledInput } from './ControlPanel.styles';
 import { Col, DatePicker, Row, Select } from 'antd';
 import colors from 'styles/colors';
 
-import IconButton from 'components/IconButton/IconButton';
+import IconButton from 'components/IconButton';
 import { useTrackerStore } from 'stores/hooks';
 import timeValidator from 'utils/timeValidator';
 import { InputStatusesEnum } from 'types/antd';

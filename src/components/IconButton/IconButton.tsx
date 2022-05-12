@@ -10,6 +10,7 @@ type Props = {
   squareSide?: string;
   paddings?: string;
   backgroundColor?: string;
+  hoverColor?: string;
   color?: string;
 };
 
@@ -22,6 +23,7 @@ const IconButton: React.FC<Props> = ({
   squareSide = '50px',
   paddings = '10px',
   backgroundColor = 'transparent',
+  hoverColor = undefined,
   color = 'black',
 }) => {
   return (
@@ -30,6 +32,7 @@ const IconButton: React.FC<Props> = ({
       squareSide={squareSide}
       paddings={paddings}
       backgroundColor={backgroundColor}
+      hoverColor={hoverColor}
       color={color}
     >
       {image ? <Image image={image} /> : children}

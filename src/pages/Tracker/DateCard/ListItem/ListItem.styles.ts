@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { animate, square } from 'styles/mixins';
 import { Input, List } from 'antd';
-import colors, { hoverColors } from 'styles/colors';
+import colors, { transparentColors } from 'styles/colors';
 
 export const StyledListItem = styled(List.Item)`
   display: flex;
@@ -9,7 +9,7 @@ export const StyledListItem = styled(List.Item)`
 
   &:hover {
     cursor: pointer;
-    background-color: ${hoverColors.blueHover};
+    background-color: ${transparentColors.blueHover};
   }
 `;
 
