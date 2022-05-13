@@ -70,3 +70,12 @@ export const animate = (...styles: string[]) => css`
     ? `transition: ${styles.map((style) => `${style} 0.1s linear`)}`
     : null}
 `;
+
+export const centerPosY = () => css`
+  top: 50%;
+  transform: translate3d(0, -50%, 0);
+`;
+
+export const backgroundImageContain = (src: string) => css`
+  background: url(${src}) no-repeat center/contain;
+`;

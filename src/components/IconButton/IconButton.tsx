@@ -8,7 +8,9 @@ type Props = {
   isDisabled?: boolean;
   image?: string;
   squareSide?: string;
+  paddings?: string;
   backgroundColor?: string;
+  hoverColor?: string;
   color?: string;
 };
 
@@ -19,7 +21,9 @@ const IconButton: React.FC<Props> = ({
   children = undefined,
   image = undefined,
   squareSide = '50px',
+  paddings = '10px',
   backgroundColor = 'transparent',
+  hoverColor = undefined,
   color = 'black',
 }) => {
   return (
@@ -27,7 +31,9 @@ const IconButton: React.FC<Props> = ({
       onClick={isLoading || isDisabled ? undefined : onClick}
       isDisabled={isDisabled}
       squareSide={squareSide}
+      paddings={paddings}
       backgroundColor={backgroundColor}
+      hoverColor={hoverColor}
       color={color}
     >
       {image ? <Image image={image} /> : children}

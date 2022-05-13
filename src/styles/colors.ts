@@ -9,8 +9,10 @@ const colors = {
   brown: '#d0936a',
   darkBrown: '#ae6636',
   green: '#92a962',
+  lightGreen: '#c4d4a3',
   red: '#f17b81',
   grayishBlue: '#5f7d8a',
+  lightRed: '#f8a4a8',
 };
 
 export const shadowColors = {
@@ -25,6 +27,13 @@ export const halfOpacityColors = {
   brown: 'rgba(208, 147, 106, 0.5)',
   lightBrown: 'rgba(255, 248, 243, 0.5)',
   lightBlue: 'rgba(210, 235, 252, 0.5)', // d2ebfc
+};
+
+export const transparentColors: Record<
+  string,
+  string | Record<number, string>
+> = {
+  blueHover: 'rgba(210, 235, 252, 0.5)',
 };
 
 export default colors;

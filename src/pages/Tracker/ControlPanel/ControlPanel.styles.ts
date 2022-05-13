@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import colors from 'styles/colors';
 import { animate, inputShadow } from 'styles/mixins';
-import { Input, Select } from 'antd';
+import { Input } from 'antd';
 
 export const Panel = styled.div`
   padding: 26px 30px;
@@ -43,6 +43,7 @@ export const Date = styled.div`
 
   flex-grow: 1;
 
+  // todo flex
   display: flex;
   justify-content: center;
   align-items: center;

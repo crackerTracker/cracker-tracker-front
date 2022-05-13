@@ -1,48 +1,78 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
-import { Date, DateDisplay, Panel, StyledInput } from './ControlPanel.styles';
-import { Col, DatePicker, Divider, Row, Select } from 'antd';
-import colors from '../../../styles/colors';
+import React, { useState } from 'react';
+import { Panel, StyledInput } from './ControlPanel.styles';
+import { Col, DatePicker, Row, Select } from 'antd';
+import colors from 'styles/colors';
 
-import IconButton from '../../../components/IconButton/IconButton';
-import { images } from '../../../img/icons';
-import { PickerComponentClass } from 'antd/es/date-picker/generatePicker/interface';
-import { PickerProps } from 'antd/lib/date-picker/generatePicker';
-import moment, { Moment } from 'moment';
-
-const mockOptions: { label: string; value: string }[] = [
-  {
-    label: 'Frontend',
-    value: 'Frontend',
-  },
-  {
-    label: 'Backend',
-    value: 'Backend',
-  },
-  {
-    label: 'University',
-    value: 'University',
-  },
-];
+import IconButton from 'components/IconButton';
+import { useTrackerStore } from 'stores/hooks';
+import timeValidator from 'utils/timeValidator';
+import { InputStatusesEnum } from 'types/antd';
+import { Moment } from 'moment';
+import convertToZeroTimestamp from 'utils/convertToZeroTimestamp';
+import convertSpentTimeStringToMins from 'utils/convertSpentTimeStringToMins';
+import { observer } from 'mobx-react-lite';
+import useTimeTrackingInput from 'utils/hooks/useTimeTrackingInput';
 
 const ControlPanel = () => {
-  const [category, setCategory] = useState(mockOptions[0].value);
-  const [time, setTime] = useState('');
-  const [timeError, setTimeError] = useState(false);
-  const [date, setDate] = useState('');
+  const { arrayActiveCategoriesToSelect, createTask } = useTrackerStore();
+  const [category, setCategory] = useState<string | null>(
+    arrayActiveCategoriesToSelect.length
+      ? arrayActiveCategoriesToSelect[0].value
+      : null
+  );
+  const [categoryError, setCategoryError] = useState(false);
+  const [date, setDate] = useState<string | null>(null);
+  const [dateError, setDateError] = useState(false);
+
+  const { time, timeError, setTimeError, onChangeTime } =
+    useTimeTrackingInput();
 
   const onChangeCategory = (value: string) => {
     setCategory(value);
   };
 
-  const onChangeTime = (e: ChangeEvent<HTMLInputElement>) => {
-    setTime(e.target.value);
-  };
+  const onChangeDate = (_: Moment | null, dateString: string) => {
+    if (dateError) {
+      setDateError(false);
+    }
 
-  const onChangeDate = (_: any, dateString: string) => {
     setDate(dateString);
   };
 
-  const onClick = () => {};
+  const onClickAdd = () => {
+    if (!timeValidator(time.trim())) {
+      setTimeError(true);
+      return;
+    }
+
+    if (!date || new Date(date) > new Date()) {
+      setDateError(true);
+      return;
+    }
+
+    if (category === null) {
+      setCategoryError(true);
+      return;
+    }
+
+    timeError && setTimeError(false);
+    dateError && setDateError(false);
+
+    const minutesSpent = convertSpentTimeStringToMins(time.trim());
+
+    const zeroTimestamp = convertToZeroTimestamp(new Date(date).getTime());
+
+    // todo доделать обработку создания
+    createTask(category, minutesSpent, zeroTimestamp);
+  };
+
+  const onKeyDownEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+
+    onClickAdd();
+  };
 
   return (
     <Panel>
@@ -50,10 +80,11 @@ const ControlPanel = () => {
         <Col>
           <Select
             size="large"
-            options={mockOptions}
+            options={arrayActiveCategoriesToSelect}
             value={category}
             style={{ width: '140px' }}
             onChange={onChangeCategory}
+            status={categoryError ? InputStatusesEnum.error : undefined}
           />
         </Col>
 
@@ -62,35 +93,31 @@ const ControlPanel = () => {
             placeholder="Время, например 2ч 15м"
             value={time}
             onChange={onChangeTime}
+            status={timeError ? InputStatusesEnum.error : undefined}
+            onKeyDown={onKeyDownEnter}
           />
         </Col>
 
         <Col>
-          <DatePicker size="large" onChange={onChangeDate} />
+          <DatePicker
+            size="large"
+            onChange={onChangeDate}
+            status={dateError ? InputStatusesEnum.error : undefined}
+          />
         </Col>
 
         <Col>
           <IconButton
             backgroundColor={colors.peach}
             color={colors.white}
-            onClick={onClick}
+            onClick={onClickAdd}
           >
             +
           </IconButton>
-        </Col>
-
-        <Divider
-          type="vertical"
-          style={{ height: '50px', backgroundColor: colors.peach }}
-        />
-
-        {/*todo оставить ли навигацию по дням */}
-        <Col>
-          <DatePicker size="large" picker="month" />
         </Col>
       </Row>
     </Panel>
   );
 };
 
-export default ControlPanel;
+export default observer(ControlPanel);

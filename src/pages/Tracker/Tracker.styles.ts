@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import colors from '../../styles/colors';
-import { Row } from 'antd';
-import { flex } from '../../styles/mixins';
+import colors from 'styles/colors';
+import { flex } from 'styles/mixins';
 
 export const Container = styled.div`
   width: 100vw;
@@ -13,4 +12,8 @@ export const Container = styled.div`
 
 export const Flex = styled.div`
   ${flex({ direction: 'column' })}
+`;
+
+export const Cards = styled.div`
+  padding: 30px 0;
 `;
