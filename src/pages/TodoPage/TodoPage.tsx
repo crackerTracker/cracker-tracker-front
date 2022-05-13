@@ -1,7 +1,5 @@
 import React, { FC, FormEvent, useState } from 'react';
 import { Col, Row, Space } from 'antd';
-import IconButton from '../../components/IconButton/IconButton';
-import colors from '../../styles/colors';
 import {
   Wrapper,
   Container,
@@ -15,19 +13,11 @@ import {
   Todos,
   StyledList,
 } from './TodoPage.styles';
-
 import { images } from 'img/icons';
 import TodoItem from './TodoItem/TodoItem';
-
-const data = [
-  'Racing car sprays burning fuel into crowd.',
-  'Japanese princess to wed commoner.',
-  'Australian walks 100km after outback crash.',
-  'Man charged over missing wedding girl.',
-  'Los Angeles battles huge wildfires.',
-  'Los Angeles battles huge wildfires.',
-  'Los Angeles battles huge wildfires.',
-];
+import todos, { TodoType } from './todoMockData';
+import IconButton from 'components/IconButton/IconButton';
+import colors from 'styles/colors';
 
 const TodoPage: FC = () => {
   const [toggle, setToggle] = useState(0);
@@ -126,8 +116,13 @@ const TodoPage: FC = () => {
           <StyledList
             size="large"
             bordered
-            dataSource={data}
-            renderItem={(item) => <TodoItem item={item as string} />}
+            dataSource={todos}
+            renderItem={(item) => (
+              <TodoItem
+                key={(item as TodoType).id}
+                id={(item as TodoType).id}
+              />
+            )}
           />
         </Todos>
 

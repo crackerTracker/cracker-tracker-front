@@ -1,21 +1,29 @@
-import { List } from 'antd';
+import { List, Row } from 'antd';
 import { message, Space } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import IconButton from 'components/IconButton/IconButton';
 import RightSideDrawer from 'components/RightSideDrawer';
 import useDrawer from 'components/RightSideDrawer/useDrawer';
 import { images } from 'img/icons';
-import React, { FC, useState } from 'react';
-import { Icon, StyledCheckbox, ListItem } from './TodoItem.styles';
+import { Moment } from 'moment';
+import React, { FC, FormEvent, memo, useState } from 'react';
+import DrawerTodoCard from '../DrawerTodoCard';
+import todos from '../todoMockData';
+import {
+  Icon,
+  StyledCheckbox,
+  ListTodoItem,
+  StyledTextArea,
+  StyledDatePicker,
+} from './TodoItem.styles';
 
-interface TodoItemProps {
-  item?: string;
-  onClick?: VoidFunction;
-  check?: boolean;
-}
+const TodoItem: FC<{ id: number }> = ({ id }) => {
+  const todoData = todos.find((todo) => todo.id === id);
 
-const TodoItem: FC<TodoItemProps> = ({ item }) => {
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(todoData?.done);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [deadline, setDeadline] = useState(todoData?.deadline);
+  const [note, setNote] = useState(todoData?.note);
 
   const { visible, setVisible, onDrawerClose } = useDrawer();
 
@@ -35,31 +43,88 @@ const TodoItem: FC<TodoItemProps> = ({ item }) => {
     message.success('Удалено');
   };
 
+  const datePickerHandler = () => {
+    setIsPickerOpen((v) => !v);
+  };
+
+  const onTextAreaChange = (e: FormEvent<HTMLTextAreaElement>) => {
+    setNote(e.currentTarget.value);
+  };
+
+  const deleteDeadline = () => {
+    setDeadline('');
+  };
+
+  const onChange = (date: Moment | null) => {
+    setDeadline(new Date(String(date)).toLocaleDateString());
+  };
+
   return (
     <>
       <RightSideDrawer
         onDrawerClose={onDrawerClose}
         visible={visible}
-        headerDate={`Выполнить до 23.02.22`}
+        headerDate={deadline && `Выполнить до ${deadline}`}
         footerChildren={
-          <IconButton image={images.deleteBrown.default} squareSide="55px" />
+          <Row justify="space-between">
+            <Row align="middle">
+              <IconButton
+                image={images.clock.default}
+                squareSide="55px"
+                onClick={datePickerHandler}
+              />
+              {!!deadline && (
+                <IconButton
+                  image={images.closeBrown.default}
+                  squareSide="35px"
+                  onClick={deleteDeadline}
+                />
+              )}
+            </Row>
+
+            <StyledDatePicker
+              open={isPickerOpen}
+              onOpenChange={datePickerHandler}
+              onChange={onChange}
+              bordered={false}
+            />
+
+            <IconButton
+              image={images.deleteBrown.default}
+              squareSide="55px"
+              onClick={deleteTodoHandler}
+            />
+          </Row>
         }
       >
-        <div>some content</div>
+        <DrawerTodoCard id={id} />
+
+        <div>
+          <StyledTextArea
+            rows={4}
+            placeholder="Написать заметку"
+            bordered={false}
+            autoSize
+            value={note}
+            onChange={onTextAreaChange}
+          />
+        </div>
       </RightSideDrawer>
 
-      <ListItem onClick={todoItemClick} $isChecked={isChecked}>
+      <ListTodoItem onClick={todoItemClick} $isChecked={isChecked || false}>
         <List.Item.Meta
           avatar={
             <div onClick={clickHandler}>
-              <StyledCheckbox onChange={checkHandler} />
+              <StyledCheckbox onChange={checkHandler} checked={isChecked} />
             </div>
           }
-          title={item as string}
+          title={todoData?.name as string}
         />
 
         <Space size="large">
-          <Icon image={images.subTodo.default} />
+          {todoData?.subtodos?.length !== 0 && (
+            <Icon image={images.subTodo.default} />
+          )}
           <div onClick={clickHandler}>
             <IconButton
               image={images.deletePeach.default}
@@ -68,9 +133,9 @@ const TodoItem: FC<TodoItemProps> = ({ item }) => {
             />
           </div>
         </Space>
-      </ListItem>
+      </ListTodoItem>
     </>
   );
 };
 
-export default TodoItem;
+export default memo(TodoItem);

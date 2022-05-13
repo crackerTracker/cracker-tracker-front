@@ -1,19 +1,42 @@
-import { Checkbox, Drawer, List } from 'antd';
-import { ListItemTypeProps } from 'antd/lib/list/Item';
+import { Checkbox, DatePicker, List } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
 import styled, { css } from 'styled-components';
-import colors, { shadowColors } from 'styles/colors';
+import colors, { halfOpacityColors, shadowColors } from 'styles/colors';
 import { animate, flex, square } from 'styles/mixins';
 
-export const StyledDrawer = styled(Drawer)`
-  .ant-drawer-body {
-    background-color: ${colors.peach};
+export const StyledDatePicker = styled(DatePicker)<{ open: boolean }>`
+  position: absolute;
+  display: ${({ open }) => (open ? 'block' : 'none')};
+
+  .ant-picker-input {
+    display: none;
   }
 `;
 
-export const ListItem = styled(List.Item)<{
-  $isChecked: boolean;
-  props?: ListItemTypeProps;
-}>`
+export const StyledTextArea = styled(TextArea)`
+  padding: 30px 30px 60px;
+
+  font-weight: 400;
+  font-size: 19px;
+  color: ${colors.textBlack};
+
+  border-radius: 8px;
+  background-color: ${halfOpacityColors.lightBrown};
+
+  ::placeholder {
+    color: ${halfOpacityColors.brown};
+  }
+
+  :hover {
+    background-color: ${halfOpacityColors.lightBrown};
+  }
+
+  :focus {
+    background-color: ${colors.lightBrown};
+  }
+`;
+
+export const ListTodoItem = styled(List.Item)<{ $isChecked: boolean }>`
   margin-bottom: 20px;
 
   background-color: ${colors.white};
@@ -24,9 +47,7 @@ export const ListItem = styled(List.Item)<{
 
   .ant-list-item-meta {
     ${flex({ align: 'center' })}
-    .ant-list-item-meta-avatar {
-      ${flex({ align: 'center' })}
-    }
+
     h4 {
       margin-bottom: 0;
 
@@ -52,9 +73,9 @@ export const StyledCheckbox = styled(Checkbox)`
   margin-right: 26px;
   margin-left: 10px;
 
-  span {
-    transform: scale(1.3);
-    -webkit-transform: scale(1.3);
+  .ant-checkbox {
+    transform: scale(1.8);
+    -webkit-transform: scale(1.8);
   }
 `;
 

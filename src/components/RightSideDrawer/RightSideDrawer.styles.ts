@@ -40,4 +40,6 @@ export const Content = styled.div`
   overflow: auto;
 `;
 
-export const Footer = styled.footer``;
+export const Footer = styled.footer`
+  padding-top: 30px;
+`;

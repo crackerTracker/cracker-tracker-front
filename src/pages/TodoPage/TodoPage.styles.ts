@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import colors, { shadowColors } from 'styles/colors';
+import colors, { halfOpacityColors, shadowColors } from 'styles/colors';
 import { flex, scroller } from 'styles/mixins';
 import { Input, List } from 'antd';
 
@@ -100,11 +100,15 @@ export const StyledInput = styled(Input)`
   line-height: 26px;
 
   border: none;
-  background-color: ${shadowColors.halfLightBrown};
+  background-color: ${halfOpacityColors.lightBrown};
   border-radius: 6px;
 
   :focus {
     box-shadow: none;
     background-color: ${colors.lightBrown};
+  }
+
+  ::placeholder {
+    color: ${halfOpacityColors.brown};
   }
 `;
