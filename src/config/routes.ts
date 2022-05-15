@@ -7,5 +7,7 @@ export enum MainRoutesEnum {
   tracker = 'tracker',
 }
 
+export const mainRoutes = Object.keys(MainRoutesEnum);
+
 // todo добавить todo
 export type SectionEnumsType = TrackerSectionsEnum | PomodoroSectionsEnum;

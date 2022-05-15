@@ -2,8 +2,9 @@ import React from 'react';
 import {
   Buttons,
   Container,
-  ExtraButtons,
+  ExtraButtonWrapper,
   Logo,
+  MainButtonWrapper,
   MainPart,
   ScrollContainer,
   StyledDivider,
@@ -11,13 +12,16 @@ import {
 import IconButton from 'components/IconButton';
 import colors from 'styles/colors';
 import { useNavbarStore } from 'stores/hooks';
-import useInitNavbar from 'utils/hooks/useInitNavbar';
+import useInitNavbar from 'components/Navbar/useInitNavbar';
 import { observer } from 'mobx-react-lite';
+import useObserveURL from './useObserveURL';
 
 const Navbar = () => {
   useInitNavbar();
+  useObserveURL();
 
-  const { routesButtons, sectionButtons } = useNavbarStore();
+  const { routesButtons, sectionButtons, activeRoute, activeSection } =
+    useNavbarStore();
 
   return (
     <Container>
@@ -27,12 +31,14 @@ const Navbar = () => {
         <Buttons>
           {routesButtons &&
             routesButtons.map(({ route, image, callback }) => (
-              <IconButton
-                key={route}
-                backgroundColor={colors.darkBrown}
-                image={image}
-                onClick={callback}
-              />
+              <MainButtonWrapper key={route} active={route === activeRoute}>
+                <IconButton
+                  backgroundColor={colors.darkBrown}
+                  hoverColor={colors.darkBrown}
+                  image={image}
+                  onClick={callback}
+                />
+              </MainButtonWrapper>
             ))}
         </Buttons>
       </MainPart>
@@ -42,11 +48,20 @@ const Navbar = () => {
           <StyledDivider />
 
           <ScrollContainer>
-            <ExtraButtons>
+            <Buttons>
               {sectionButtons.map(({ section, image, callback }) => (
-                <IconButton key={section} image={image} onClick={callback} />
+                <ExtraButtonWrapper
+                  key={section}
+                  active={section === activeSection}
+                >
+                  <IconButton
+                    image={image}
+                    onClick={callback}
+                    hoverColor={'transparent'}
+                  />
+                </ExtraButtonWrapper>
               ))}
-            </ExtraButtons>
+            </Buttons>
           </ScrollContainer>
         </>
       )}
