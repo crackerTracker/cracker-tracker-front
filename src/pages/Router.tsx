@@ -8,6 +8,7 @@ import Navbar from 'components/Navbar';
 import { MainRoutesEnum } from 'config/routes';
 import PomodoroPage from './PomodoroPage';
 import Tracker from './Tracker';
+import TodoPage from './TodoPage';
 
 type Props = {
   isAuthenticated: boolean;
@@ -24,6 +25,7 @@ const Router: React.FC<Props> = ({ isAuthenticated }) => {
             <Route path="/test2" element={<Test2 />} />
             <Route path={MainRoutesEnum.pomodoro} element={<PomodoroPage />} />
             <Route path={MainRoutesEnum.tracker} element={<Tracker />} />
+            <Route path="/todo" element={<TodoPage />} />
             <Route path="*" element={<Navigate to="/tracker" replace />} />
           </Routes>
         </>
