@@ -11,6 +11,7 @@ const colors = {
   lightGreen: '#c4d4a3',
   red: '#f17b81',
   lightRed: '#f8a4a8',
+  grayishBlue: '#5f7d8a',
 };
 
 export const shadowColors = {

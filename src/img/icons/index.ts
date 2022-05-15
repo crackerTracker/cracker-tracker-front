@@ -7,4 +7,6 @@ export const images = {
   checkPeach: require('./checkPeach.svg'),
   timePeach: require('./timePeach.svg'),
   graphPeach: require('./graphPeach.svg'),
+  graphGrayishBlue: require('./graphGrayishBlue.svg'),
+  menuGrayishBlue: require('./menuGrayishBlue.svg'),
 };
