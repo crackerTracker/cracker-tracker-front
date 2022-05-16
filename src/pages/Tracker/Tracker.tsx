@@ -1,12 +1,34 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Cards, Container, Flex } from './Tracker.styles';
 import { Col, Row } from 'antd';
 import ControlPanel from './ControlPanel';
 import DateCard from './DateCard';
-import { useTrackerStore } from 'stores/hooks';
+import { useNavbarStore, useTrackerStore } from 'stores/hooks';
 import { observer } from 'mobx-react-lite';
+import useInitSectionNavbar from 'utils/hooks/useInitSectionNavbar';
+import { trackerNavbarIcons } from 'config/navbar';
+import { TrackerSectionsEnum } from 'config/tracker';
 
 const Tracker = () => {
+  const { setActiveSection, activeSection } = useNavbarStore();
+
+  const toggle = () => {
+    console.log(
+      'toggle',
+      activeSection,
+      'to',
+      activeSection ? null : TrackerSectionsEnum.statistics
+    );
+    setActiveSection(activeSection ? null : TrackerSectionsEnum.statistics);
+  };
+
+  const log = useCallback(() => console.log('click'), []);
+
+  useInitSectionNavbar(trackerNavbarIcons, {
+    [TrackerSectionsEnum.categories]: log,
+    [TrackerSectionsEnum.statistics]: toggle,
+  });
+
   const { datesArray } = useTrackerStore();
 
   const windowWidth = document.documentElement.clientWidth;

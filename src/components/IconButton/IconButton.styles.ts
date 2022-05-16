@@ -37,8 +37,15 @@ export const StyledButton = styled.div<{
 
   ${animate('opacity')};
 
-  ${({ hoverColor }) =>
-    hoverColor
+  ${({ isDisabled }) =>
+    isDisabled &&
+    css`
+      opacity: 0.7;
+    `}
+
+  ${({ hoverColor, isDisabled }) =>
+    !isDisabled &&
+    (hoverColor
       ? css`
           :hover {
             cursor: pointer;
@@ -50,17 +57,7 @@ export const StyledButton = styled.div<{
             cursor: pointer;
             opacity: 0.7;
           }
-        `}
-
-  ${({ isDisabled }) =>
-    css`
-      opacity: ${isDisabled ? '0.7' : '1'};
-
-      :hover {
-        cursor: ${isDisabled ? 'default' : 'pointer'};
-        opacity: 0.7;
-      }
-    `}
+        `)}
 `;
 
 export const Image = styled.div<{ image: string }>`

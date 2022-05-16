@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import Router from 'pages/router';
-import StoresProvider from './stores/StoresProvider';
+import Router from 'pages/Router';
+import StoresProvider from 'stores/StoresProvider';
 
 import 'styles/styles.scss';
 import { useAuthStore } from 'stores/hooks';

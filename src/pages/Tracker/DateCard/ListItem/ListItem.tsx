@@ -127,7 +127,7 @@ const ListItem: React.FC<Props> = ({ task }) => {
           size="middle"
           options={arrayActiveCategoriesToSelect}
           value={selectedCategory}
-          style={{ width: '120px', marginRight: '10px' }}
+          style={{ width: '120px', marginRight: '10px', flexGrow: 1 }}
           onChange={onChangeCategory}
           onClick={onClickSelect}
         />

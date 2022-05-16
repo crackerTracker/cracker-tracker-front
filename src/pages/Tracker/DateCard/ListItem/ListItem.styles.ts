@@ -47,6 +47,7 @@ export const EditContainer = styled.div`
 export const StyledInput = styled(Input).attrs({ size: 'middle' })`
   width: 100px;
   margin-right: 10px;
+  flex-grow: 1;
 
   ::placeholder {
     color: ${colors.peach};
