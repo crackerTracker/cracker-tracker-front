@@ -37,15 +37,6 @@ export const StyledButton = styled.div<{
 
   ${animate('opacity')};
 
-  ${({ isDisabled }) =>
-    css`
-      opacity: ${isDisabled ? '0.7' : '1'};
-
-      :hover {
-        cursor: ${isDisabled ? 'default' : 'pointer'};
-        opacity: 0.7;
-      }
-    `}
   ${({ hoverColor }) =>
     hoverColor
       ? css`
@@ -60,6 +51,16 @@ export const StyledButton = styled.div<{
             opacity: 0.7;
           }
         `}
+
+  ${({ isDisabled }) =>
+    css`
+      opacity: ${isDisabled ? '0.7' : '1'};
+
+      :hover {
+        cursor: ${isDisabled ? 'default' : 'pointer'};
+        opacity: 0.7;
+      }
+    `}
 `;
 
 export const Image = styled.div<{ image: string }>`

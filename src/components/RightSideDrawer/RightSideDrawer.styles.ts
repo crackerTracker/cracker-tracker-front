@@ -15,7 +15,7 @@ export const Container = styled.div`
 `;
 
 export const Header = styled.header`
-  ${flex({})}
+  ${flex({ align: 'center' })}
   margin-bottom: 35px;
 `;
 

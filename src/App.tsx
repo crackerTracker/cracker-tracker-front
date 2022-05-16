@@ -7,7 +7,6 @@ import { useAuthStore } from 'stores/hooks';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import 'moment/locale/ru';
-import NavSidebar from './components/NavSidebar';
 
 const App = () => {
   const { isAuthenticated, initUser } = useAuthStore();
@@ -20,7 +19,6 @@ const App = () => {
 
   return (
     <StoresProvider>
-      <NavSidebar />
       <Router isAuthenticated={isAuthenticated} />
     </StoresProvider>
   );

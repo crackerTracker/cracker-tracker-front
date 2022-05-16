@@ -1,9 +1,9 @@
-import { message } from 'antd';
-import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import IconButton from 'components/IconButton/IconButton';
 import { images } from 'img/icons';
-import React, { FC, FormEvent, memo, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import React, { FC } from 'react';
 import { SubtodoType } from '../todoMockData';
+import useTodo from '../useTodo';
 import {
   SubtodoListItem,
   StyledCheckbox,
@@ -11,37 +11,31 @@ import {
 } from './SubtodoItem.styles';
 
 const SubtodoItem: FC<SubtodoType> = ({ name, done }) => {
-  const [isChecked, setIsChecked] = useState(done);
-  const [value, setValue] = useState(name);
-
-  const subtodoChangeHandler = (e: FormEvent<HTMLInputElement>) => {
-    setValue(e.currentTarget.value);
-  };
-
-  const checkHandler = (e: CheckboxChangeEvent) => {
-    setIsChecked(e.target.checked);
-  };
-
-  const deleteSubtodoHandler = () => {
-    message.success('deleted');
-  };
+  const {
+    value,
+    inputChangeHandler,
+    isChecked,
+    checkHandler,
+    deleteTodo: deleteSubtodo,
+  } = useTodo({ name, done });
 
   return (
     <SubtodoListItem>
-      <StyledCheckbox onChange={checkHandler} $isChecked={isChecked}>
+      <StyledCheckbox onChange={checkHandler} checked={isChecked || false}>
         <StyledInput
           bordered={false}
           value={value}
-          onChange={subtodoChangeHandler}
+          onChange={inputChangeHandler}
         />
       </StyledCheckbox>
       <IconButton
         image={images.closeBrown.default}
-        squareSide="35px"
-        onClick={deleteSubtodoHandler}
+        squareSide="15px"
+        onClick={deleteSubtodo}
+        paddings="0"
       />
     </SubtodoListItem>
   );
 };
 
-export default memo(SubtodoItem);
+export default observer(SubtodoItem);

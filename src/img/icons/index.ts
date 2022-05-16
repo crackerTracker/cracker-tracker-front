@@ -25,7 +25,4 @@ export const images = {
   checkWhite: require('./checkWhite.svg'),
   crossWhite: require('./crossWhite.svg'),
   deleteWhite: require('./deleteWhite.svg'),
-  checkPeach: require('./checkPeach.svg'),
-  timePeach: require('./timePeach.svg'),
-  graphPeach: require('./graphPeach.svg'),
 };

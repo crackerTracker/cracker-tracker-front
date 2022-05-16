@@ -1,10 +1,10 @@
 import { Input, List } from 'antd';
-import { CheckboxChangeEvent } from 'antd/lib/checkbox';
-import IconButton from 'components/IconButton/IconButton';
+import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
-import React, { FC, FormEvent, memo, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import React, { FC, FormEvent, useState } from 'react';
 import SubtodoItem from '../SubtodoItem';
-import todos from '../todoMockData';
+import useTodo from '../useTodo';
 import {
   InputGroup,
   StyledCard,
@@ -12,39 +12,34 @@ import {
   StyledInput,
 } from './DrawerTodoCard.styles';
 
-const DrawerTodoCard: FC<{ id: number }> = ({ id }) => {
-  const todoData = todos.find((todo) => todo.id === id);
+const DrawerTodoCard: FC<{ id?: number; name?: string }> = ({ id, name }) => {
+  const { todoData, value, inputChangeHandler, isChecked, checkHandler } =
+    useTodo({ id });
 
-  const [isChecked, setIsChecked] = useState(todoData?.done);
-  const [value, setValue] = useState(todoData?.name);
-  const [addTaskValue, setAddTaskValue] = useState('');
+  const [subtodoAddInput, setSubtodoAddInput] = useState('');
 
-  const checkHandler = (e: CheckboxChangeEvent) => {
-    setIsChecked(e.target.checked);
+  const onSubtodoAddInputChange = (e: FormEvent<HTMLInputElement>) => {
+    setSubtodoAddInput(e.currentTarget.value);
   };
 
-  const todoChangeHandler = (e: FormEvent<HTMLInputElement>) => {
-    setValue(e.currentTarget.value);
-  };
-
-  const addTaskChangeHandler = (e: FormEvent<HTMLInputElement>) => {
-    setAddTaskValue(e.currentTarget.value);
-  };
-
-  const addTaskHandler = () => {
-    setAddTaskValue('');
+  const addSubtodo = () => {
+    setSubtodoAddInput('');
   };
 
   return (
     <StyledCard
       bordered={false}
       title={
-        <StyledCheckbox onChange={checkHandler} $isChecked={isChecked || false}>
-          <Input bordered={false} value={value} onChange={todoChangeHandler} />
+        <StyledCheckbox onChange={checkHandler} checked={isChecked || false}>
+          <Input
+            bordered={false}
+            value={value || name}
+            onChange={inputChangeHandler}
+          />
         </StyledCheckbox>
       }
     >
-      {todoData?.subtodos?.length !== 0 && (
+      {id && todoData?.subtodos?.length !== 0 && (
         <List
           dataSource={todoData?.subtodos}
           renderItem={(item) => <SubtodoItem key={item.id} {...item} />}
@@ -54,18 +49,19 @@ const DrawerTodoCard: FC<{ id: number }> = ({ id }) => {
       <InputGroup>
         <IconButton
           image={images.plusBrown.default}
-          squareSide="45px"
-          onClick={addTaskHandler}
+          squareSide="35px"
+          onClick={addSubtodo}
+          paddings="0"
         />
         <StyledInput
           bordered={false}
           placeholder="Добавить задачу"
-          value={addTaskValue}
-          onChange={addTaskChangeHandler}
+          value={subtodoAddInput}
+          onChange={onSubtodoAddInputChange}
         />
       </InputGroup>
     </StyledCard>
   );
 };
 
-export default memo(DrawerTodoCard);
+export default observer(DrawerTodoCard);
