@@ -3,7 +3,8 @@ import { MainRoutesEnum } from './routes';
 import { TrackerSectionsEnum } from './tracker';
 
 export const mainRoutesIcons: Record<MainRoutesEnum, string> = {
-  [MainRoutesEnum.pomodoro]: images.checkPeach.default,
+  [MainRoutesEnum.todo]: images.checkPeach.default,
+  [MainRoutesEnum.pomodoro]: images.clockPeach.default,
   [MainRoutesEnum.tracker]: images.graphPeach.default,
 };
 

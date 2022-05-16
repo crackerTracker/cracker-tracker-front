@@ -92,7 +92,7 @@ const TodoPage: FC = () => {
             <Col span={8}>
               <Row justify="end">
                 <Col>
-                  <Link to="/">
+                  <Link to="/todo">
                     <IconButton
                       backgroundColor={colors.brown}
                       image={images.todoNavigateAll.default}

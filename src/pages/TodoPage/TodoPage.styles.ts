@@ -20,7 +20,11 @@ export const Container = styled.div`
   ${flex({ direction: 'column' })}
 `;
 
-export const Header = styled.header``;
+export const Header = styled.header`
+  a {
+    cursor: default;
+  }
+`;
 
 export const TitleGroup = styled.div`
   margin-bottom: 18px;

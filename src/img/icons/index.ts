@@ -31,4 +31,5 @@ export const images = {
   graphPeach: require('./graphPeach.svg'),
   graphGrayishBlue: require('./graphGrayishBlue.svg'),
   menuGrayishBlue: require('./menuGrayishBlue.svg'),
+  clockPeach: require('./clockPeach.svg'),
 };

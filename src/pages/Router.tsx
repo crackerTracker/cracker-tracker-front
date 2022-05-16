@@ -27,7 +27,7 @@ const Router: React.FC<Props> = ({ isAuthenticated }) => {
             <Route path="/test2" element={<Test2 />} />
             <Route path={MainRoutesEnum.pomodoro} element={<PomodoroPage />} />
             <Route path={MainRoutesEnum.tracker} element={<Tracker />} />
-            <Route path="/todo" element={<TodoPage />}>
+            <Route path={MainRoutesEnum.todo} element={<TodoPage />}>
               <Route index element={<TodoAll />} />
               <Route path="week" element={<TodoWeek />} />
             </Route>
