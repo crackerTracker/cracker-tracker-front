@@ -44,6 +44,26 @@ class TrackerStore {
     return activeCategories;
   }
 
+  get activeCategories(): CategoryType[] {
+    return Object.values(this.categoriesMap).reduce(
+      (acc: CategoryType[], c) => {
+        !c.isArchived && acc.push(c);
+        return acc;
+      },
+      []
+    );
+  }
+
+  get archivedCategories(): CategoryType[] {
+    return Object.values(this.categoriesMap).reduce(
+      (acc: CategoryType[], c) => {
+        c.isArchived && acc.push(c);
+        return acc;
+      },
+      []
+    );
+  }
+
   get datesArray() {
     return Object.keys(this.datesMap).sort((a, b) => Number(b) - Number(a));
   }
