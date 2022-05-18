@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import colors from 'styles/colors';
 import { animate, square } from 'styles/mixins';
 import { Input } from 'antd';
@@ -51,14 +51,35 @@ export const StyledInput = styled(Input).attrs({
   }
 `;
 
-export const ButtonWrapper = styled.div`
+export const ButtonWrapper = styled.div<{ withoutOpacityChange?: boolean }>`
+  position: relative;
   margin-left: 8px;
 
-  opacity: 0.8;
+  ${({ withoutOpacityChange }) =>
+    !withoutOpacityChange &&
+    css`
+      opacity: 0.8;
 
-  ${animate('opacity')};
+      ${animate('opacity')};
 
-  &:hover {
-    opacity: 1;
-  }
+      &:hover {
+        opacity: 1;
+      }
+    `}
+`;
+
+export const Color = styled.div.attrs<{ color: string }>(({ color }) => ({
+  style: {
+    backgroundColor: color,
+  },
+}))`
+  ${square('100%')};
+  border-radius: 4px;
+`;
+
+export const ColorPickerWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate3d(calc(-100% + 40px), calc(-100% - 20px), 0);
 `;

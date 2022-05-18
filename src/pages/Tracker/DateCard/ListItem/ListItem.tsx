@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { getMinsAndHoursStringFromMins } from 'utils/getMinsAndHoursFromMins';
 import { TaskType } from 'stores/TrackerStore/types';
 import {
@@ -163,4 +163,4 @@ const ListItem: React.FC<Props> = ({ task }) => {
   );
 };
 
-export default ListItem;
+export default memo(ListItem);

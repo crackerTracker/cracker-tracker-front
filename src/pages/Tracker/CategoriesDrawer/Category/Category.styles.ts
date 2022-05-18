@@ -3,15 +3,22 @@ import { animate, square } from 'styles/mixins';
 import { List } from 'antd';
 import { transparentColors } from 'styles/colors';
 
-export const StyledListItem = styled(List.Item)`
+export const StyledListItem = styled(List.Item)<{ $isEdited: boolean }>`
   display: flex;
   justify-content: center;
   ${animate('background-color')};
 
-  &:hover {
-    cursor: pointer;
-    background-color: ${transparentColors.blueHover};
-  }
+  ${({ $isEdited }) =>
+    $isEdited
+      ? css`
+          background-color: ${transparentColors.blueHover};
+        `
+      : css`
+          &:hover {
+            cursor: pointer;
+            background-color: ${transparentColors.blueHover};
+          }
+        `};
 `;
 
 export const Content = styled.div`
@@ -19,8 +26,16 @@ export const Content = styled.div`
   align-items: center;
 `;
 
-export const Color = styled.div<{ color?: string }>`
-  ${square('10px')};
+export const Color = styled.div<{ color?: string; isEdited: boolean }>`
+  ${({ isEdited }) =>
+    isEdited
+      ? css`
+          ${square('15px')}
+        `
+      : css`
+          ${square('10px')};
+        `};
+
   margin: -3px 10px 0 0;
 
   border-radius: 50%;

@@ -15,9 +15,11 @@
     "mobx": "^6.5.0",
     "mobx-react-lite": "^3.3.0",
     "react": "^18.0.0",
+    "react-colorful": "^5.5.1",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.0",
+    "react-transition-group": "^4.4.2",
     "sass": "^1.50.0",
     "styled-components": "^5.3.5",
     "typescript": "^4.4.2",
@@ -50,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-transition-group": "^4.4.4",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "eslint-config-prettier": "^8.5.0",

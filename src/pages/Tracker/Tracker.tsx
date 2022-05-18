@@ -12,14 +12,15 @@ import useDrawer from 'components/RightSideDrawer/useDrawer';
 import CategoriesDrawer from './CategoriesDrawer';
 
 const Tracker = () => {
-  const log = useCallback(() => console.log('click'), []);
+  const { visible, setVisible, onDrawerClose } = useDrawer();
+
+  const showDrawer = () => {
+    setVisible(true);
+  };
 
   useInitSectionNavbar(trackerNavbarIcons, {
-    [TrackerSectionsEnum.categories]: log,
-    [TrackerSectionsEnum.statistics]: log,
+    [TrackerSectionsEnum.categories]: showDrawer,
   });
-
-  const { visible, setVisible, onDrawerClose } = useDrawer();
 
   useEffect(() => {
     setVisible(true);
@@ -51,10 +52,7 @@ const Tracker = () => {
           </Col>
         </Row>
       </Container>
-      <CategoriesDrawer
-        visible={visible}
-        onDrawerClose={onDrawerClose}
-      ></CategoriesDrawer>
+      <CategoriesDrawer visible={visible} onDrawerClose={onDrawerClose} />
     </>
   );
 };

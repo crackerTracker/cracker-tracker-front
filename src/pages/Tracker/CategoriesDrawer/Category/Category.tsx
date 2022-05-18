@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Color, Content, StyledListItem } from './Category.styles';
 import { CategoryType } from 'stores/TrackerStore/types';
 import { Dropdown, Menu } from 'antd';
 
 type Props = {
   category: CategoryType;
+  isEdited: boolean;
+  setEditedCategory: React.Dispatch<CategoryType | null>;
 };
 
-// todo подумать над вынесением дублируещегося кода
-const Category: React.FC<Props> = ({ category }) => {
-  const { name, color } = category;
+const Category: React.FC<Props> = ({
+  category,
+  isEdited,
+  setEditedCategory,
+}) => {
+  const { name, color, isArchived } = category;
 
-  const onClickEdit = () => {};
+  const onClickEdit = () => {
+    setEditedCategory(category);
+  };
 
   const menu = (
     <Menu>
@@ -19,19 +26,21 @@ const Category: React.FC<Props> = ({ category }) => {
         Редактировать
       </Menu.Item>
       {/* todo реализовать архивацию */}
-      <Menu.Item key="2">Архивировать</Menu.Item>
+      <Menu.Item key="2">
+        {isArchived ? 'Разархивировать' : 'Архивировать'}
+      </Menu.Item>
       {/* todo реализовать удаление */}
       <Menu.Item key="3">Удалить</Menu.Item>
     </Menu>
   );
 
   return (
-    <Dropdown overlay={menu} trigger={['click']}>
+    <Dropdown overlay={menu} trigger={['click']} disabled={isEdited}>
       {/* workaround: div for react don't throw error */}
       <div>
-        <StyledListItem>
+        <StyledListItem $isEdited={isEdited}>
           <Content>
-            <Color color={color} />
+            <Color color={color} isEdited={isEdited} />
             {name}
           </Content>
         </StyledListItem>
@@ -40,4 +49,4 @@ const Category: React.FC<Props> = ({ category }) => {
   );
 };
 
-export default Category;
+export default memo(Category);
