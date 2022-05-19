@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { animate, square } from 'styles/mixins';
+import { animate, flex, square } from 'styles/mixins';
 import { List } from 'antd';
 import { transparentColors } from 'styles/colors';
 
@@ -23,7 +23,12 @@ export const StyledListItem = styled(List.Item)<{ $isEdited: boolean }>`
 
 export const Content = styled.div`
   display: flex;
-  align-items: center;
+  ${flex({
+    align: 'center',
+    justify: 'center',
+  })};
+
+  max-width: 150px;
 `;
 
 export const Color = styled.div<{ color?: string; isEdited: boolean }>`
@@ -39,6 +44,8 @@ export const Color = styled.div<{ color?: string; isEdited: boolean }>`
   margin: -3px 10px 0 0;
 
   border-radius: 50%;
+
+  flex-shrink: 0;
 
   ${({ color }) =>
     color &&

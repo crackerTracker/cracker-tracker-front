@@ -13,6 +13,8 @@ import { CategoryType } from 'stores/TrackerStore/types';
 import colors from 'styles/colors';
 import ColorButton from './ColorButton';
 import ColorPicker from './ColorPicker';
+import { useTrackerStore } from 'stores/hooks';
+import { message } from 'antd';
 
 type Props = {
   editedCategory: CategoryType | null;
@@ -20,11 +22,13 @@ type Props = {
   isDrawerVisible: boolean;
 };
 
+// todo сделать изменение состояния инпута при ошибке и перехватывать ошибки
 const CategoryInput: React.FC<Props> = ({
   editedCategory,
   setEditedCategory,
   isDrawerVisible,
 }) => {
+  const { createCategory, editCategory } = useTrackerStore();
   const [color, setColor] = useState<string | null>(null);
   const [colorPicking, setColorPicking] = useState(false);
   const [name, setName] = useState('');
@@ -39,13 +43,48 @@ const CategoryInput: React.FC<Props> = ({
     setName(editedCategory ? editedCategory.name : '');
   }, [editedCategory, isDrawerVisible]);
 
+  const onClickCreate = async () => {
+    if (!color) {
+      message.error('Не указан цвет');
+      return;
+    }
+
+    if (!name) {
+      message.error('Не указано имя категории');
+      return;
+    }
+
+    await createCategory(name, color);
+    setName('');
+    setColor(null);
+    setColorPicking(false);
+  };
+
   const onClickCancelEditing = () => {
     setEditedCategory(null);
     setColor(null);
   };
 
-  const onClickApproveEditing = () => {
-    // todo реализовать изменение категории
+  const onClickApproveEditing = async () => {
+    if (!color) {
+      message.error('Не указан цвет');
+      return;
+    }
+
+    if (!name) {
+      message.error('Не указано имя категории');
+      return;
+    }
+
+    if (!editedCategory) {
+      message.error('Что-то пошло не так');
+      return;
+    }
+
+    await editCategory(editedCategory.id, {
+      name,
+      color,
+    });
     setEditedCategory(null);
     setColor(null);
   };
@@ -123,7 +162,10 @@ const CategoryInput: React.FC<Props> = ({
             </ButtonWrapper>
 
             <ButtonWrapper>
-              <Button image={images.plusBrown.default} />
+              <Button
+                image={images.plusBrown.default}
+                onClick={onClickCreate}
+              />
             </ButtonWrapper>
           </>
         )}
