@@ -4,7 +4,7 @@ import { images } from 'img/icons';
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect, useState } from 'react';
 import { useTodoStore } from 'stores/hooks';
-import { TodoType } from 'stores/TodoStore/TodoStore';
+import { TodoType } from 'stores/TodoStore/types';
 import useTodo from '../../useTodo';
 import {
   SubtodoListItem,
@@ -12,12 +12,14 @@ import {
   StyledInput,
 } from './SubtodoItem.styles';
 
-const SubtodoItem: FC<{
+type SubtodoItemProps = {
   parentId?: string;
   _id: string;
   name: string;
   done: boolean;
-}> = ({ parentId, _id, name, done }) => {
+};
+
+const SubtodoItem: FC<SubtodoItemProps> = ({ parentId, _id, name, done }) => {
   const { todoName, inputChangeHandler, isChecked, checkHandler } = useTodo({
     name,
     done,

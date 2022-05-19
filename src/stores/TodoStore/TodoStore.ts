@@ -4,21 +4,7 @@ import 'moment/locale/ru';
 import RootStore from 'stores/RootStore';
 import request from 'utils/request';
 import { endpoints } from './endpoints';
-
-export type TodoType = {
-  _id: string;
-  name: string;
-  done: boolean;
-  deadline: string;
-  note: string;
-  subTodos: SubtodoType[];
-};
-
-export type SubtodoType = {
-  _id: string;
-  name: string;
-  done: boolean;
-};
+import { SubtodoType, TodoType } from './types';
 
 type PrivateFields = 'rootStore';
 

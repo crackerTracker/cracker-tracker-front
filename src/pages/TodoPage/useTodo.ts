@@ -3,7 +3,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { Moment } from 'moment';
 import { FormEvent, useEffect, useState } from 'react';
 import { useTodoStore } from 'stores/hooks';
-import { TodoType } from 'stores/TodoStore/TodoStore';
+import { TodoType } from 'stores/TodoStore/types';
 
 type UseTodoProps = {
   _id?: string;

@@ -61,9 +61,9 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
           done: s.done,
         }));
 
-        toPush = [...formSubTodos, { name: subtodoAddInput, done: isChecked }];
+        toPush = [...formSubTodos, { name: subtodoAddInput, done: false }];
       } else {
-        toPush = [{ name: subtodoAddInput, done: isChecked }];
+        toPush = [{ name: subtodoAddInput, done: false }];
       }
 
       editTodo(

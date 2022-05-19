@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect } from 'react';
 import { useTodoStore } from 'stores/hooks';
-import { TodoType } from 'stores/TodoStore/TodoStore';
+import { TodoType } from 'stores/TodoStore/types';
 import TodoItem from '../TodoItem';
 import { StyledList, Todos } from './TodoAll.styles';
 
