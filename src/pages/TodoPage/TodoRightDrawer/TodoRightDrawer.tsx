@@ -12,7 +12,7 @@ import { useTodoStore } from 'stores/hooks';
 import 'moment/locale/ru';
 import locale from 'antd/lib/locale/ru_RU';
 
-export type TodoRightDrawerProps = {
+type TodoRightDrawerProps = {
   _id: string;
   visible: boolean;
   onDrawerClose: VoidFunction;
@@ -24,7 +24,7 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
   onDrawerClose,
 }) => {
   const {
-    value,
+    todoName,
     inputChangeHandler,
     deleteTodoHandler,
     deadline,
@@ -40,19 +40,21 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
   const { editTodo } = useTodoStore();
 
   const onTextareaBlur = () => {
-    editTodo(_id, value, isChecked, deadline, note);
+    editTodo(_id, todoName, isChecked, deadline, note);
   };
 
   const onDeadlineDelete = () => {
     deleteDeadline();
-    editTodo(_id, value, isChecked, null);
+    editTodo(_id, todoName, isChecked, null);
   };
 
   return (
     <RightSideDrawer
       onDrawerClose={onDrawerClose}
       visible={visible}
-      headerDate={deadline && `Выполнить до ${formDateStringFromISO(deadline)}`}
+      headerTitle={
+        deadline && `Выполнить до ${formDateStringFromISO(deadline)}`
+      }
       footerChildren={
         <ConfigProvider locale={locale}>
           <Row justify="space-between" align="middle">

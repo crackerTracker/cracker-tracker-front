@@ -9,24 +9,30 @@ import {
   StyledTextArea,
 } from '../TodoRightDrawer/TodoRightDrawer.styles';
 import { ModalContent, ModalHeader, StyledModal } from './TodoModal.styles';
+import { Date as ModalDate } from 'components/RightSideDrawer/RightSideDrawer.styles';
 import { observer } from 'mobx-react-lite';
-import { Date as ModalDate } from '../../../components/RightSideDrawer/RightSideDrawer.styles';
 import useTodo from '../useTodo';
 import { useTodoStore } from 'stores/hooks';
 import formDateStringFromISO from 'utils/formDateStringFromISO';
 import 'moment/locale/ru';
 import locale from 'antd/lib/locale/ru_RU';
 
-const TodoModal: FC<{
+type TodoModalProps = {
   isVisible: boolean;
   onCancel: VoidFunction;
   clearMainInputValue: VoidFunction;
-}> = ({ isVisible, onCancel, clearMainInputValue }) => {
+};
+
+const TodoModal: FC<TodoModalProps> = ({
+  isVisible,
+  onCancel,
+  clearMainInputValue,
+}) => {
   const todoStore = useTodoStore();
 
   const {
-    value,
-    setValue,
+    todoName,
+    setTodoName,
     inputChangeHandler,
     addTodo,
     deadline,
@@ -40,11 +46,11 @@ const TodoModal: FC<{
   } = useTodo({});
 
   useEffect(() => {
-    setValue(todoStore.tempTodoName);
+    setTodoName(todoStore.tempTodoName);
   }, []);
 
   const onModalCancel = () => {
-    setValue('');
+    setTodoName('');
     deleteNote();
     deleteDeadline();
     todoStore.tempSubTodos = [];
@@ -127,7 +133,7 @@ const TodoModal: FC<{
 
       <ModalContent>
         <DrawerTodoCard
-          name={value || todoStore.tempTodoName}
+          name={todoName || todoStore.tempTodoName}
           onCreateChangeHandler={inputChangeHandler}
         />
 

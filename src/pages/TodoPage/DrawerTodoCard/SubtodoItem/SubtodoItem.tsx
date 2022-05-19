@@ -1,11 +1,11 @@
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
-import IconButton from 'components/IconButton/IconButton';
+import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect, useState } from 'react';
 import { useTodoStore } from 'stores/hooks';
 import { TodoType } from 'stores/TodoStore/TodoStore';
-import useTodo from '../useTodo';
+import useTodo from '../../useTodo';
 import {
   SubtodoListItem,
   StyledCheckbox,
@@ -18,7 +18,7 @@ const SubtodoItem: FC<{
   name: string;
   done: boolean;
 }> = ({ parentId, _id, name, done }) => {
-  const { value, inputChangeHandler, isChecked, checkHandler } = useTodo({
+  const { todoName, inputChangeHandler, isChecked, checkHandler } = useTodo({
     name,
     done,
   });
@@ -97,7 +97,7 @@ const SubtodoItem: FC<{
       <StyledCheckbox onChange={checkSubtodoHandler} checked={isChecked}>
         <StyledInput
           bordered={false}
-          value={value}
+          value={todoName}
           onChange={inputChangeHandler}
         />
       </StyledCheckbox>

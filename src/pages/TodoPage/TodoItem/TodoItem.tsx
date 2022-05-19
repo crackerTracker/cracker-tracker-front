@@ -34,7 +34,7 @@ const TodoItem: FC<{ _id: string }> = ({ _id }) => {
               <StyledCheckbox onChange={checkHandler} checked={isChecked} />
             </div>
           }
-          title={todoData?.name as string}
+          title={todoData?.name || ''}
         />
 
         <Space size="large">

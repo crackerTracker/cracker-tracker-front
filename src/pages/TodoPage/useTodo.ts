@@ -23,7 +23,7 @@ const useTodo = ({ _id, name, done }: UseTodoProps) => {
 
   const [todoData, setTodoData] = useState<TodoType>();
 
-  const [value, setValue] = useState(name || '');
+  const [todoName, setTodoName] = useState(name || '');
   const [isChecked, setIsChecked] = useState(done || false);
   const [deadline, setDeadline] = useState<string | null>(null);
   const [note, setNote] = useState<string | undefined>(undefined);
@@ -37,7 +37,7 @@ const useTodo = ({ _id, name, done }: UseTodoProps) => {
       if (data) {
         const { name, done, deadline, note } = data;
 
-        setValue(name);
+        setTodoName(name);
         setIsChecked(done);
         setDeadline(deadline);
         setNote(note);
@@ -46,12 +46,12 @@ const useTodo = ({ _id, name, done }: UseTodoProps) => {
   }, [todos, _id]);
 
   const inputChangeHandler = (e: FormEvent<HTMLInputElement>) => {
-    setValue(e.currentTarget.value);
+    setTodoName(e.currentTarget.value);
   };
 
   const checkHandler = (e: CheckboxChangeEvent) => {
     setIsChecked(e.target.checked);
-    if (_id) editTodo(_id, value, e.target.checked);
+    if (_id) editTodo(_id, todoName, e.target.checked);
   };
 
   const onDeadlineChange = (date: Moment | null) => {
@@ -59,7 +59,7 @@ const useTodo = ({ _id, name, done }: UseTodoProps) => {
     edgeDate.setUTCHours(23, 59, 59, 999);
 
     setDeadline(edgeDate.toISOString());
-    if (_id) editTodo(_id, value, isChecked, edgeDate.toISOString());
+    if (_id) editTodo(_id, todoName, isChecked, edgeDate.toISOString());
   };
 
   const deleteDeadline = () => {
@@ -67,7 +67,7 @@ const useTodo = ({ _id, name, done }: UseTodoProps) => {
   };
 
   const clearValue = () => {
-    setValue('');
+    setTodoName('');
   };
 
   const addTodo = () => {
@@ -77,7 +77,7 @@ const useTodo = ({ _id, name, done }: UseTodoProps) => {
     }));
 
     createTodo(
-      value || tempTodoName,
+      todoName || tempTodoName,
       isChecked,
       deadline,
       note,
@@ -109,8 +109,8 @@ const useTodo = ({ _id, name, done }: UseTodoProps) => {
 
   return {
     todoData,
-    value,
-    setValue,
+    todoName,
+    setTodoName,
     inputChangeHandler,
     clearValue,
     addTodo,

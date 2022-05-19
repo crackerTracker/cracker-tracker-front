@@ -4,7 +4,7 @@ import { images } from 'img/icons';
 import { observer } from 'mobx-react-lite';
 import React, { FC, FormEvent, useEffect, useState } from 'react';
 import { useTodoStore } from 'stores/hooks';
-import SubtodoItem from '../SubtodoItem';
+import SubtodoItem from './SubtodoItem';
 import useTodo from '../useTodo';
 import {
   InputGroup,
@@ -13,18 +13,24 @@ import {
   StyledInput,
 } from './DrawerTodoCard.styles';
 
-const DrawerTodoCard: FC<{
+type DrawerTodoCardProps = {
   _id?: string;
   name?: string;
   onCreateChangeHandler?: (e: FormEvent<HTMLInputElement>) => void;
-}> = ({ _id, name, onCreateChangeHandler }) => {
+};
+
+const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
+  _id,
+  name,
+  onCreateChangeHandler,
+}) => {
   const { editTodo } = useTodoStore();
   const todoStore = useTodoStore();
 
   const {
     todoData,
-    value,
-    setValue,
+    todoName,
+    setTodoName,
     inputChangeHandler,
     isChecked,
     checkHandler,
@@ -33,7 +39,7 @@ const DrawerTodoCard: FC<{
   });
 
   useEffect(() => {
-    if (name) setValue(name);
+    if (name) setTodoName(name);
   }, [name]);
 
   const [subtodoAddInput, setSubtodoAddInput] = useState('');
@@ -92,8 +98,8 @@ const DrawerTodoCard: FC<{
 
   const blurHandler = () => {
     if (_id) {
-      editTodo(_id, value);
-      setValue(value);
+      editTodo(_id, todoName);
+      setTodoName(todoName);
     }
   };
 
@@ -104,7 +110,7 @@ const DrawerTodoCard: FC<{
         <StyledCheckbox onChange={checkHandler} checked={isChecked}>
           <Input
             bordered={false}
-            value={value}
+            value={todoName}
             onChange={_id ? inputChangeHandler : onCreateChangeHandler}
             onBlur={blurHandler}
           />

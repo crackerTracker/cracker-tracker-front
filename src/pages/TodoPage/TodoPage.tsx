@@ -12,7 +12,7 @@ import {
   SubTitle,
 } from './TodoPage.styles';
 import { images } from 'img/icons';
-import IconButton from 'components/IconButton/IconButton';
+import IconButton from 'components/IconButton';
 import colors from 'styles/colors';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
@@ -28,7 +28,7 @@ const TodoPage: FC = () => {
 
   const todoStore = useTodoStore();
 
-  const { value, inputChangeHandler, addTodo, clearValue } = useTodo({});
+  const { todoName, inputChangeHandler, addTodo, clearValue } = useTodo({});
 
   const [nav, setNav] = useState<PageType>(currentLocation as PageType);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -37,13 +37,13 @@ const TodoPage: FC = () => {
     setNav(destination);
   };
 
-  const onModalOpen = () => {
+  const onModalOpen = useCallback(() => {
     setIsModalVisible(true);
-  };
+  }, []);
 
-  const onModalCancel = () => {
+  const onModalCancel = useCallback(() => {
     setIsModalVisible(false);
-  };
+  }, []);
 
   const addTodoHandler = () => {
     addTodo();
@@ -51,7 +51,7 @@ const TodoPage: FC = () => {
   };
 
   const onInputBlur = () => {
-    todoStore.tempTodoName = value;
+    todoStore.tempTodoName = todoName;
   };
 
   const toggleIcon = useCallback(() => {
@@ -135,7 +135,7 @@ const TodoPage: FC = () => {
           <StyledInput
             placeholder="Добавить задачу"
             size="large"
-            value={value}
+            value={todoName}
             onChange={inputChangeHandler}
             onBlur={onInputBlur}
           />

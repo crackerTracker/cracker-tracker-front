@@ -22,15 +22,15 @@ const TodoWeek: FC = () => {
   }, [date]);
 
   const onPickerChange = (momentValue: Moment | null) => {
-    setDate(new Date(String(momentValue)));
-    setMoment(momentValue);
-
     if (!momentValue) {
       setDate(new Date());
       setMoment(null);
 
       todoStore.headerDate = String(moment(new Date()).format('MMMM Y'));
     } else {
+      setDate(new Date(String(momentValue)));
+      setMoment(momentValue);
+
       todoStore.headerDate = String(momentValue.format('MMMM Y'));
     }
   };
