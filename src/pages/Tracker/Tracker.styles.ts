@@ -20,7 +20,11 @@ export const ControlPanelWrapper = styled.div`
   z-index: 1;
 `;
 
+// todo пересмотреть. комбинация margin и padding для отображения элементов редактирования
 export const Relative = styled.div`
+  margin-right: -100px;
+  padding-right: 100px;
+
   overflow-x: hidden;
   overflow-y: auto;
   ${scroller};
