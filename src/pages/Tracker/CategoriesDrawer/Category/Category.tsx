@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { Color, Content, StyledListItem } from './Category.styles';
 import { CategoryType } from 'stores/TrackerStore/types';
 import { Dropdown, Menu } from 'antd';
+import { useTrackerStore } from 'stores/hooks';
 
 type Props = {
   category: CategoryType;
@@ -14,10 +15,21 @@ const Category: React.FC<Props> = ({
   isEdited,
   setEditedCategory,
 }) => {
-  const { name, color, isArchived } = category;
+  const { name, color, isArchived, id } = category;
+  const { deleteCategory, editCategory } = useTrackerStore();
 
   const onClickEdit = () => {
     setEditedCategory(category);
+  };
+
+  const onClickArchive = async () => {
+    editCategory(id, {
+      isArchived: !isArchived,
+    });
+  };
+
+  const onClickDelete = async () => {
+    await deleteCategory(id);
   };
 
   const menu = (
@@ -25,12 +37,12 @@ const Category: React.FC<Props> = ({
       <Menu.Item key="1" onClick={onClickEdit}>
         Редактировать
       </Menu.Item>
-      {/* todo реализовать архивацию */}
-      <Menu.Item key="2">
+      <Menu.Item key="2" onClick={onClickArchive}>
         {isArchived ? 'Разархивировать' : 'Архивировать'}
       </Menu.Item>
-      {/* todo реализовать удаление */}
-      <Menu.Item key="3">Удалить</Menu.Item>
+      <Menu.Item key="3" onClick={onClickDelete}>
+        Удалить
+      </Menu.Item>
     </Menu>
   );
 

@@ -14,64 +14,78 @@ import { observer } from 'mobx-react-lite';
 import useTimeTrackingInput from 'utils/hooks/useTimeTrackingInput';
 
 const ControlPanel = () => {
-  const { arrayActiveCategoriesToSelect, createTask } = useTrackerStore();
-  const [category, setCategory] = useState<string | null>(
-    arrayActiveCategoriesToSelect.length
-      ? arrayActiveCategoriesToSelect[0].value
-      : null
-  );
+  const { arrayActiveCategoriesToSelect, addTask } = useTrackerStore();
+  const [categoryId, setCategoryId] = useState<string | null>(null);
   const [categoryError, setCategoryError] = useState(false);
-  const [date, setDate] = useState<string | null>(null);
+  const [date, setDate] = useState<{
+    moment: Moment | null;
+    dateString: string;
+  }>({ moment: null, dateString: '' });
   const [dateError, setDateError] = useState(false);
 
-  const { time, timeError, setTimeError, onChangeTime } =
+  const { time, setTime, timeError, setTimeError, onChangeTime } =
     useTimeTrackingInput();
 
-  const onChangeCategory = (value: string) => {
-    setCategory(value);
+  const resetControlPanel = () => {
+    timeError && setTimeError(false);
+    dateError && setDateError(false);
+    categoryError && setCategoryError(false);
+    setCategoryId(null);
+    setTime('');
+    setDate({
+      moment: null,
+      dateString: '',
+    });
   };
 
-  const onChangeDate = (_: Moment | null, dateString: string) => {
+  const onChangeCategory = (value: string) => {
+    setCategoryId(value);
+  };
+
+  const onChangeDate = (moment: Moment | null, dateString: string) => {
     if (dateError) {
       setDateError(false);
     }
 
-    setDate(dateString);
+    setDate({
+      moment,
+      dateString,
+    });
   };
 
-  const onClickAdd = () => {
+  const onClickAdd = async () => {
     if (!timeValidator(time.trim())) {
       setTimeError(true);
       return;
     }
 
-    if (!date || new Date(date) > new Date()) {
+    const dateString = date.dateString;
+    if (!dateString || new Date(dateString) > new Date()) {
       setDateError(true);
       return;
     }
 
-    if (category === null) {
+    if (categoryId === null) {
       setCategoryError(true);
       return;
     }
 
-    timeError && setTimeError(false);
-    dateError && setDateError(false);
+    resetControlPanel();
 
     const minutesSpent = convertSpentTimeStringToMins(time.trim());
+    const zeroTimestamp = convertToZeroTimestamp(
+      new Date(dateString).getTime()
+    );
 
-    const zeroTimestamp = convertToZeroTimestamp(new Date(date).getTime());
-
-    // todo доделать обработку создания
-    createTask(category, minutesSpent, zeroTimestamp);
+    await addTask(categoryId, minutesSpent, zeroTimestamp);
   };
 
-  const onKeyDownEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDownEnter = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') {
       return;
     }
 
-    onClickAdd();
+    await onClickAdd();
   };
 
   return (
@@ -79,9 +93,10 @@ const ControlPanel = () => {
       <Row gutter={18} align="middle">
         <Col>
           <Select
+            placeholder="Категория"
             size="large"
             options={arrayActiveCategoriesToSelect}
-            value={category}
+            value={categoryId}
             style={{ width: '140px' }}
             onChange={onChangeCategory}
             status={categoryError ? InputStatusesEnum.error : undefined}
@@ -101,6 +116,7 @@ const ControlPanel = () => {
         <Col>
           <DatePicker
             size="large"
+            value={date.moment}
             onChange={onChangeDate}
             status={dateError ? InputStatusesEnum.error : undefined}
           />

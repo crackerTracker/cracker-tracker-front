@@ -1,5 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
-import { Cards, Container, Flex } from './Tracker.styles';
+import {
+  Cards,
+  Container,
+  ControlPanelWrapper,
+  Flex,
+  Relative,
+} from './Tracker.styles';
 import { Col, Row } from 'antd';
 import ControlPanel from './ControlPanel';
 import DateCard from './DateCard';
@@ -22,7 +28,13 @@ const Tracker = () => {
     [TrackerSectionsEnum.categories]: showDrawer,
   });
 
-  const { datesArray } = useTrackerStore();
+  const { datesArray, getAllTasksInDatesMap, getAllCategories } =
+    useTrackerStore();
+
+  useEffect(() => {
+    getAllCategories();
+    getAllTasksInDatesMap();
+  }, []);
 
   const windowWidth = document.documentElement.clientWidth;
 
@@ -32,18 +44,20 @@ const Tracker = () => {
         <Row justify="center" style={{ height: '100%' }}>
           <Col style={{ height: '100%' }} span={18}>
             <Flex>
-              <div>
+              <ControlPanelWrapper>
                 <ControlPanel />
-              </div>
-              <Cards>
-                <Row gutter={[24, 24]}>
-                  {datesArray.map((timestamp) => (
-                    <Col key={timestamp} span={windowWidth <= 1500 ? 8 : 6}>
-                      <DateCard timestamp={Number(timestamp)} />
-                    </Col>
-                  ))}
-                </Row>
-              </Cards>
+              </ControlPanelWrapper>
+              <Relative>
+                <Cards>
+                  <Row gutter={[24, 24]}>
+                    {datesArray.map((timestamp) => (
+                      <Col key={timestamp} span={windowWidth <= 1500 ? 8 : 6}>
+                        <DateCard timestamp={Number(timestamp)} />
+                      </Col>
+                    ))}
+                  </Row>
+                </Cards>
+              </Relative>
             </Flex>
           </Col>
         </Row>

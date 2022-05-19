@@ -14,11 +14,7 @@ type Props = {
 
 const DateCard: React.FC<Props> = ({ timestamp }) => {
   const { datesMap } = useTrackerStore();
-
   const tasks = datesMap[timestamp];
-
-  // workaround to observe for updates of tasks array in dataMap
-  const tasksLength = tasks.length;
 
   const fullDate = useMemo(() => {
     const date = new Date(timestamp);
@@ -30,15 +26,8 @@ const DateCard: React.FC<Props> = ({ timestamp }) => {
     [timestamp]
   );
 
-  const totalTime = useMemo(() => {
-    const totalMinutes = tasks.reduce(
-      (sum, task) => sum + task.minutesSpent,
-      0
-    );
-
-    return getMinsAndHoursStringFromMins(totalMinutes);
-    // workaround to observe for updates of tasks array
-  }, [tasks, tasksLength]);
+  const totalMinutes = tasks.reduce((sum, task) => sum + task.minutesSpent, 0);
+  const totalTime = getMinsAndHoursStringFromMins(totalMinutes);
 
   return (
     <StyledCard title={`${fullDate}, ${weekDay}`} extra={totalTime}>
