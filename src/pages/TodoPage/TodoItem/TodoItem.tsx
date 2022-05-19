@@ -1,5 +1,4 @@
-import { List } from 'antd';
-import { Space } from 'antd';
+import { List, Space } from 'antd';
 import IconButton from 'components/IconButton';
 import useDrawer from 'utils/hooks/useDrawer';
 import { images } from 'img/icons';
@@ -9,11 +8,11 @@ import { StyledCheckbox, ListTodoItem } from './TodoItem.styles';
 import TodoRightDrawer from '../TodoRightDrawer';
 import { observer } from 'mobx-react-lite';
 
-const TodoItem: FC<{ id: number }> = ({ id }) => {
+const TodoItem: FC<{ _id: string }> = ({ _id }) => {
   const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
 
-  const { todoData, deleteTodo, isChecked, checkHandler } = useTodo({
-    id,
+  const { todoData, deleteTodoHandler, isChecked, checkHandler } = useTodo({
+    _id,
   });
 
   const clickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -23,12 +22,12 @@ const TodoItem: FC<{ id: number }> = ({ id }) => {
   return (
     <>
       <TodoRightDrawer
-        id={id}
+        _id={_id}
         visible={visible}
         onDrawerClose={onDrawerClose}
       />
 
-      <ListTodoItem onClick={onDrawerOpen} $isChecked={isChecked || false}>
+      <ListTodoItem onClick={onDrawerOpen} $isChecked={isChecked}>
         <List.Item.Meta
           avatar={
             <div onClick={clickHandler}>
@@ -39,7 +38,7 @@ const TodoItem: FC<{ id: number }> = ({ id }) => {
         />
 
         <Space size="large">
-          {todoData?.subtodos?.length !== 0 && (
+          {todoData?.subTodos && !!todoData?.subTodos.length && (
             <IconButton
               image={images.subTodo.default}
               isDisabled={true}
@@ -51,7 +50,7 @@ const TodoItem: FC<{ id: number }> = ({ id }) => {
             <IconButton
               image={images.deletePeach.default}
               squareSide="30px"
-              onClick={deleteTodo}
+              onClick={deleteTodoHandler}
               paddings="0"
             />
           </div>

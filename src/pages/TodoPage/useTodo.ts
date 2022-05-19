@@ -1,24 +1,49 @@
 import { message } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { Moment } from 'moment';
-import { FormEvent, useState } from 'react';
-import TodoMockStore from './todoMockData';
+import { FormEvent, useEffect, useState } from 'react';
+import { useTodoStore } from 'stores/hooks';
+import { TodoType } from 'stores/TodoStore/TodoStore';
 
 type UseTodoProps = {
-  id?: number;
+  _id?: string;
   name?: string;
   done?: boolean;
 };
 
-const useTodo = ({ id, name, done }: UseTodoProps) => {
-  const { todos } = new TodoMockStore();
-  const todoData = todos.find((todo) => todo.id === id);
+const useTodo = ({ _id, name, done }: UseTodoProps) => {
+  const {
+    todos,
+    createTodo,
+    editTodo,
+    deleteTodo,
+    tempSubTodos,
+    tempTodoName,
+  } = useTodoStore();
 
-  const [value, setValue] = useState(todoData?.name || name);
-  const [isChecked, setIsChecked] = useState(todoData?.done || done);
-  const [deadline, setDeadline] = useState(todoData?.deadline || '');
-  const [note, setNote] = useState(todoData?.note || '');
+  const [todoData, setTodoData] = useState<TodoType>();
+
+  const [value, setValue] = useState(name || '');
+  const [isChecked, setIsChecked] = useState(done || false);
+  const [deadline, setDeadline] = useState<string | null>(null);
+  const [note, setNote] = useState<string | undefined>(undefined);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+
+  useEffect(() => {
+    if (todos && _id) {
+      const data = todos.find((todo) => todo._id === _id);
+      setTodoData(data);
+
+      if (data) {
+        const { name, done, deadline, note } = data;
+
+        setValue(name);
+        setIsChecked(done);
+        setDeadline(deadline);
+        setNote(note);
+      }
+    }
+  }, [todos, _id]);
 
   const inputChangeHandler = (e: FormEvent<HTMLInputElement>) => {
     setValue(e.currentTarget.value);
@@ -26,18 +51,43 @@ const useTodo = ({ id, name, done }: UseTodoProps) => {
 
   const checkHandler = (e: CheckboxChangeEvent) => {
     setIsChecked(e.target.checked);
+    if (_id) editTodo(_id, value, e.target.checked);
   };
 
   const onDeadlineChange = (date: Moment | null) => {
-    setDeadline(new Date(String(date)).toLocaleDateString());
+    const edgeDate = new Date(String(date));
+    edgeDate.setUTCHours(23, 59, 59, 999);
+
+    setDeadline(edgeDate.toISOString());
+    if (_id) editTodo(_id, value, isChecked, edgeDate.toISOString());
   };
 
   const deleteDeadline = () => {
-    setDeadline('');
+    setDeadline(null);
+  };
+
+  const clearValue = () => {
+    setValue('');
   };
 
   const addTodo = () => {
-    setValue('');
+    const subTodos = tempSubTodos.map((sub) => ({
+      name: sub.name,
+      done: sub.done,
+    }));
+
+    createTodo(
+      value || tempTodoName,
+      isChecked,
+      deadline,
+      note,
+      false,
+      false,
+      undefined,
+      tempSubTodos.length ? subTodos : undefined
+    );
+
+    clearValue();
   };
 
   const onTextAreaChange = (e: FormEvent<HTMLTextAreaElement>) => {
@@ -45,23 +95,26 @@ const useTodo = ({ id, name, done }: UseTodoProps) => {
   };
 
   const deleteNote = () => {
-    setNote('');
+    setNote(undefined);
   };
 
   const datePickerHandler = () => {
     setIsPickerOpen((v) => !v);
   };
 
-  const deleteTodo = () => {
+  const deleteTodoHandler = () => {
+    if (_id) deleteTodo(_id);
     message.success('Удалено');
   };
 
   return {
     todoData,
     value,
+    setValue,
     inputChangeHandler,
+    clearValue,
     addTodo,
-    deleteTodo,
+    deleteTodoHandler,
     isChecked,
     checkHandler,
     deadline,

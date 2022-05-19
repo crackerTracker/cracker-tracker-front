@@ -15,7 +15,7 @@ interface RightSideDrawerProps {
   footerChildren?: React.ReactNode;
   onDrawerClose: VoidFunction;
   visible: boolean;
-  headerDate?: string;
+  headerDate?: string | null;
 }
 
 const RightSideDrawer: FC<RightSideDrawerProps> = ({

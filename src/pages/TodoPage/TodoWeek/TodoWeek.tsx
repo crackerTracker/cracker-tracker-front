@@ -1,35 +1,48 @@
 import { Col, ConfigProvider, DatePicker, Row } from 'antd';
 import React, { FC, useCallback, useState } from 'react';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import SmallTodoItem from './SmallTodoItem';
 import { Container, StyledCard, WeekDate } from './TodoWeek.styles';
 import 'moment/locale/ru';
 import locale from 'antd/lib/locale/ru_RU';
-import TodoMockStore from '../todoMockData';
 import { observer } from 'mobx-react-lite';
 import formWeekDatesArray from 'utils/formWeekDatesArray';
 import { weekDaysNames } from 'config/todo';
+import { useTodoStore } from 'stores/hooks';
+import givenDayToEdgeISOString from 'utils/givenDayToEdgeISOString';
 
 const TodoWeek: FC = () => {
-  const todoStore = new TodoMockStore();
+  const todoStore = useTodoStore();
 
-  const [moment, setMoment] = useState<Moment | null>(null);
-  const [date, setDate] = useState<Date>(new Date());
+  const [momentValue, setMoment] = useState<Moment | null>(null);
+  const [date, setDate] = useState(new Date());
 
   const weekDatesArray = useCallback(() => {
     return formWeekDatesArray(date);
   }, [date]);
 
-  const onChange = (moment: Moment | null) => {
-    setDate(new Date(String(moment)));
-    setMoment(moment);
+  const onPickerChange = (momentValue: Moment | null) => {
+    setDate(new Date(String(momentValue)));
+    setMoment(momentValue);
 
-    if (!moment) {
+    if (!momentValue) {
       setDate(new Date());
       setMoment(null);
+
+      todoStore.headerDate = String(moment(new Date()).format('MMMM Y'));
     } else {
-      todoStore.headerDate = String(moment?.format('MMMM Y'));
+      todoStore.headerDate = String(momentValue.format('MMMM Y'));
     }
+  };
+
+  const filterTodos = (i: number) => {
+    return i !== 7
+      ? todoStore.todos.filter(
+          (todo) =>
+            new Date(todo.deadline).toISOString() ===
+            givenDayToEdgeISOString(i, date)
+        )
+      : todoStore.todos.filter((todo) => !todo.deadline);
   };
 
   const cardsArray = weekDaysNames.map((day, i) => (
@@ -43,33 +56,31 @@ const TodoWeek: FC = () => {
           </>
         }
       >
-        {todoStore.todos.map((todo) => (
-          <SmallTodoItem key={todo.id} {...todo} />
+        {filterTodos(i).map((todo) => (
+          <SmallTodoItem key={todo._id} {...todo} />
         ))}
       </StyledCard>
     </Col>
   ));
 
   return (
-    <>
-      <ConfigProvider locale={locale}>
-        <Row justify="end">
-          <DatePicker
-            onChange={onChange}
-            picker="week"
-            mode="week"
-            size="large"
-            placement="bottomRight"
-            value={moment}
-            format={'y, w[-я неделя]'}
-          />
-        </Row>
+    <ConfigProvider locale={locale}>
+      <Row justify="end">
+        <DatePicker
+          onChange={onPickerChange}
+          picker="week"
+          mode="week"
+          size="large"
+          placement="bottomRight"
+          value={momentValue}
+          format={'y, w[-я неделя]'}
+        />
+      </Row>
 
-        <Container>
-          <Row gutter={[24, 24]}>{cardsArray}</Row>
-        </Container>
-      </ConfigProvider>
-    </>
+      <Container>
+        <Row gutter={[24, 24]}>{cardsArray}</Row>
+      </Container>
+    </ConfigProvider>
   );
 };
 

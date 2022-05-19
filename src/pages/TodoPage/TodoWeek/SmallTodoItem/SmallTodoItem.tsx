@@ -9,10 +9,10 @@ import React, { FC } from 'react';
 import { SmallTodoListItem, TodoName } from './SmallTodoItem.styles';
 import IconButton from 'components/IconButton';
 
-const SmallTodoItem: FC<{ id: number }> = ({ id }) => {
+const SmallTodoItem: FC<{ _id: string }> = ({ _id }) => {
   const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
 
-  const { todoData, isChecked, checkHandler } = useTodo({ id });
+  const { todoData, isChecked, checkHandler } = useTodo({ _id });
 
   const clickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -21,7 +21,7 @@ const SmallTodoItem: FC<{ id: number }> = ({ id }) => {
   return (
     <>
       <SmallTodoListItem
-        key={id}
+        key={_id}
         onClick={onDrawerOpen}
         $isChecked={isChecked || false}
       >
@@ -33,7 +33,7 @@ const SmallTodoItem: FC<{ id: number }> = ({ id }) => {
           }
           title={<TodoName>{todoData?.name as string}</TodoName>}
         />
-        {todoData?.subtodos?.length !== 0 && (
+        {todoData?.subTodos && !!todoData?.subTodos.length && (
           <IconButton
             image={images.subTodo.default}
             squareSide="20px"
@@ -44,7 +44,7 @@ const SmallTodoItem: FC<{ id: number }> = ({ id }) => {
       </SmallTodoListItem>
 
       <TodoRightDrawer
-        id={id}
+        _id={_id}
         visible={visible}
         onDrawerClose={onDrawerClose}
       />
