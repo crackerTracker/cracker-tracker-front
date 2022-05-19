@@ -14,17 +14,13 @@ import CategoriesDrawer from './CategoriesDrawer';
 const Tracker = () => {
   const { visible, setVisible, onDrawerClose } = useDrawer();
 
-  const showDrawer = () => {
+  const showDrawer = useCallback(() => {
     setVisible(true);
-  };
+  }, []);
 
   useInitSectionNavbar(trackerNavbarIcons, {
     [TrackerSectionsEnum.categories]: showDrawer,
   });
-
-  useEffect(() => {
-    setVisible(true);
-  }, []);
 
   const { datesArray } = useTrackerStore();
 
