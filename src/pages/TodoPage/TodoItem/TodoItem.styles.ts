@@ -9,8 +9,8 @@ export const ListTodoItem = styled(List.Item)<{ $isChecked: boolean }>`
   background-color: ${colors.white};
   border-radius: 8px;
 
-  filter: drop-shadow(0px 6px 10px ${shadowColors.sand});
-  ${animate('filter')};
+  box-shadow: 0px 6px 10px ${shadowColors.sand};
+  ${animate('box-shadow')};
 
   .ant-list-item-meta {
     ${flex({ align: 'center' })}
@@ -25,8 +25,8 @@ export const ListTodoItem = styled(List.Item)<{ $isChecked: boolean }>`
 
   :hover {
     cursor: pointer;
-    filter: drop-shadow(0px 6px 10px ${shadowColors.borderSand});
-    ${animate('filter')};
+    box-shadow: 0px 6px 10px ${shadowColors.borderSand};
+    ${animate('box-shadow')};
   }
 
   ${({ $isChecked }) =>

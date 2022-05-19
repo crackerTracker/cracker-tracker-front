@@ -30,7 +30,7 @@ export const TitleGroup = styled.div`
   margin-bottom: 18px;
   ${flex({})}
 
-  font-family: 'Montserrat';
+  font-family: 'Montserrat', sans-serif;
 `;
 
 export const Title = styled.h1`
@@ -51,7 +51,7 @@ export const Title = styled.h1`
 export const SubTitle = styled.h2`
   margin-bottom: 0;
 
-  font-family: 'Montserrat';
+  font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   font-size: 20px;
   line-height: 24px;
@@ -69,7 +69,7 @@ export const InputContainer = styled.div`
 
   border-radius: 16px;
   background-color: ${colors.sand};
-  filter: drop-shadow(0px 6px 20px ${shadowColors.brown});
+  box-shadow: 0px 6px 20px ${shadowColors.brown};
 `;
 
 export const StyledInput = styled(Input)`

@@ -8,7 +8,7 @@ export const StyledCard = styled(Card)`
 
   border-radius: 8px;
   background-color: ${halfOpacityColors.lightBrown};
-  filter: drop-shadow(0px 6px 20px ${shadowColors.brown});
+  box-shadow: 0px 6px 20px ${shadowColors.brown};
 
   .ant-card-head {
     background-color: ${colors.lightBrown};

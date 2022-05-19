@@ -12,7 +12,7 @@ export const Container = styled.div`
   ${scroller}
 
   .ant-card {
-    filter: drop-shadow(0px 6px 6px ${shadowColors.brown});
+    box-shadow: 0px 6px 6px ${shadowColors.brown};
   }
 
   .ant-col:last-child .ant-card-head-title {
@@ -32,7 +32,7 @@ export const StyledCard = styled(Card)`
     .ant-card-head-title {
       padding: 0;
 
-      font-family: 'Montserrat';
+      font-family: 'Montserrat', sans-serif;
       font-weight: 400;
       line-height: 1.3;
       font-size: 24px;
