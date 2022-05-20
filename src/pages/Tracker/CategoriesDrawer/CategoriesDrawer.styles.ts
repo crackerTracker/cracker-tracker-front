@@ -15,6 +15,7 @@ export const Flex = styled.div`
 `;
 
 export const ListsWrapper = styled(Row)`
+  flex-grow: 1;
   overflow: hidden;
 `;
 
