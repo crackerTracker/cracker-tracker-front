@@ -94,6 +94,35 @@ const SubtodoItem: FC<SubtodoItemProps> = ({ parentId, _id, name, done }) => {
     }
   };
 
+  const onBlurHandler = async () => {
+    // if editing subtodos in todo
+    if (todoData && parentId) {
+      const { name, done, deadline, note, subTodos } = todoData;
+
+      const dbSubTodoName = subTodos.find((sub) => sub._id === _id)?.name;
+
+      if (todoName !== dbSubTodoName) {
+        const subs = subTodos.map((sub) =>
+          sub._id === _id
+            ? { name: todoName, done: sub.done }
+            : { name: sub.name, done: sub.done }
+        );
+
+        await editTodo(
+          parentId,
+          name,
+          done,
+          deadline,
+          note,
+          false,
+          false,
+          undefined,
+          subs
+        );
+      }
+    }
+  };
+
   return (
     <SubtodoListItem>
       <StyledCheckbox onChange={checkSubtodoHandler} checked={isChecked}>
@@ -101,6 +130,7 @@ const SubtodoItem: FC<SubtodoItemProps> = ({ parentId, _id, name, done }) => {
           bordered={false}
           value={todoName}
           onChange={inputChangeHandler}
+          onBlur={onBlurHandler}
         />
       </StyledCheckbox>
       <IconButton
