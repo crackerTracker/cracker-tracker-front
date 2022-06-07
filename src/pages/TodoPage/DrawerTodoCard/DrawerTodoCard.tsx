@@ -118,7 +118,7 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
       }
     >
       {/* if editing todo */}
-      {_id && todoData?.subTodos && !!todoData?.subTodos.length && (
+      {_id && !!todoData?.subTodos?.length && (
         <List
           dataSource={todoData.subTodos}
           renderItem={(item) => (

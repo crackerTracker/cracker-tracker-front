@@ -19,21 +19,26 @@ import { observer } from 'mobx-react-lite';
 import TodoModal from './TodoModal';
 import useTodo from './useTodo';
 import { useTodoStore } from 'stores/hooks';
-
-type PageType = 'all' | 'day' | 'week';
+import {
+  TodoNavigateEnum,
+  todosNavigateIcons,
+  TodosToggleEnum,
+  todosToggleIcons,
+} from 'config/todo';
 
 const TodoPage: FC = () => {
   const location = useLocation();
   const currentLocation = location.pathname.split('/todo/')[1] || 'all';
 
   const todoStore = useTodoStore();
+  const { headerDate } = useTodoStore();
 
-  const { todoName, inputChangeHandler, addTodo, clearValue } = useTodo({});
+  const { todoName, inputChangeHandler, addTodo, clearValue } = useTodo();
 
-  const [nav, setNav] = useState<PageType>(currentLocation as PageType);
+  const [nav, setNav] = useState(currentLocation as TodoNavigateEnum);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const navButtonHandler = (destination: PageType) => {
+  const navButtonHandler = (destination: TodoNavigateEnum) => {
     setNav(destination);
   };
 
@@ -51,33 +56,41 @@ const TodoPage: FC = () => {
   };
 
   const onInputBlur = () => {
-    todoStore.tempTodoName = todoName;
+    todoStore.setTempTodoName(todoName);
   };
 
   const toggleIcon = useCallback(() => {
-    switch (todoStore.todosToggle) {
-      case 0:
-        return images.todoToggleAll.default;
-      case 1:
-        return images.todoToggleWDate.default;
-      case 2:
-        return images.todoToggleWoutDate.default;
-    }
-  }, [todoStore.todosToggle]);
+    switch (todoStore.currentTodosToggle) {
+      case TodosToggleEnum.all:
+        return todosToggleIcons.all;
 
+      case TodosToggleEnum.withDate:
+        return todosToggleIcons.withDate;
+
+      case TodosToggleEnum.withoutDate:
+        return todosToggleIcons.withoutDate;
+    }
+  }, [todoStore.currentTodosToggle]);
+
+  //todo setTodosToggle --> setToggleTodoItems
   const toggleClick = useCallback(() => {
-    switch (todoStore.todosToggle) {
-      case 0:
-        todoStore.setTodosToggle(1);
+    switch (todoStore.currentTodosToggle) {
+      case TodosToggleEnum.all:
+        todoStore.setTodosToggle(TodosToggleEnum.withDate);
         break;
-      case 1:
-        todoStore.setTodosToggle(2);
+
+      case TodosToggleEnum.withDate:
+        todoStore.setTodosToggle(TodosToggleEnum.withoutDate);
         break;
-      case 2:
-        todoStore.setTodosToggle(0);
+
+      case TodosToggleEnum.withoutDate:
+        todoStore.setTodosToggle(TodosToggleEnum.all);
         break;
     }
-  }, [todoStore.todosToggle]);
+  }, [todoStore.currentTodosToggle]);
+
+  const navButtonChange = (nav: TodoNavigateEnum) => () =>
+    navButtonHandler(nav);
 
   return (
     <Wrapper>
@@ -86,9 +99,11 @@ const TodoPage: FC = () => {
           <Row justify="space-between">
             <Col span={16}>
               <TitleGroup>
-                <Title>{nav === 'all' ? 'Все задачи' : 'Неделя'}</Title>
+                <Title>
+                  {nav === TodoNavigateEnum.all ? 'Все задачи' : 'Неделя'}
+                </Title>
 
-                {nav === 'all' && (
+                {nav === TodoNavigateEnum.all && (
                   <Toggle>
                     <IconButton
                       backgroundColor={colors.lightBrown}
@@ -100,7 +115,9 @@ const TodoPage: FC = () => {
                   </Toggle>
                 )}
               </TitleGroup>
-              {nav !== 'all' && <SubTitle>{todoStore.headerDate}</SubTitle>}
+              {nav !== TodoNavigateEnum.all && (
+                <SubTitle>{headerDate}</SubTitle>
+              )}
             </Col>
             <Col span={8}>
               <Row justify="end">
@@ -108,9 +125,9 @@ const TodoPage: FC = () => {
                   <Link to="/todo">
                     <IconButton
                       backgroundColor={colors.brown}
-                      image={images.todoNavigateAll.default}
-                      onClick={() => navButtonHandler('all')}
-                      isDisabled={nav === 'all'}
+                      image={todosNavigateIcons.all}
+                      onClick={navButtonChange(TodoNavigateEnum.all)}
+                      isDisabled={nav === TodoNavigateEnum.all}
                     />
                   </Link>
                 </Col>
@@ -118,9 +135,9 @@ const TodoPage: FC = () => {
                   <Link to="week">
                     <IconButton
                       backgroundColor={colors.brown}
-                      image={images.todoNavigateWeek.default}
-                      onClick={() => navButtonHandler('week')}
-                      isDisabled={nav === 'week'}
+                      image={todosNavigateIcons.week}
+                      onClick={navButtonChange(TodoNavigateEnum.week)}
+                      isDisabled={nav === TodoNavigateEnum.week}
                     />
                   </Link>
                 </Col>

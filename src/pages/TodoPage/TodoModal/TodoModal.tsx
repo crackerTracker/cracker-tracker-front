@@ -43,7 +43,7 @@ const TodoModal: FC<TodoModalProps> = ({
     deleteNote,
     isPickerOpen,
     datePickerHandler,
-  } = useTodo({});
+  } = useTodo();
 
   useEffect(() => {
     setTodoName(todoStore.tempTodoName);
@@ -53,7 +53,7 @@ const TodoModal: FC<TodoModalProps> = ({
     setTodoName('');
     deleteNote();
     deleteDeadline();
-    todoStore.tempSubTodos = [];
+    todoStore.setTempSubTodos([]);
     onCancel();
   };
 
@@ -102,7 +102,8 @@ const TodoModal: FC<TodoModalProps> = ({
                     <Row align="middle" wrap={false}>
                       <Col>
                         <ModalDate>
-                          Выполнить до {formDateStringFromISO(deadline)}
+                          {deadline &&
+                            `Выполнить до ${formDateStringFromISO(deadline)}`}
                         </ModalDate>
                       </Col>
                       <Col offset={1}>

@@ -1,3 +1,4 @@
+import { TodosToggleEnum, weekPageHeaderDateFormat } from 'config/todo';
 import { makeAutoObservable, runInAction } from 'mobx';
 import moment from 'moment';
 import 'moment/locale/ru';
@@ -13,14 +14,19 @@ class TodoStore {
 
   public isLoading = false;
 
-  public headerDate = String(moment(new Date()).format('MMMM Y'));
+  // current date in header of week page like 'июнь 2022'
+  public headerDate = String(
+    moment(new Date()).format(weekPageHeaderDateFormat)
+  );
 
-  public todosToggle = 0;
+  public currentTodosToggle = TodosToggleEnum.all;
 
   public tempSubTodos: SubtodoType[] = [];
   public tempTodoName = '';
 
   private _todos: TodoType[] = [];
+
+  public toggleTodoItems = this._todos;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable<this, PrivateFields>(this, {
@@ -38,9 +44,48 @@ class TodoStore {
     return this._todos;
   }
 
-  setTodosToggle(toggle: number) {
-    this.todosToggle = toggle;
+  setTodosToggle(toggle: TodosToggleEnum) {
+    this.currentTodosToggle = toggle;
   }
+
+  setTempTodoName(name: string) {
+    this.tempTodoName = name;
+  }
+
+  setTempSubTodos(subTodos: SubtodoType[]) {
+    this.tempSubTodos = subTodos;
+  }
+
+  setHeaderDate(date: string) {
+    this.headerDate = date;
+  }
+
+  setToggleTodoItems = async (toggle: TodosToggleEnum) => {
+    await this.requestTodos();
+
+    switch (toggle) {
+      case TodosToggleEnum.all:
+        runInAction(() => {
+          this.toggleTodoItems = this.todos;
+          this.currentTodosToggle = TodosToggleEnum.all;
+        });
+        break;
+
+      case TodosToggleEnum.withDate:
+        runInAction(() => {
+          this.toggleTodoItems = this.todos.filter((t) => t.deadline);
+          this.currentTodosToggle = TodosToggleEnum.withDate;
+        });
+        break;
+
+      case TodosToggleEnum.withoutDate:
+        runInAction(() => {
+          this.toggleTodoItems = this.todos.filter((t) => !t.deadline);
+          this.currentTodosToggle = TodosToggleEnum.withoutDate;
+        });
+        break;
+    }
+  };
 
   requestTodos = async () => {
     this.isLoading = true;
@@ -59,10 +104,8 @@ class TodoStore {
       });
     } catch (e: any) {
       console.log('TodoStore.getTodos', e.message);
-      runInAction(() => {
-        this.isLoading = false;
-      });
     }
+
     this.isLoading = false;
   };
 
@@ -93,9 +136,11 @@ class TodoStore {
         },
       });
 
-      this.requestTodos();
+      await this.requestTodos();
 
-      this.tempTodoName = '';
+      runInAction(() => {
+        this.tempTodoName = '';
+      });
     } catch (e: any) {
       console.log('TodoStore.createTodo', e.message);
     }
@@ -130,7 +175,7 @@ class TodoStore {
         },
       });
 
-      this.requestTodos();
+      await this.requestTodos();
     } catch (e: any) {
       console.log('TodoStore.editTodo', e.message);
     }
@@ -145,7 +190,7 @@ class TodoStore {
         body: { toDeleteId },
       });
 
-      this.requestTodos();
+      await this.requestTodos();
     } catch (e: any) {
       console.log('TodoStore.deleteTodo', e.message);
     }

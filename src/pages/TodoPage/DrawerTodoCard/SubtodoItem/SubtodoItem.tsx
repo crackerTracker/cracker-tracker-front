@@ -63,7 +63,7 @@ const SubtodoItem: FC<SubtodoItemProps> = ({ parentId, _id, name, done }) => {
         .filter((sub) => sub._id !== _id)
         .map((sub) => ({ _id: sub._id, name: sub.name, done: sub.done }));
 
-      todoStore.tempSubTodos = subs;
+      todoStore.setTempSubTodos(subs);
     }
   };
 

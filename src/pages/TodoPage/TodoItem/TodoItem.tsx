@@ -38,7 +38,7 @@ const TodoItem: FC<{ _id: string }> = ({ _id }) => {
         />
 
         <Space size="large">
-          {todoData?.subTodos && !!todoData?.subTodos.length && (
+          {!!todoData?.subTodos?.length && (
             <IconButton
               image={images.subTodo.default}
               isDisabled={true}

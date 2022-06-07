@@ -1,5 +1,5 @@
 import { Col, ConfigProvider, DatePicker, Row } from 'antd';
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import moment, { Moment } from 'moment';
 import SmallTodoItem from './SmallTodoItem';
 import { Container, StyledCard, WeekDate } from './TodoWeek.styles';
@@ -7,9 +7,9 @@ import 'moment/locale/ru';
 import locale from 'antd/lib/locale/ru_RU';
 import { observer } from 'mobx-react-lite';
 import formWeekDatesArray from 'utils/formWeekDatesArray';
-import { weekDaysNames } from 'config/todo';
+import { weekDaysNames, weekPageHeaderDateFormat } from 'config/todo';
 import { useTodoStore } from 'stores/hooks';
-import givenDayToEdgeISOString from 'utils/givenDayToEdgeISOString';
+import givenWeekDayToEdgeISOString from 'utils/givenWeekDayToEdgeISOString';
 
 const TodoWeek: FC = () => {
   const todoStore = useTodoStore();
@@ -17,7 +17,7 @@ const TodoWeek: FC = () => {
   const [momentValue, setMoment] = useState<Moment | null>(null);
   const [date, setDate] = useState(new Date());
 
-  const weekDatesArray = useCallback(() => {
+  const weekDatesArray = useMemo(() => {
     return formWeekDatesArray(date);
   }, [date]);
 
@@ -26,42 +26,28 @@ const TodoWeek: FC = () => {
       setDate(new Date());
       setMoment(null);
 
-      todoStore.headerDate = String(moment(new Date()).format('MMMM Y'));
+      todoStore.setHeaderDate(
+        String(moment(new Date()).format(weekPageHeaderDateFormat))
+      );
     } else {
       setDate(new Date(String(momentValue)));
       setMoment(momentValue);
 
-      todoStore.headerDate = String(momentValue.format('MMMM Y'));
+      todoStore.setHeaderDate(
+        String(momentValue.format(weekPageHeaderDateFormat))
+      );
     }
   };
 
-  const filterTodos = (i: number) => {
-    return i !== 7
+  const filterTodos = (weekDayIndex: number) => {
+    return weekDayIndex !== 7
       ? todoStore.todos.filter(
           (todo) =>
             new Date(todo.deadline).toISOString() ===
-            givenDayToEdgeISOString(i, date)
+            givenWeekDayToEdgeISOString(weekDayIndex, date)
         )
       : todoStore.todos.filter((todo) => !todo.deadline);
   };
-
-  const cardsArray = weekDaysNames.map((day, i) => (
-    <Col span={6} key={day.id}>
-      <StyledCard
-        bordered={false}
-        title={
-          <>
-            {i !== 7 && <WeekDate>{String(weekDatesArray()[i])}</WeekDate>}{' '}
-            {day.name}
-          </>
-        }
-      >
-        {filterTodos(i).map((todo) => (
-          <SmallTodoItem key={todo._id} {...todo} />
-        ))}
-      </StyledCard>
-    </Col>
-  ));
 
   return (
     <ConfigProvider locale={locale}>
@@ -78,7 +64,27 @@ const TodoWeek: FC = () => {
       </Row>
 
       <Container>
-        <Row gutter={[24, 24]}>{cardsArray}</Row>
+        <Row gutter={[24, 24]}>
+          {weekDaysNames.map((day, index) => (
+            <Col span={6} key={day.id}>
+              <StyledCard
+                bordered={false}
+                title={
+                  <>
+                    {index !== 7 && (
+                      <WeekDate>{String(weekDatesArray[index])}</WeekDate>
+                    )}{' '}
+                    {day.name}
+                  </>
+                }
+              >
+                {filterTodos(index).map((todo) => (
+                  <SmallTodoItem key={todo._id} {...todo} />
+                ))}
+              </StyledCard>
+            </Col>
+          ))}
+        </Row>
       </Container>
     </ConfigProvider>
   );
