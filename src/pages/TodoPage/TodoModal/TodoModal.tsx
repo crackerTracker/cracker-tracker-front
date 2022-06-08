@@ -28,7 +28,7 @@ const TodoModal: FC<TodoModalProps> = ({
   onCancel,
   clearMainInputValue,
 }) => {
-  const todoStore = useTodoStore();
+  const { tempTodoName, setTempSubTodos } = useTodoStore();
 
   const {
     todoName,
@@ -46,14 +46,14 @@ const TodoModal: FC<TodoModalProps> = ({
   } = useTodo();
 
   useEffect(() => {
-    setTodoName(todoStore.tempTodoName);
+    setTodoName(tempTodoName);
   }, []);
 
   const onModalCancel = () => {
     setTodoName('');
     deleteNote();
     deleteDeadline();
-    todoStore.setTempSubTodos([]);
+    setTempSubTodos([]);
     onCancel();
   };
 
@@ -134,7 +134,7 @@ const TodoModal: FC<TodoModalProps> = ({
 
       <ModalContent>
         <DrawerTodoCard
-          name={todoName || todoStore.tempTodoName}
+          name={todoName || tempTodoName}
           onCreateChangeHandler={inputChangeHandler}
         />
 

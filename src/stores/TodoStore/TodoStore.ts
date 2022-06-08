@@ -44,45 +44,36 @@ class TodoStore {
     return this._todos;
   }
 
-  setTodosToggle(toggle: TodosToggleEnum) {
+  setTodosToggle = (toggle: TodosToggleEnum) => {
     this.currentTodosToggle = toggle;
-  }
+  };
 
-  setTempTodoName(name: string) {
+  setTempTodoName = (name: string) => {
     this.tempTodoName = name;
-  }
+  };
 
-  setTempSubTodos(subTodos: SubtodoType[]) {
+  setTempSubTodos = (subTodos: SubtodoType[]) => {
     this.tempSubTodos = subTodos;
-  }
+  };
 
-  setHeaderDate(date: string) {
+  setHeaderDate = (date: string) => {
     this.headerDate = date;
-  }
+  };
 
-  setToggleTodoItems = async (toggle: TodosToggleEnum) => {
+  setToggleTodoItems = async () => {
     await this.requestTodos();
 
-    switch (toggle) {
+    switch (this.currentTodosToggle) {
       case TodosToggleEnum.all:
-        runInAction(() => {
-          this.toggleTodoItems = this.todos;
-          this.currentTodosToggle = TodosToggleEnum.all;
-        });
+        this.toggleTodoItems = this.todos;
         break;
 
       case TodosToggleEnum.withDate:
-        runInAction(() => {
-          this.toggleTodoItems = this.todos.filter((t) => t.deadline);
-          this.currentTodosToggle = TodosToggleEnum.withDate;
-        });
+        this.toggleTodoItems = this.todos.filter((t) => t.deadline);
         break;
 
       case TodosToggleEnum.withoutDate:
-        runInAction(() => {
-          this.toggleTodoItems = this.todos.filter((t) => !t.deadline);
-          this.currentTodosToggle = TodosToggleEnum.withoutDate;
-        });
+        this.toggleTodoItems = this.todos.filter((t) => !t.deadline);
         break;
     }
   };
@@ -136,7 +127,7 @@ class TodoStore {
         },
       });
 
-      await this.requestTodos();
+      await this.setToggleTodoItems();
 
       runInAction(() => {
         this.tempTodoName = '';
@@ -190,7 +181,7 @@ class TodoStore {
         body: { toDeleteId },
       });
 
-      await this.requestTodos();
+      await this.setToggleTodoItems();
     } catch (e: any) {
       console.log('TodoStore.deleteTodo', e.message);
     }

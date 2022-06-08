@@ -12,7 +12,7 @@ import { useTodoStore } from 'stores/hooks';
 import givenWeekDayToEdgeISOString from 'utils/givenWeekDayToEdgeISOString';
 
 const TodoWeek: FC = () => {
-  const todoStore = useTodoStore();
+  const { todos, setHeaderDate } = useTodoStore();
 
   const [momentValue, setMoment] = useState<Moment | null>(null);
   const [date, setDate] = useState(new Date());
@@ -26,27 +26,25 @@ const TodoWeek: FC = () => {
       setDate(new Date());
       setMoment(null);
 
-      todoStore.setHeaderDate(
+      setHeaderDate(
         String(moment(new Date()).format(weekPageHeaderDateFormat))
       );
     } else {
       setDate(new Date(String(momentValue)));
       setMoment(momentValue);
 
-      todoStore.setHeaderDate(
-        String(momentValue.format(weekPageHeaderDateFormat))
-      );
+      setHeaderDate(String(momentValue.format(weekPageHeaderDateFormat)));
     }
   };
 
   const filterTodos = (weekDayIndex: number) => {
     return weekDayIndex !== 7
-      ? todoStore.todos.filter(
+      ? todos.filter(
           (todo) =>
             new Date(todo.deadline).toISOString() ===
             givenWeekDayToEdgeISOString(weekDayIndex, date)
         )
-      : todoStore.todos.filter((todo) => !todo.deadline);
+      : todos.filter((todo) => !todo.deadline);
   };
 
   return (

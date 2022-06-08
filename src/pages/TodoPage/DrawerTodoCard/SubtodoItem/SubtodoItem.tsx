@@ -11,6 +11,8 @@ import {
   StyledCheckbox,
   StyledInput,
 } from './SubtodoItem.styles';
+import { filterSubTodos } from './utils/filterSubTodos';
+import { filterTempSubTodos } from './utils/filterTempSubTodos';
 
 type SubtodoItemProps = {
   parentId?: string;
@@ -25,8 +27,7 @@ const SubtodoItem: FC<SubtodoItemProps> = ({ parentId, _id, name, done }) => {
     done,
   });
 
-  const { todos, editTodo } = useTodoStore();
-  const todoStore = useTodoStore();
+  const { todos, tempSubTodos, editTodo, setTempSubTodos } = useTodoStore();
 
   const [todoData, setTodoData] = useState<TodoType>();
 
@@ -40,9 +41,7 @@ const SubtodoItem: FC<SubtodoItemProps> = ({ parentId, _id, name, done }) => {
     if (todoData && parentId) {
       const { name, done, deadline, note, subTodos } = todoData;
 
-      const subs = subTodos
-        .filter((sub) => sub._id !== _id)
-        .map((sub) => ({ name: sub.name, done: sub.done }));
+      const subs = filterSubTodos(subTodos, _id);
 
       editTodo(
         parentId,
@@ -57,13 +56,10 @@ const SubtodoItem: FC<SubtodoItemProps> = ({ parentId, _id, name, done }) => {
       );
     }
 
-    // if creating todo using modal
+    // if deleting subtodos in modal
     if (!parentId) {
-      const subs = todoStore.tempSubTodos
-        .filter((sub) => sub._id !== _id)
-        .map((sub) => ({ _id: sub._id, name: sub.name, done: sub.done }));
-
-      todoStore.setTempSubTodos(subs);
+      const subs = filterTempSubTodos(tempSubTodos, _id);
+      setTempSubTodos(subs);
     }
   };
 

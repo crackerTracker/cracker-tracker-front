@@ -30,8 +30,8 @@ const TodoPage: FC = () => {
   const location = useLocation();
   const currentLocation = location.pathname.split('/todo/')[1] || 'all';
 
-  const todoStore = useTodoStore();
-  const { headerDate } = useTodoStore();
+  const { headerDate, currentTodosToggle, setTempTodoName, setTodosToggle } =
+    useTodoStore();
 
   const { todoName, inputChangeHandler, addTodo, clearValue } = useTodo();
 
@@ -56,11 +56,11 @@ const TodoPage: FC = () => {
   };
 
   const onInputBlur = () => {
-    todoStore.setTempTodoName(todoName);
+    setTempTodoName(todoName);
   };
 
   const toggleIcon = useCallback(() => {
-    switch (todoStore.currentTodosToggle) {
+    switch (currentTodosToggle) {
       case TodosToggleEnum.all:
         return todosToggleIcons.all;
 
@@ -70,24 +70,23 @@ const TodoPage: FC = () => {
       case TodosToggleEnum.withoutDate:
         return todosToggleIcons.withoutDate;
     }
-  }, [todoStore.currentTodosToggle]);
+  }, [currentTodosToggle]);
 
-  //todo setTodosToggle --> setToggleTodoItems
   const toggleClick = useCallback(() => {
-    switch (todoStore.currentTodosToggle) {
+    switch (currentTodosToggle) {
       case TodosToggleEnum.all:
-        todoStore.setTodosToggle(TodosToggleEnum.withDate);
+        setTodosToggle(TodosToggleEnum.withDate);
         break;
 
       case TodosToggleEnum.withDate:
-        todoStore.setTodosToggle(TodosToggleEnum.withoutDate);
+        setTodosToggle(TodosToggleEnum.withoutDate);
         break;
 
       case TodosToggleEnum.withoutDate:
-        todoStore.setTodosToggle(TodosToggleEnum.all);
+        setTodosToggle(TodosToggleEnum.all);
         break;
     }
-  }, [todoStore.currentTodosToggle]);
+  }, [currentTodosToggle]);
 
   const navButtonChange = (nav: TodoNavigateEnum) => () =>
     navButtonHandler(nav);
