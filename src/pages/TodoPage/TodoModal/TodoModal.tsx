@@ -33,7 +33,6 @@ const TodoModal: FC<TodoModalProps> = ({
   const {
     todoName,
     setTodoName,
-    inputChangeHandler,
     addTodo,
     deadline,
     onDeadlineChange,
@@ -133,10 +132,7 @@ const TodoModal: FC<TodoModalProps> = ({
       </ConfigProvider>
 
       <ModalContent>
-        <DrawerTodoCard
-          name={todoName || tempTodoName}
-          onCreateChangeHandler={inputChangeHandler}
-        />
+        <DrawerTodoCard name={todoName || tempTodoName} />
 
         <div>
           <StyledTextArea

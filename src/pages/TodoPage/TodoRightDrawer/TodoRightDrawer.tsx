@@ -25,7 +25,6 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
 }) => {
   const {
     todoName,
-    inputChangeHandler,
     deleteTodoHandler,
     deadline,
     onDeadlineChange,
@@ -100,7 +99,7 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
         </ConfigProvider>
       }
     >
-      <DrawerTodoCard _id={_id} onCreateChangeHandler={inputChangeHandler} />
+      <DrawerTodoCard _id={_id} />
 
       <div>
         <StyledTextArea

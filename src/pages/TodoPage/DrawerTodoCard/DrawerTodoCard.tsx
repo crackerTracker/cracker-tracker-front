@@ -16,15 +16,11 @@ import {
 type DrawerTodoCardProps = {
   _id?: string;
   name?: string;
-  onCreateChangeHandler?: (e: FormEvent<HTMLInputElement>) => void;
 };
 
-const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
-  _id,
-  name,
-  onCreateChangeHandler,
-}) => {
-  const { tempSubTodos, editTodo, setTempSubTodos } = useTodoStore();
+const DrawerTodoCard: FC<DrawerTodoCardProps> = ({ _id, name }) => {
+  const { tempSubTodos, editTodo, setTempSubTodos, setTempTodoName } =
+    useTodoStore();
 
   const {
     todoData,
@@ -39,7 +35,13 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
 
   useEffect(() => {
     if (name) setTodoName(name);
-  }, [name]);
+  }, []);
+
+  const [modalName, setModalName] = useState(name || todoName);
+
+  const onModalNameChange = (e: FormEvent<HTMLInputElement>) => {
+    setModalName(e.currentTarget.value);
+  };
 
   const [subtodoAddInput, setSubtodoAddInput] = useState('');
 
@@ -99,6 +101,8 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
     if (_id) {
       editTodo(_id, todoName);
       setTodoName(todoName);
+    } else {
+      setTempTodoName(modalName);
     }
   };
 
@@ -109,8 +113,8 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
         <StyledCheckbox onChange={checkHandler} checked={isChecked}>
           <Input
             bordered={false}
-            value={todoName}
-            onChange={_id ? inputChangeHandler : onCreateChangeHandler}
+            value={_id ? todoName : modalName}
+            onChange={_id ? inputChangeHandler : onModalNameChange}
             onBlur={blurHandler}
           />
         </StyledCheckbox>
