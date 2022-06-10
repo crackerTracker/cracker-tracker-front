@@ -22,7 +22,6 @@ import { useTodoStore } from 'stores/hooks';
 import {
   TodoNavigateEnum,
   todosNavigateIcons,
-  TodosToggleEnum,
   todosToggleIcons,
   todosTogglesChangeMap,
   todosTogglesTitle,
@@ -57,8 +56,8 @@ const TodoPage: FC = () => {
     setTempTodoName(todoName);
   };
 
-  const toggleClick = (toggleState: TodosToggleEnum) => () => {
-    setTodosToggle(todosTogglesChangeMap[toggleState]);
+  const toggleClick = () => {
+    setTodosToggle(todosTogglesChangeMap[currentTodosToggle]);
   };
 
   const navButtonChange = (nav: TodoNavigateEnum) => () => setNav(nav);
@@ -79,7 +78,7 @@ const TodoPage: FC = () => {
                     <IconButton
                       backgroundColor={colors.lightBrown}
                       image={todosToggleIcons[currentTodosToggle]}
-                      onClick={toggleClick(currentTodosToggle)}
+                      onClick={toggleClick}
                       squareSide="35px"
                       paddings="0"
                     />

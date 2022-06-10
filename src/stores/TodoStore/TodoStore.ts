@@ -72,9 +72,7 @@ class TodoStore {
   };
 
   requestTodos = async () => {
-    runInAction(() => {
-      this.isLoading = true;
-    });
+    this.isLoading = true;
 
     try {
       const data = await request({
