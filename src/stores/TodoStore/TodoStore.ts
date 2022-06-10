@@ -26,8 +26,6 @@ class TodoStore {
 
   private _todos: TodoType[] = [];
 
-  public toggleTodoItems = this._todos;
-
   constructor(rootStore: RootStore) {
     makeAutoObservable<this, PrivateFields>(this, {
       rootStore: false,
@@ -42,6 +40,19 @@ class TodoStore {
 
   get todos() {
     return this._todos;
+  }
+
+  get toggleTodoItems() {
+    switch (this.currentTodosToggle) {
+      case TodosToggleEnum.all:
+        return this.todos;
+
+      case TodosToggleEnum.withDate:
+        return this.todos.filter((t) => t.deadline);
+
+      case TodosToggleEnum.withoutDate:
+        return this.todos.filter((t) => !t.deadline);
+    }
   }
 
   setTodosToggle = (toggle: TodosToggleEnum) => {
@@ -60,26 +71,10 @@ class TodoStore {
     this.headerDate = date;
   };
 
-  setToggleTodoItems = async () => {
-    await this.requestTodos();
-
-    switch (this.currentTodosToggle) {
-      case TodosToggleEnum.all:
-        this.toggleTodoItems = this.todos;
-        break;
-
-      case TodosToggleEnum.withDate:
-        this.toggleTodoItems = this.todos.filter((t) => t.deadline);
-        break;
-
-      case TodosToggleEnum.withoutDate:
-        this.toggleTodoItems = this.todos.filter((t) => !t.deadline);
-        break;
-    }
-  };
-
   requestTodos = async () => {
-    this.isLoading = true;
+    runInAction(() => {
+      this.isLoading = true;
+    });
 
     try {
       const data = await request({
@@ -97,7 +92,9 @@ class TodoStore {
       console.log('TodoStore.getTodos', e.message);
     }
 
-    this.isLoading = false;
+    runInAction(() => {
+      this.isLoading = false;
+    });
   };
 
   createTodo = async (
@@ -127,7 +124,7 @@ class TodoStore {
         },
       });
 
-      await this.setToggleTodoItems();
+      await this.requestTodos();
 
       runInAction(() => {
         this.tempTodoName = '';
@@ -181,7 +178,7 @@ class TodoStore {
         body: { toDeleteId },
       });
 
-      await this.setToggleTodoItems();
+      await this.requestTodos();
     } catch (e: any) {
       console.log('TodoStore.deleteTodo', e.message);
     }

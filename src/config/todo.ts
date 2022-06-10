@@ -36,3 +36,15 @@ export const todosToggleIcons: Record<TodosToggleEnum, string> = {
   [TodosToggleEnum.withDate]: images.todoToggleWDate.default,
   [TodosToggleEnum.withoutDate]: images.todoToggleWoutDate.default,
 };
+
+export const todosTogglesChangeMap = {
+  [TodosToggleEnum.all]: TodosToggleEnum.withDate,
+  [TodosToggleEnum.withDate]: TodosToggleEnum.withoutDate,
+  [TodosToggleEnum.withoutDate]: TodosToggleEnum.all,
+};
+
+export const todosTogglesTitle = {
+  [TodosToggleEnum.all]: 'Показать задачи с дедлайном',
+  [TodosToggleEnum.withDate]: 'Показать задачи без дедлайна',
+  [TodosToggleEnum.withoutDate]: 'Показать все задачи',
+};

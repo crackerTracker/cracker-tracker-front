@@ -101,8 +101,12 @@ const TodoModal: FC<TodoModalProps> = ({
                     <Row align="middle" wrap={false}>
                       <Col>
                         <ModalDate>
-                          {deadline &&
-                            `Выполнить до ${formDateStringFromISO(deadline)}`}
+                          {deadline && (
+                            <>
+                              Выполнить до&nbsp;
+                              {formDateStringFromISO(deadline)}
+                            </>
+                          )}
                         </ModalDate>
                       </Col>
                       <Col offset={1}>

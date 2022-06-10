@@ -6,9 +6,11 @@ const formWeekDatesArray = (date: Date) => {
   );
 
   const arr = [];
+  const currentWeekDay = firstWeekDay;
 
-  for (let index = 0; index < 7; index++) {
-    arr.push(firstWeekDay.getDate() + index);
+  for (let i = 0; i < 7; i++) {
+    arr.push(currentWeekDay.getDate());
+    currentWeekDay.setDate(currentWeekDay.getDate() + 1);
   }
 
   return arr;

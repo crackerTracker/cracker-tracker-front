@@ -6,11 +6,10 @@ import TodoItem from '../TodoItem';
 import { StyledList, Todos } from './TodoAll.styles';
 
 const TodoAll: FC = () => {
-  const { currentTodosToggle, toggleTodoItems, setToggleTodoItems } =
-    useTodoStore();
+  const { currentTodosToggle, toggleTodoItems, requestTodos } = useTodoStore();
 
   useEffect(() => {
-    setToggleTodoItems();
+    requestTodos();
   }, [currentTodosToggle]);
 
   return (
