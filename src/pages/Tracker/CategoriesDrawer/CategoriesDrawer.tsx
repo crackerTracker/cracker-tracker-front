@@ -37,14 +37,14 @@ const CategoriesDrawer: React.FC<Props> = ({ visible, onDrawerClose }) => {
       <RightSideDrawer
         visible={visible}
         onDrawerClose={closeDrawer}
-        headerDate={'Ваши категории'}
+        headerTitle={'Ваши категории'}
       >
         <Container>
           <Flex>
             <ListsWrapper>
               <Col span={12} style={{ paddingRight: '6px', maxHeight: '100%' }}>
                 <Panel>
-                  <Header>Дейстующие</Header>
+                  <Header>Действующие</Header>
                   <StyledList>
                     {activeCategories.map((category) => (
                       <Category

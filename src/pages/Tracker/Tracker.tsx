@@ -14,14 +14,14 @@ import { observer } from 'mobx-react-lite';
 import useInitSectionNavbar from 'utils/hooks/useInitSectionNavbar';
 import { trackerNavbarIcons } from 'config/navbar';
 import { TrackerSectionsEnum } from 'config/tracker';
-import useDrawer from 'components/RightSideDrawer/useDrawer';
 import CategoriesDrawer from './CategoriesDrawer';
+import useDrawer from 'utils/hooks/useDrawer';
 
 const Tracker = () => {
-  const { visible, setVisible, onDrawerClose } = useDrawer();
+  const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
 
   const showDrawer = useCallback(() => {
-    setVisible(true);
+    onDrawerOpen();
   }, []);
 
   useInitSectionNavbar(trackerNavbarIcons, {
