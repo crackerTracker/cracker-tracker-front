@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import colors, { halfOpacityColors, shadowColors } from 'styles/colors';
-import { flex, scroller } from 'styles/mixins';
-import { Input, List } from 'antd';
+import { flex } from 'styles/mixins';
+import { Input } from 'antd';
 
 export const Wrapper = styled.div`
   height: 100vh;
@@ -20,14 +20,21 @@ export const Container = styled.div`
   ${flex({ direction: 'column' })}
 `;
 
-export const Header = styled.header``;
+export const Header = styled.header`
+  a {
+    cursor: default;
+  }
+`;
 
-export const TextBlock = styled.div`
-  font-family: 'Montserrat';
+export const TitleGroup = styled.div`
+  margin-bottom: 18px;
+  ${flex({})}
+
+  font-family: 'Montserrat', sans-serif;
 `;
 
 export const Title = styled.h1`
-  margin-right: 20px;
+  margin-right: 30px;
   margin-bottom: 0;
 
   font-family: inherit;
@@ -41,17 +48,10 @@ export const Title = styled.h1`
   }
 `;
 
-export const TitleGroup = styled.div`
-  margin-bottom: 18px;
-  ${flex({})}
-
-  font-family: inherit;
-`;
-
 export const SubTitle = styled.h2`
   margin-bottom: 0;
 
-  font-family: inherit;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   font-size: 20px;
   line-height: 24px;
@@ -63,32 +63,13 @@ export const Toggle = styled.div`
   ${flex({ align: 'center' })}
 `;
 
-export const Todos = styled.div`
-  margin-top: 45px;
-  margin-bottom: 22px;
-
-  ${flex({ direction: 'column' })}
-  flex: 1 1 auto;
-
-  overflow: auto;
-  ${scroller}
-`;
-
-export const StyledList = styled(List)`
-  border: none;
-
-  .ant-list-item {
-    border: 1px solid ${shadowColors.borderSand};
-  }
-`;
-
 export const InputContainer = styled.div`
   padding: 25px 35px;
   ${flex({})}
 
   border-radius: 16px;
   background-color: ${colors.sand};
-  filter: drop-shadow(0px 6px 20px ${shadowColors.brown});
+  box-shadow: 0px 6px 20px ${shadowColors.brown};
 `;
 
 export const StyledInput = styled(Input)`

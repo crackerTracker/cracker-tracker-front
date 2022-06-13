@@ -15,13 +15,13 @@ interface RightSideDrawerProps {
   footerChildren?: React.ReactNode;
   onDrawerClose: VoidFunction;
   visible: boolean;
-  headerDate?: string;
+  headerTitle?: string | null;
 }
 
 const RightSideDrawer: FC<RightSideDrawerProps> = ({
   onDrawerClose,
   visible,
-  headerDate = '',
+  headerTitle = '',
   children = undefined,
   footerChildren = undefined,
 }) => {
@@ -35,7 +35,7 @@ const RightSideDrawer: FC<RightSideDrawerProps> = ({
     >
       <Container>
         <Header>
-          <Date>{headerDate}</Date>
+          <Date>{headerTitle}</Date>
           <IconButton
             image={images.closeBrown.default}
             onClick={onDrawerClose}

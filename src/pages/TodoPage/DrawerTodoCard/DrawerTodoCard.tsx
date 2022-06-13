@@ -1,10 +1,11 @@
 import { Input, List } from 'antd';
-import { CheckboxChangeEvent } from 'antd/lib/checkbox';
-import IconButton from 'components/IconButton/IconButton';
+import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
-import React, { FC, FormEvent, memo, useState } from 'react';
-import SubtodoItem from '../SubtodoItem';
-import todos from '../todoMockData';
+import { observer } from 'mobx-react-lite';
+import React, { FC, FormEvent, useEffect, useState } from 'react';
+import { useTodoStore } from 'stores/hooks';
+import SubtodoItem from './SubtodoItem';
+import useTodo from '../useTodo';
 import {
   InputGroup,
   StyledCard,
@@ -12,60 +13,147 @@ import {
   StyledInput,
 } from './DrawerTodoCard.styles';
 
-const DrawerTodoCard: FC<{ id: number }> = ({ id }) => {
-  const todoData = todos.find((todo) => todo.id === id);
+type DrawerTodoCardProps = {
+  _id?: string;
+  name?: string;
+};
 
-  const [isChecked, setIsChecked] = useState(todoData?.done);
-  const [value, setValue] = useState(todoData?.name);
-  const [addTaskValue, setAddTaskValue] = useState('');
+const DrawerTodoCard: FC<DrawerTodoCardProps> = ({ _id, name }) => {
+  const { tempSubTodos, editTodo, setTempSubTodos, setTempTodoName } =
+    useTodoStore();
 
-  const checkHandler = (e: CheckboxChangeEvent) => {
-    setIsChecked(e.target.checked);
+  const {
+    todoData,
+    todoName,
+    setTodoName,
+    inputChangeHandler,
+    isChecked,
+    checkHandler,
+  } = useTodo({
+    _id,
+  });
+
+  useEffect(() => {
+    if (name) setTodoName(name);
+  }, []);
+
+  const [modalName, setModalName] = useState(name || todoName);
+
+  const onModalNameChange = (e: FormEvent<HTMLInputElement>) => {
+    setModalName(e.currentTarget.value);
   };
 
-  const todoChangeHandler = (e: FormEvent<HTMLInputElement>) => {
-    setValue(e.currentTarget.value);
+  const [subtodoAddInput, setSubtodoAddInput] = useState('');
+
+  const onSubtodoAddInputChange = (e: FormEvent<HTMLInputElement>) => {
+    setSubtodoAddInput(e.currentTarget.value);
   };
 
-  const addTaskChangeHandler = (e: FormEvent<HTMLInputElement>) => {
-    setAddTaskValue(e.currentTarget.value);
+  const addSubtodo = () => {
+    let toPush = [];
+
+    // if editing todo
+    if (_id && todoData) {
+      const { name, done, deadline, note, subTodos } = todoData;
+
+      if (subTodos) {
+        const formSubTodos = subTodos.map((s) => ({
+          name: s.name,
+          done: s.done,
+        }));
+
+        toPush = [...formSubTodos, { name: subtodoAddInput, done: false }];
+      } else {
+        toPush = [{ name: subtodoAddInput, done: false }];
+      }
+
+      editTodo(
+        _id,
+        name,
+        done,
+        deadline,
+        note,
+        false,
+        false,
+        undefined,
+        toPush
+      );
+    }
+
+    // if creating todo using modal
+    if (!_id && tempSubTodos) {
+      const length = tempSubTodos.length;
+
+      setTempSubTodos([
+        ...tempSubTodos,
+        {
+          _id: String(length ? +tempSubTodos[length - 1]._id + 1 : 1),
+          name: subtodoAddInput,
+          done: false,
+        },
+      ]);
+    }
+
+    setSubtodoAddInput('');
   };
 
-  const addTaskHandler = () => {
-    setAddTaskValue('');
+  const blurHandler = () => {
+    if (_id) {
+      editTodo(_id, todoName);
+      setTodoName(todoName);
+    } else {
+      setTempTodoName(modalName);
+    }
   };
 
   return (
     <StyledCard
       bordered={false}
       title={
-        <StyledCheckbox onChange={checkHandler} $isChecked={isChecked || false}>
-          <Input bordered={false} value={value} onChange={todoChangeHandler} />
+        <StyledCheckbox onChange={checkHandler} checked={isChecked}>
+          <Input
+            bordered={false}
+            value={_id ? todoName : modalName}
+            onChange={_id ? inputChangeHandler : onModalNameChange}
+            onBlur={blurHandler}
+          />
         </StyledCheckbox>
       }
     >
-      {todoData?.subtodos?.length !== 0 && (
+      {/* if editing todo */}
+      {_id && !!todoData?.subTodos?.length && (
         <List
-          dataSource={todoData?.subtodos}
-          renderItem={(item) => <SubtodoItem key={item.id} {...item} />}
+          dataSource={todoData.subTodos}
+          renderItem={(item) => (
+            <SubtodoItem key={item._id} parentId={_id} {...item} />
+          )}
+        />
+      )}
+
+      {/* if creating todo using modal */}
+      {!_id && !!tempSubTodos.length && (
+        <List
+          dataSource={tempSubTodos}
+          renderItem={(item) => <SubtodoItem key={item._id} {...item} />}
         />
       )}
 
       <InputGroup>
         <IconButton
           image={images.plusBrown.default}
-          squareSide="45px"
-          onClick={addTaskHandler}
+          squareSide="35px"
+          onClick={addSubtodo}
+          paddings="0"
         />
         <StyledInput
           bordered={false}
-          placeholder="Добавить задачу"
-          value={addTaskValue}
-          onChange={addTaskChangeHandler}
+          placeholder="Добавить подзадачу"
+          value={subtodoAddInput}
+          onChange={onSubtodoAddInputChange}
         />
       </InputGroup>
     </StyledCard>
   );
 };
 
-export default memo(DrawerTodoCard);
+export default observer(DrawerTodoCard);

@@ -27,6 +27,7 @@ export const halfOpacityColors = {
   brown: 'rgba(208, 147, 106, 0.5)',
   lightBrown: 'rgba(255, 248, 243, 0.5)',
   lightBlue: 'rgba(210, 235, 252, 0.5)', // d2ebfc
+  sand: 'rgba(252, 228, 210, 0.5)',
 };
 
 export const transparentColors: Record<

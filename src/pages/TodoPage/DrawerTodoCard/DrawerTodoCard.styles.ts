@@ -8,7 +8,7 @@ export const StyledCard = styled(Card)`
 
   border-radius: 8px;
   background-color: ${halfOpacityColors.lightBrown};
-  filter: drop-shadow(0px 6px 20px ${shadowColors.brown});
+  box-shadow: 0px 6px 20px ${shadowColors.brown};
 
   .ant-card-head {
     background-color: ${colors.lightBrown};
@@ -31,7 +31,7 @@ export const StyledCard = styled(Card)`
   }
 `;
 
-export const StyledCheckbox = styled(Checkbox)<{ $isChecked: boolean }>`
+export const StyledCheckbox = styled(Checkbox)<{ checked: boolean }>`
   margin-left: 6px;
   ${flex({ align: 'center' })}
 
@@ -51,11 +51,11 @@ export const StyledCheckbox = styled(Checkbox)<{ $isChecked: boolean }>`
     }
   }
 
-  ${({ $isChecked }) =>
+  ${({ checked }) =>
     css`
-      opacity: ${$isChecked ? '0.5' : '1'};
+      opacity: ${checked ? '0.5' : '1'};
       input {
-        text-decoration: ${$isChecked ? 'line-through' : 'none'};
+        text-decoration: ${checked ? 'line-through' : 'none'};
       }
     `}
 `;
@@ -66,6 +66,7 @@ export const InputGroup = styled(Input.Group)`
 
 export const StyledInput = styled(Input)`
   padding: 8px 10px;
+  margin-left: 10px;
 
   font-weight: 400;
   font-size: 23px;

@@ -15,7 +15,7 @@ export const Container = styled.div`
 `;
 
 export const Header = styled.header`
-  ${flex({})}
+  ${flex({ align: 'center' })}
   margin-bottom: 35px;
 `;
 
@@ -23,7 +23,7 @@ export const Date = styled.div`
   ${flex({ align: 'center', justify: 'center' })}
   flex: 1 1 auto;
 
-  font-family: 'Montserrat';
+  font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   font-size: 19px;
   color: ${colors.darkBrown};

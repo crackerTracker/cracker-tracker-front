@@ -12,7 +12,7 @@ export const SubtodoListItem = styled(List.Item)`
   }
 `;
 
-export const StyledCheckbox = styled(Checkbox)<{ $isChecked: boolean }>`
+export const StyledCheckbox = styled(Checkbox)<{ checked: boolean }>`
   width: 100%;
   ${flex({ align: 'center' })}
 
@@ -32,11 +32,11 @@ export const StyledCheckbox = styled(Checkbox)<{ $isChecked: boolean }>`
     }
   }
 
-  ${({ $isChecked }) =>
+  ${({ checked }) =>
     css`
-      opacity: ${$isChecked ? '0.5' : '1'};
+      opacity: ${checked ? '0.5' : '1'};
       input {
-        text-decoration: ${$isChecked ? 'line-through' : 'none'};
+        text-decoration: ${checked ? 'line-through' : 'none'};
       }
     `}
 `;

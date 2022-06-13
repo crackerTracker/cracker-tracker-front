@@ -82,8 +82,6 @@ export const useTimer = () => {
       currentValue = String(option.diff).split(' ')[0];
     }
 
-    setMinutes((t) => t - Number(currentValue));
-    setInitialMinutes((t) => t - Number(currentValue));
     if (minutes - Number(currentValue) > 0) {
       setMinutes((t) => t - Number(currentValue));
       setInitialMinutes((t) => t - Number(currentValue));

@@ -1,142 +1,135 @@
-import React, { FC, FormEvent, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { Col, Row, Space } from 'antd';
 import {
   Wrapper,
   Container,
   Header,
-  TextBlock,
   InputContainer,
   StyledInput,
   Title,
   Toggle,
   TitleGroup,
-  Todos,
-  StyledList,
+  SubTitle,
 } from './TodoPage.styles';
 import { images } from 'img/icons';
-import TodoItem from './TodoItem/TodoItem';
-import todos, { TodoType } from './todoMockData';
-import IconButton from 'components/IconButton/IconButton';
+import IconButton from 'components/IconButton';
 import colors from 'styles/colors';
+import { Link, Outlet, useLocation } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+import TodoModal from './TodoModal';
+import useTodo from './useTodo';
+import { useTodoStore } from 'stores/hooks';
+import {
+  TodoNavigateEnum,
+  todosNavigateIcons,
+  todosToggleIcons,
+  todosTogglesChangeMap,
+  todosTogglesTitle,
+} from 'config/todo';
 
 const TodoPage: FC = () => {
-  const [toggle, setToggle] = useState(0);
-  const [value, setValue] = useState('');
+  const location = useLocation();
+  const currentLocation = location.pathname.split('/todo/')[1] || 'all';
 
-  const toggleClick = () => {
-    toggle === 2 ? setToggle(0) : setToggle((t) => t + 1);
-  };
+  const { headerDate, currentTodosToggle, setTempTodoName, setTodosToggle } =
+    useTodoStore();
 
-  const inputHandler = (e: FormEvent<HTMLInputElement>) => {
-    setValue(e.currentTarget.value);
-  };
+  const { todoName, inputChangeHandler, addTodo, clearValue } = useTodo();
 
-  const navButtonHandler = (destination: string) => {
-    switch (destination) {
-      case 'all':
-        console.log('navigate to all');
-        break;
-      case 'day':
-        console.log('navigate to day');
-        break;
-      case 'week':
-        console.log('navigate to week');
-        break;
-    }
-  };
+  const [nav, setNav] = useState(currentLocation as TodoNavigateEnum);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const inputModalOpener = () => {
-    console.log('*opening modal*');
-  };
+  const onModalOpen = useCallback(() => {
+    setIsModalVisible(true);
+  }, []);
+
+  const onModalCancel = useCallback(() => {
+    setIsModalVisible(false);
+  }, []);
 
   const addTodoHandler = () => {
-    setValue('');
+    addTodo();
+    onModalCancel();
   };
+
+  const onInputBlur = () => {
+    setTempTodoName(todoName);
+  };
+
+  const toggleClick = () => {
+    setTodosToggle(todosTogglesChangeMap[currentTodosToggle]);
+  };
+
+  const navButtonChange = (nav: TodoNavigateEnum) => () => setNav(nav);
 
   return (
     <Wrapper>
       <Container>
         <Header>
           <Row justify="space-between">
-            <Col>
-              <TextBlock>
-                <TitleGroup>
-                  <Title>Все задачи</Title>
+            <Col span={16}>
+              <TitleGroup>
+                <Title>
+                  {nav === TodoNavigateEnum.all ? 'Все задачи' : 'Неделя'}
+                </Title>
 
-                  <Toggle>
-                    {toggle === 0 && (
-                      <IconButton
-                        backgroundColor={colors.lightBrown}
-                        image={images.todoToggleAll.default}
-                        onClick={toggleClick}
-                      />
-                    )}
-                    {toggle === 1 && (
-                      <IconButton
-                        backgroundColor={colors.lightBrown}
-                        image={images.todoToggleWDate.default}
-                        onClick={toggleClick}
-                      />
-                    )}
-                    {toggle === 2 && (
-                      <IconButton
-                        backgroundColor={colors.lightBrown}
-                        image={images.todoToggleWoutDate.default}
-                        onClick={toggleClick}
-                      />
-                    )}
+                {nav === TodoNavigateEnum.all && (
+                  <Toggle title={todosTogglesTitle[currentTodosToggle]}>
+                    <IconButton
+                      backgroundColor={colors.lightBrown}
+                      image={todosToggleIcons[currentTodosToggle]}
+                      onClick={toggleClick}
+                      squareSide="35px"
+                      paddings="0"
+                    />
                   </Toggle>
-                </TitleGroup>
-              </TextBlock>
+                )}
+              </TitleGroup>
+              {nav !== TodoNavigateEnum.all && (
+                <SubTitle>{headerDate}</SubTitle>
+              )}
             </Col>
-            <Col>
-              <Space size="large">
-                <IconButton
-                  backgroundColor={colors.brown}
-                  image={images.todoNavigateAll.default}
-                  onClick={() => navButtonHandler('all')}
-                  isDisabled={true}
-                />
-                <IconButton
-                  backgroundColor={colors.brown}
-                  image={images.todoNavigateDay.default}
-                  onClick={() => navButtonHandler('day')}
-                />
-                <IconButton
-                  backgroundColor={colors.brown}
-                  image={images.todoNavigateWeek.default}
-                  onClick={() => navButtonHandler('week')}
-                />
-              </Space>
+            <Col span={8}>
+              <Row justify="end">
+                <Col>
+                  <Link to="/todo">
+                    <IconButton
+                      backgroundColor={colors.brown}
+                      image={todosNavigateIcons[TodoNavigateEnum.all]}
+                      onClick={navButtonChange(TodoNavigateEnum.all)}
+                      isDisabled={nav === TodoNavigateEnum.all}
+                    />
+                  </Link>
+                </Col>
+                <Col offset={1}>
+                  <Link to="week">
+                    <IconButton
+                      backgroundColor={colors.brown}
+                      image={todosNavigateIcons[TodoNavigateEnum.week]}
+                      onClick={navButtonChange(TodoNavigateEnum.week)}
+                      isDisabled={nav === TodoNavigateEnum.week}
+                    />
+                  </Link>
+                </Col>
+              </Row>
             </Col>
           </Row>
         </Header>
 
-        <Todos>
-          <StyledList
-            size="large"
-            bordered
-            dataSource={todos}
-            renderItem={(item) => (
-              <TodoItem
-                key={(item as TodoType).id}
-                id={(item as TodoType).id}
-              />
-            )}
-          />
-        </Todos>
+        <Outlet />
 
         <InputContainer>
           <StyledInput
             placeholder="Добавить задачу"
             size="large"
-            value={value}
-            onChange={inputHandler}
+            value={todoName}
+            onChange={inputChangeHandler}
+            onBlur={onInputBlur}
           />
           <Space size="large">
             <IconButton
               image={images.openTodoModalArrow.default}
-              onClick={inputModalOpener}
+              onClick={onModalOpen}
               squareSide="70px"
             />
             <IconButton
@@ -146,9 +139,15 @@ const TodoPage: FC = () => {
             />
           </Space>
         </InputContainer>
+
+        <TodoModal
+          isVisible={isModalVisible}
+          onCancel={onModalCancel}
+          clearMainInputValue={clearValue}
+        />
       </Container>
     </Wrapper>
   );
 };
 
-export default TodoPage;
+export default observer(TodoPage);

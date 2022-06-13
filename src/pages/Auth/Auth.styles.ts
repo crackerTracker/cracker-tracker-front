@@ -28,7 +28,7 @@ export const TextContent = styled.div`
 
   user-select: none;
 
-  ${flex({ direction: 'column', align: 'center' })}
+  ${flex({ direction: 'column', align: 'center', justify: 'space-between' })}
 `;
 
 export const Logo = styled.div`

@@ -8,3 +8,5 @@ export const useTrackerStore = () => useContext(StoresContext).trackerStore;
 export const useAuthStore = () => useContext(StoresContext).authStore;
 
 export const useNavbarStore = () => useContext(StoresContext).navbarStore;
+
+export const useTodoStore = () => useContext(StoresContext).todoStore;
