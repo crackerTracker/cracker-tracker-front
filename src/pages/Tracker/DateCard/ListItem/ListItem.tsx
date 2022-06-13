@@ -11,12 +11,14 @@ import {
 } from './ListItem.styles';
 import { Dropdown, List, Menu, Select } from 'antd';
 import { useTrackerStore } from 'stores/hooks';
-import { InputStatusesEnum } from 'types/antd';
+import { InputStatusesEnum, SelectOptionType } from 'types/antd';
 import useTimeTrackingInput from 'utils/hooks/useTimeTrackingInput';
 import timeValidator from 'utils/timeValidator';
 import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
 import colors from 'styles/colors';
+import { observer } from 'mobx-react-lite';
+import convertSpentTimeStringToMins from 'utils/convertSpentTimeStringToMins';
 
 enum listItemStatesEnum {
   initial = 'initial',
@@ -28,19 +30,26 @@ type Props = {
 };
 
 const ListItem: React.FC<Props> = ({ task }) => {
-  const { category, minutesSpent } = task;
-  const { name, color } = category;
-  const { arrayActiveCategoriesToSelect } = useTrackerStore();
+  const { category, minutesSpent, id, timestamp } = task;
+  const { arrayActiveCategoriesToSelect, deleteTask, editTask } =
+    useTrackerStore();
   const [state, setState] = useState(listItemStatesEnum.initial);
-  const [selectedCategory, setSelectedCategory] = useState(category.name);
+  const [selectedCategoryOption, setSelectedCategoryOption] =
+    useState<SelectOptionType>({ label: category.name, value: category.id });
 
   const timeSpent = useMemo(
     () => getMinsAndHoursStringFromMins(minutesSpent),
     [minutesSpent]
   );
 
-  const { time, timeError, setTimeError, onChangeTime } =
+  const { time, setTime, timeError, setTimeError, onChangeTime } =
     useTimeTrackingInput(timeSpent);
+
+  const resetListItemEdition = () => {
+    setState(listItemStatesEnum.initial);
+    setSelectedCategoryOption({ label: category.name, value: category.id });
+    setTime(timeSpent);
+  };
 
   const editContainer = useRef<HTMLDivElement | null>(null);
 
@@ -56,7 +65,7 @@ const ListItem: React.FC<Props> = ({ task }) => {
         //@ts-ignore
         !e.target?.['categoryDropdownWasClicked']
       ) {
-        setState(listItemStatesEnum.initial); // todo сюда вставить обнуление
+        resetListItemEdition();
       }
     };
 
@@ -74,23 +83,35 @@ const ListItem: React.FC<Props> = ({ task }) => {
     setState(listItemStatesEnum.edit);
   };
 
-  const onChangeCategory = (value: string) => {
-    setSelectedCategory(value);
+  const onClickDelete = async () => {
+    await deleteTask(id, timestamp);
+  };
+
+  const onChangeCategory = (
+    value: string,
+    option: SelectOptionType | SelectOptionType[]
+  ) => {
+    setSelectedCategoryOption(Array.isArray(option) ? option[0] : option);
   };
 
   const onClickCancel = () => {
-    setState(listItemStatesEnum.initial);
-    // todo сюда вставить обнуление
+    resetListItemEdition();
   };
 
-  const onClickApprove = () => {
+  const onClickApprove = async () => {
     if (!timeValidator(time.trim())) {
       setTimeError(true);
       return;
     }
 
-    // todo вставить обнуление, сохранение данных
-    setState(listItemStatesEnum.initial);
+    const result = await editTask(id, {
+      categoryId: selectedCategoryOption.value,
+      minutesSpent: convertSpentTimeStringToMins(time),
+    });
+
+    if (result) {
+      resetListItemEdition();
+    }
   };
 
   const onClickSelect = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -103,8 +124,9 @@ const ListItem: React.FC<Props> = ({ task }) => {
       <Menu.Item key="1" onClick={onClickEdit}>
         Редактировать
       </Menu.Item>
-      {/* todo реализовать удаление */}
-      <Menu.Item key="2">Удалить</Menu.Item>
+      <Menu.Item key="2" onClick={onClickDelete}>
+        Удалить
+      </Menu.Item>
     </Menu>
   );
 
@@ -114,8 +136,8 @@ const ListItem: React.FC<Props> = ({ task }) => {
       <div>
         <StyledListItem extra={<div>{timeSpent}</div>}>
           <Content>
-            <Color color={color} />
-            {name}
+            <Color color={category.color} />
+            {category.name}
           </Content>
         </StyledListItem>
       </div>
@@ -126,7 +148,7 @@ const ListItem: React.FC<Props> = ({ task }) => {
         <Select
           size="middle"
           options={arrayActiveCategoriesToSelect}
-          value={selectedCategory}
+          value={selectedCategoryOption.label}
           style={{ width: '120px', marginRight: '10px', flexGrow: 1 }}
           onChange={onChangeCategory}
           onClick={onClickSelect}
@@ -156,6 +178,7 @@ const ListItem: React.FC<Props> = ({ task }) => {
             paddings={'7px'}
             image={images.deleteWhite.default}
             backgroundColor={colors.red}
+            onClick={onClickDelete}
           />
         </Buttons>
       </EditContainer>
@@ -163,4 +186,4 @@ const ListItem: React.FC<Props> = ({ task }) => {
   );
 };
 
-export default ListItem;
+export default observer(ListItem);

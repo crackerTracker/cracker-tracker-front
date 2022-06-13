@@ -16,16 +16,11 @@ import {
 type DrawerTodoCardProps = {
   _id?: string;
   name?: string;
-  onCreateChangeHandler?: (e: FormEvent<HTMLInputElement>) => void;
 };
 
-const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
-  _id,
-  name,
-  onCreateChangeHandler,
-}) => {
-  const { editTodo } = useTodoStore();
-  const todoStore = useTodoStore();
+const DrawerTodoCard: FC<DrawerTodoCardProps> = ({ _id, name }) => {
+  const { tempSubTodos, editTodo, setTempSubTodos, setTempTodoName } =
+    useTodoStore();
 
   const {
     todoData,
@@ -40,7 +35,13 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
 
   useEffect(() => {
     if (name) setTodoName(name);
-  }, [name]);
+  }, []);
+
+  const [modalName, setModalName] = useState(name || todoName);
+
+  const onModalNameChange = (e: FormEvent<HTMLInputElement>) => {
+    setModalName(e.currentTarget.value);
+  };
 
   const [subtodoAddInput, setSubtodoAddInput] = useState('');
 
@@ -80,17 +81,17 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
     }
 
     // if creating todo using modal
-    if (!_id && todoStore.tempSubTodos) {
-      const length = todoStore.tempSubTodos.length;
+    if (!_id && tempSubTodos) {
+      const length = tempSubTodos.length;
 
-      todoStore.tempSubTodos = [
-        ...todoStore.tempSubTodos,
+      setTempSubTodos([
+        ...tempSubTodos,
         {
-          _id: String(length ? +todoStore.tempSubTodos[length - 1]._id + 1 : 1),
+          _id: String(length ? +tempSubTodos[length - 1]._id + 1 : 1),
           name: subtodoAddInput,
           done: false,
         },
-      ];
+      ]);
     }
 
     setSubtodoAddInput('');
@@ -100,6 +101,8 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
     if (_id) {
       editTodo(_id, todoName);
       setTodoName(todoName);
+    } else {
+      setTempTodoName(modalName);
     }
   };
 
@@ -110,15 +113,15 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
         <StyledCheckbox onChange={checkHandler} checked={isChecked}>
           <Input
             bordered={false}
-            value={todoName}
-            onChange={_id ? inputChangeHandler : onCreateChangeHandler}
+            value={_id ? todoName : modalName}
+            onChange={_id ? inputChangeHandler : onModalNameChange}
             onBlur={blurHandler}
           />
         </StyledCheckbox>
       }
     >
       {/* if editing todo */}
-      {_id && todoData?.subTodos && !!todoData?.subTodos.length && (
+      {_id && !!todoData?.subTodos?.length && (
         <List
           dataSource={todoData.subTodos}
           renderItem={(item) => (
@@ -128,9 +131,9 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({
       )}
 
       {/* if creating todo using modal */}
-      {!_id && !!todoStore.tempSubTodos.length && (
+      {!_id && !!tempSubTodos.length && (
         <List
-          dataSource={todoStore.tempSubTodos}
+          dataSource={tempSubTodos}
           renderItem={(item) => <SubtodoItem key={item._id} {...item} />}
         />
       )}

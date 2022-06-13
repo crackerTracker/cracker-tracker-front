@@ -1,17 +1,18 @@
-const formWeekDatesArray = (date: Date) => {
-  // index of week day
-  const dayNumber = date.getDay() === 0 ? 7 : date.getDay();
+import getWeekDayIndex from './getWeekDayIndex';
 
+const formWeekDatesArray = (date: Date) => {
   const firstWeekDay = new Date(
-    date.getTime() - (dayNumber - 1) * 24 * 60 * 60 * 1000
+    date.getTime() - getWeekDayIndex(date) * 24 * 60 * 60 * 1000
   );
 
   const arr = [];
+  const currentWeekDay = firstWeekDay;
 
   for (let i = 0; i < 7; i++) {
-    arr.push(firstWeekDay.getDate());
-    firstWeekDay.setDate(firstWeekDay.getDate() + 1);
+    arr.push(currentWeekDay.getDate());
+    currentWeekDay.setDate(currentWeekDay.getDate() + 1);
   }
+
   return arr;
 };
 

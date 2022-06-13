@@ -33,7 +33,7 @@ const SmallTodoItem: FC<{ _id: string }> = ({ _id }) => {
           }
           title={<TodoName>{todoData?.name as string}</TodoName>}
         />
-        {todoData?.subTodos && !!todoData?.subTodos.length && (
+        {!!todoData?.subTodos?.length && (
           <IconButton
             image={images.subTodo.default}
             squareSide="20px"

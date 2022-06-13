@@ -6,29 +6,18 @@ import TodoItem from '../TodoItem';
 import { StyledList, Todos } from './TodoAll.styles';
 
 const TodoAll: FC = () => {
-  const { todos, requestTodos: getTodos, todosToggle } = useTodoStore();
+  const { currentTodosToggle, toggleTodoItems, requestTodos } = useTodoStore();
 
   useEffect(() => {
-    getTodos();
-  }, []);
-
-  const toggleTodoItems = () => {
-    switch (todosToggle) {
-      case 0:
-        return todos;
-      case 1:
-        return todos.filter((t) => t.deadline);
-      case 2:
-        return todos.filter((t) => !t.deadline);
-    }
-  };
+    requestTodos();
+  }, [currentTodosToggle]);
 
   return (
     <Todos>
       <StyledList
         size="large"
         bordered
-        dataSource={toggleTodoItems()}
+        dataSource={toggleTodoItems}
         renderItem={(item) => (
           <TodoItem key={(item as TodoType)._id} _id={(item as TodoType)._id} />
         )}

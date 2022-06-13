@@ -1,3 +1,4 @@
+import { TodosToggleEnum, weekPageHeaderDateFormat } from 'config/todo';
 import { makeAutoObservable, runInAction } from 'mobx';
 import moment from 'moment';
 import 'moment/locale/ru';
@@ -13,9 +14,12 @@ class TodoStore {
 
   public isLoading = false;
 
-  public headerDate = String(moment(new Date()).format('MMMM Y'));
+  // current date in header of week page like 'июнь 2022'
+  public headerDate = String(
+    moment(new Date()).format(weekPageHeaderDateFormat)
+  );
 
-  public todosToggle = 0;
+  public currentTodosToggle = TodosToggleEnum.all;
 
   public tempSubTodos: SubtodoType[] = [];
   public tempTodoName = '';
@@ -38,9 +42,34 @@ class TodoStore {
     return this._todos;
   }
 
-  setTodosToggle(toggle: number) {
-    this.todosToggle = toggle;
+  get toggleTodoItems() {
+    switch (this.currentTodosToggle) {
+      case TodosToggleEnum.all:
+        return this.todos;
+
+      case TodosToggleEnum.withDate:
+        return this.todos.filter((t) => t.deadline);
+
+      case TodosToggleEnum.withoutDate:
+        return this.todos.filter((t) => !t.deadline);
+    }
   }
+
+  setTodosToggle = (toggle: TodosToggleEnum) => {
+    this.currentTodosToggle = toggle;
+  };
+
+  setTempTodoName = (name: string) => {
+    this.tempTodoName = name;
+  };
+
+  setTempSubTodos = (subTodos: SubtodoType[]) => {
+    this.tempSubTodos = subTodos;
+  };
+
+  setHeaderDate = (date: string) => {
+    this.headerDate = date;
+  };
 
   requestTodos = async () => {
     this.isLoading = true;
@@ -59,11 +88,11 @@ class TodoStore {
       });
     } catch (e: any) {
       console.log('TodoStore.getTodos', e.message);
-      runInAction(() => {
-        this.isLoading = false;
-      });
     }
-    this.isLoading = false;
+
+    runInAction(() => {
+      this.isLoading = false;
+    });
   };
 
   createTodo = async (
@@ -93,9 +122,11 @@ class TodoStore {
         },
       });
 
-      this.requestTodos();
+      await this.requestTodos();
 
-      this.tempTodoName = '';
+      runInAction(() => {
+        this.tempTodoName = '';
+      });
     } catch (e: any) {
       console.log('TodoStore.createTodo', e.message);
     }
@@ -130,7 +161,7 @@ class TodoStore {
         },
       });
 
-      this.requestTodos();
+      await this.requestTodos();
     } catch (e: any) {
       console.log('TodoStore.editTodo', e.message);
     }
@@ -145,7 +176,7 @@ class TodoStore {
         body: { toDeleteId },
       });
 
-      this.requestTodos();
+      await this.requestTodos();
     } catch (e: any) {
       console.log('TodoStore.deleteTodo', e.message);
     }

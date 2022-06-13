@@ -3,7 +3,7 @@ import { Image, StyledButton } from './IconButton.styles';
 
 type Props = {
   children?: React.ReactNode;
-  onClick?: VoidFunction;
+  onClick?: VoidFunction | ((e: any) => void);
   isLoading?: boolean;
   isDisabled?: boolean;
   image?: string;

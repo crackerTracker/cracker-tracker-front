@@ -11,7 +11,7 @@ type UseTodoProps = {
   done?: boolean;
 };
 
-const useTodo = ({ _id, name, done }: UseTodoProps) => {
+const useTodo = ({ _id, name, done }: UseTodoProps = {}) => {
   const {
     todos,
     createTodo,
@@ -70,13 +70,13 @@ const useTodo = ({ _id, name, done }: UseTodoProps) => {
     setTodoName('');
   };
 
-  const addTodo = () => {
+  const addTodo = async () => {
     const subTodos = tempSubTodos.map((sub) => ({
       name: sub.name,
       done: sub.done,
     }));
 
-    createTodo(
+    await createTodo(
       todoName || tempTodoName,
       isChecked,
       deadline,
@@ -102,8 +102,8 @@ const useTodo = ({ _id, name, done }: UseTodoProps) => {
     setIsPickerOpen((v) => !v);
   };
 
-  const deleteTodoHandler = () => {
-    if (_id) deleteTodo(_id);
+  const deleteTodoHandler = async () => {
+    if (_id) await deleteTodo(_id);
     message.success('Удалено');
   };
 

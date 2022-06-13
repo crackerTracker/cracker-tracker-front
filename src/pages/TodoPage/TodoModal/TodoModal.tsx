@@ -28,12 +28,11 @@ const TodoModal: FC<TodoModalProps> = ({
   onCancel,
   clearMainInputValue,
 }) => {
-  const todoStore = useTodoStore();
+  const { tempTodoName, setTempSubTodos } = useTodoStore();
 
   const {
     todoName,
     setTodoName,
-    inputChangeHandler,
     addTodo,
     deadline,
     onDeadlineChange,
@@ -43,17 +42,17 @@ const TodoModal: FC<TodoModalProps> = ({
     deleteNote,
     isPickerOpen,
     datePickerHandler,
-  } = useTodo({});
+  } = useTodo();
 
   useEffect(() => {
-    setTodoName(todoStore.tempTodoName);
+    setTodoName(tempTodoName);
   }, []);
 
   const onModalCancel = () => {
     setTodoName('');
     deleteNote();
     deleteDeadline();
-    todoStore.tempSubTodos = [];
+    setTempSubTodos([]);
     onCancel();
   };
 
@@ -102,7 +101,12 @@ const TodoModal: FC<TodoModalProps> = ({
                     <Row align="middle" wrap={false}>
                       <Col>
                         <ModalDate>
-                          Выполнить до {formDateStringFromISO(deadline)}
+                          {deadline && (
+                            <>
+                              Выполнить до&nbsp;
+                              {formDateStringFromISO(deadline)}
+                            </>
+                          )}
                         </ModalDate>
                       </Col>
                       <Col offset={1}>
@@ -132,10 +136,7 @@ const TodoModal: FC<TodoModalProps> = ({
       </ConfigProvider>
 
       <ModalContent>
-        <DrawerTodoCard
-          name={todoName || todoStore.tempTodoName}
-          onCreateChangeHandler={inputChangeHandler}
-        />
+        <DrawerTodoCard name={todoName || tempTodoName} />
 
         <div>
           <StyledTextArea
