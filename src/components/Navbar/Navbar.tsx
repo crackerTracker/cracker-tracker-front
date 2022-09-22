@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   Buttons,
   Container,
@@ -13,11 +13,12 @@ import {
 } from './Navbar.styles';
 import IconButton from 'components/IconButton';
 import colors from 'styles/colors';
-import { useAuthStore, useNavbarStore } from 'stores/hooks';
+import { useNavbarStore } from 'stores/hooks';
 import useInitNavbar from 'components/Navbar/useInitNavbar';
 import useObserveURL from './useObserveURL';
 import { images } from 'img/icons';
-import { Dropdown, Menu } from 'antd';
+import { Dropdown } from 'antd';
+import useSettingsButton from './useSettingsButton';
 
 const Navbar = () => {
   useInitNavbar();
@@ -26,19 +27,7 @@ const Navbar = () => {
   const { routesButtons, sectionButtons, activeRoute, activeSection } =
     useNavbarStore();
 
-  const { logout } = useAuthStore();
-
-  const logoutHandler = useCallback(() => {
-    logout();
-  }, []);
-
-  const menu = (
-    <Menu>
-      <Menu.Item key="1" onClick={logoutHandler}>
-        Выйти
-      </Menu.Item>
-    </Menu>
-  );
+  const { settingButtonMenu } = useSettingsButton();
 
   return (
     <Container>
@@ -74,7 +63,7 @@ const Navbar = () => {
                   <IconButton
                     image={image}
                     onClick={callback}
-                    hoverColor={'transparent'}
+                    hoverColor="transparent"
                   />
                 </ExtraButtonWrapper>
               ))}
@@ -83,7 +72,7 @@ const Navbar = () => {
         </>
       )}
 
-      <Dropdown overlay={menu} trigger={['click']}>
+      <Dropdown overlay={settingButtonMenu} trigger={['click']}>
         <SettingsButton image={images.settingsGrayishBlue.default} />
       </Dropdown>
     </Container>
