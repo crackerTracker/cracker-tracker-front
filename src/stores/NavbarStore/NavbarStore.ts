@@ -35,6 +35,7 @@ class NavbarStore {
 
   resetSectionButtons = () => {
     this.sectionButtons = null;
+    this.activeSection = null;
   };
 
   setActiveRoute = (route: MainRoutesEnum | null) => {
