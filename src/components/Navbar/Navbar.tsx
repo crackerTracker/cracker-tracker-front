@@ -27,7 +27,11 @@ const Navbar = () => {
   const { routesButtons, sectionButtons, activeRoute, activeSection } =
     useNavbarStore();
 
-  const { settingButtonMenu } = useSettingsButton();
+  const {
+    isSettingsDropdownVisible,
+    onChangeSettingsDropdownVisible,
+    settingButtonMenu,
+  } = useSettingsButton();
 
   return (
     <Container>
@@ -72,8 +76,16 @@ const Navbar = () => {
         </>
       )}
 
-      <Dropdown overlay={settingButtonMenu} trigger={['click']}>
-        <SettingsButton image={images.settingsGrayishBlue.default} />
+      <Dropdown
+        visible={isSettingsDropdownVisible}
+        onVisibleChange={onChangeSettingsDropdownVisible}
+        overlay={settingButtonMenu}
+        trigger={['click']}
+      >
+        <SettingsButton
+          image={images.settingsGrayishBlue.default}
+          active={isSettingsDropdownVisible}
+        />
       </Dropdown>
     </Container>
   );
