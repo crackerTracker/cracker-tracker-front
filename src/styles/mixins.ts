@@ -76,6 +76,11 @@ export const centerPosY = () => css`
   transform: translate3d(0, -50%, 0);
 `;
 
+export const centerPosX = () => css`
+  left: 50%;
+  transform: translate3d(-50%, 0, 0);
+`;
+
 export const backgroundImageContain = (src: string) => css`
   background: url(${src}) no-repeat center/contain;
 `;

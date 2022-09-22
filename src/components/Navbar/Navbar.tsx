@@ -1,4 +1,5 @@
-import React from 'react';
+import { observer } from 'mobx-react-lite';
+import React, { useCallback } from 'react';
 import {
   Buttons,
   Container,
@@ -7,14 +8,16 @@ import {
   MainButtonWrapper,
   MainPart,
   ScrollContainer,
+  SettingsButton,
   StyledDivider,
 } from './Navbar.styles';
 import IconButton from 'components/IconButton';
 import colors from 'styles/colors';
-import { useNavbarStore } from 'stores/hooks';
+import { useAuthStore, useNavbarStore } from 'stores/hooks';
 import useInitNavbar from 'components/Navbar/useInitNavbar';
-import { observer } from 'mobx-react-lite';
 import useObserveURL from './useObserveURL';
+import { images } from 'img/icons';
+import { Dropdown, Menu } from 'antd';
 
 const Navbar = () => {
   useInitNavbar();
@@ -22,6 +25,20 @@ const Navbar = () => {
 
   const { routesButtons, sectionButtons, activeRoute, activeSection } =
     useNavbarStore();
+
+  const { logout } = useAuthStore();
+
+  const logoutHandler = useCallback(() => {
+    logout();
+  }, []);
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" onClick={logoutHandler}>
+        Выйти
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <Container>
@@ -52,7 +69,7 @@ const Navbar = () => {
               {sectionButtons.map(({ section, image, callback }) => (
                 <ExtraButtonWrapper
                   key={section}
-                  active={section === activeSection}
+                  active={section === activeSection} // todo incorrect now
                 >
                   <IconButton
                     image={image}
@@ -65,6 +82,10 @@ const Navbar = () => {
           </ScrollContainer>
         </>
       )}
+
+      <Dropdown overlay={menu} trigger={['click']}>
+        <SettingsButton image={images.settingsGrayishBlue.default} />
+      </Dropdown>
     </Container>
   );
 };

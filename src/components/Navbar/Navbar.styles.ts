@@ -3,12 +3,14 @@ import colors from 'styles/colors';
 import {
   animate,
   backgroundImageContain,
+  centerPosX,
   flex,
   scroller,
   square,
 } from 'styles/mixins';
 import { images } from 'img/common';
 import { Divider } from 'antd';
+import IconButton from 'components/IconButton';
 
 export const MainPart = styled.div`
   ${flex({ direction: 'column', align: 'center' })}
@@ -47,6 +49,7 @@ export const Buttons = styled.div`
 
 export const MainButtonWrapper = styled.div<{ active?: boolean }>`
   position: relative;
+  flex-shrink: 0;
 
   opacity: ${({ active }) => (active ? 1 : 0.3)};
 
@@ -102,24 +105,24 @@ export const StyledDivider = styled(Divider).attrs({
   margin: 50px 0;
   background-color: ${colors.grayishBlue};
   opacity: 0.5;
+  flex-shrink: 0;
 `;
 
 export const ScrollContainer = styled.div`
   max-height: 100%;
   overflow: auto;
+  flex-grow: 1;
   ${scroller};
 `;
 
-export const ExtraButtonWrapper = styled.div<{ active?: boolean }>`
-  position: relative;
-
-  opacity: ${({ active }) => (active ? 1 : 0.6)};
+const extraButtonStyles = (active = false) => css`
+  opacity: ${active ? 1 : 0.6};
 
   ${animate('opacity')};
 
   &:hover {
     &::before {
-      opacity: ${({ active }) => (active ? 0.3 : 0.1)};
+      opacity: ${active ? 0.3 : 0.1};
     }
   }
 
@@ -134,8 +137,21 @@ export const ExtraButtonWrapper = styled.div<{ active?: boolean }>`
 
     pointer-events: none;
 
-    opacity: ${({ active }) => (active ? 0.2 : 0)};
+    opacity: ${active ? 0.2 : 0};
 
     ${animate('opacity')};
   }
+`;
+
+export const ExtraButtonWrapper = styled.div<{ active?: boolean }>`
+  position: relative;
+  ${({ active }) => extraButtonStyles(!!active)};
+`;
+
+export const SettingsButton = styled(IconButton)<{ active?: boolean }>`
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  ${({ active }) => extraButtonStyles(!!active)};
+  ${centerPosX()};
 `;
