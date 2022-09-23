@@ -12,6 +12,7 @@ import { useTimer } from '../useTimer';
 import colors from 'styles/colors';
 import { usePomodoroStore } from 'stores/hooks';
 import { observer } from 'mobx-react-lite';
+import { TimerStates } from 'config/pomoconf';
 
 const TimerSection: FC = () => {
   const {
@@ -20,7 +21,7 @@ const TimerSection: FC = () => {
     donePomosAmount,
     plannedPomosAmount,
     taskName,
-    isTick,
+    timerState,
   } = usePomodoroStore();
 
   const {
@@ -53,7 +54,7 @@ const TimerSection: FC = () => {
         <Col span={10}>
           <CustomButton
             onClick={startTimer}
-            isDisabled={!plannedPomosAmount || isTick}
+            isDisabled={!plannedPomosAmount || timerState !== TimerStates.off}
             styles={{
               verticalMargins: '0px',
               bgCol: `${colors.green}`,
@@ -67,14 +68,14 @@ const TimerSection: FC = () => {
         <Col span={10}>
           <CustomButton
             onClick={stopTimer}
-            isDisabled={!isTick}
+            isDisabled={timerState === TimerStates.off}
             styles={{
               verticalMargins: '0px',
               bgCol: `${colors.red}`,
               minWidth: '180px',
             }}
           >
-            {isTick ? 'Готово' : 'Стоп'}
+            {timerState === TimerStates.work ? 'Готово' : 'Стоп'}
           </CustomButton>
         </Col>
 
@@ -83,7 +84,7 @@ const TimerSection: FC = () => {
             <Button
               style={{ width: '40px' }}
               onClick={addMinutes}
-              disabled={isTick}
+              disabled={timerState !== TimerStates.off}
             >
               +
             </Button>
@@ -92,7 +93,7 @@ const TimerSection: FC = () => {
               value={option.add}
               style={{ width: '140px' }}
               onChange={(v) => setOption({ ...option, add: v })}
-              disabled={isTick}
+              disabled={timerState !== TimerStates.off}
             />
           </SelectTime>
         </Col>
@@ -102,7 +103,7 @@ const TimerSection: FC = () => {
             <Button
               style={{ width: '40px' }}
               onClick={diffMinutes}
-              disabled={isTick}
+              disabled={timerState !== TimerStates.off}
             >
               -
             </Button>
@@ -111,7 +112,7 @@ const TimerSection: FC = () => {
               value={option.diff}
               style={{ width: '140px' }}
               onChange={(v) => setOption({ ...option, diff: v })}
-              disabled={isTick}
+              disabled={timerState !== TimerStates.off}
             />
           </SelectTime>
         </Col>

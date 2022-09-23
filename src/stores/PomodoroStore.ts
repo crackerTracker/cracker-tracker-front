@@ -2,7 +2,7 @@ import request from 'utils/request';
 import { makeAutoObservable, runInAction } from 'mobx';
 import RootStore from './RootStore';
 import { endpoints } from 'config/endpoints';
-import { defaultPomoTime } from 'config/pomoconf';
+import { defaultPomoTime, TimerStates } from 'config/pomoconf';
 
 export type PlannedPomoType = {
   _id: string;
@@ -24,7 +24,7 @@ class PomodoroStore {
   private rootStore: RootStore;
 
   public isLoading = false;
-  public isTick = false;
+  public timerState = TimerStates.off;
 
   private _plannedPomosData: PlannedPomoType[] = [];
   private _donePomosData: DonePomoType[] = [];
@@ -41,10 +41,8 @@ class PomodoroStore {
     return this.rootStore.authStore.token;
   }
 
-  setIsTick(tick: boolean) {
-    runInAction(() => {
-      this.isTick = tick;
-    });
+  setTimerState(state: TimerStates) {
+    runInAction(() => (this.timerState = state));
   }
 
   get plannedPomosData() {

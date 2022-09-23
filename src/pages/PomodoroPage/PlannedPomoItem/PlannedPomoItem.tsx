@@ -1,4 +1,5 @@
 import { Col, Dropdown, Menu, Row } from 'antd';
+import { TimerStates } from 'config/pomoconf';
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
@@ -37,7 +38,7 @@ const PlannedPomoItem: FC<PlannedPomoType> = ({
     editPlannedPomo,
     markPomoDone,
     plannedPomosData,
-    isTick,
+    timerState,
   } = usePomodoroStore();
 
   useEffect(() => {
@@ -70,7 +71,7 @@ const PlannedPomoItem: FC<PlannedPomoType> = ({
   };
 
   const isSetDisabled = () => {
-    return plannedPomosData[0]._id === _id && isTick;
+    return plannedPomosData[0]._id === _id && timerState === TimerStates.work;
   };
 
   const calculateTime = () => {

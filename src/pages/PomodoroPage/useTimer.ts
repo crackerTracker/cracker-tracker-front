@@ -1,4 +1,8 @@
-import { defaultInitialMinutes } from 'config/pomoconf';
+import {
+  defaultInitialMinutes,
+  defaultRestMinutes,
+  TimerStates,
+} from 'config/pomoconf';
 import { useEffect, useRef, useState } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
 
@@ -23,8 +27,11 @@ export const useTimer = () => {
   const timerId = useRef<NodeJS.Timeout | null>(null);
 
   const startTimer = () => {
+    if (store.timerState === TimerStates.off)
+      store.setTimerState(TimerStates.work);
+
     resetTimeout();
-    store.setIsTick(true);
+
     timerId.current = setTimeout(() => {
       setSeconds((s) => (s <= 0 ? 59 : s - 1));
       startTimer();
@@ -32,6 +39,18 @@ export const useTimer = () => {
   };
 
   const stopTimer = () => {
+    if (store.timerState === TimerStates.rest) {
+      stopRestTimer();
+    }
+
+    if (store.timerState === TimerStates.work) {
+      stopWorkTimer();
+      store.setTimerState(TimerStates.rest);
+      startTimer();
+    }
+  };
+
+  const stopWorkTimer = () => {
     const spentMs = (initialMinutes * 60 - (minutes * 60 + seconds)) * 1000;
 
     const endTime = new Date();
@@ -42,20 +61,27 @@ export const useTimer = () => {
 
     const minDiff = initialMinutes - minutes > 0 ? initialMinutes - minutes : 1;
 
-    if (store.isTick) {
-      markPomoDone(
-        plannedPomosData[0]._id,
-        minDiff,
-        startTimeStamp,
-        endTimeStamp
-      );
+    markPomoDone(
+      plannedPomosData[0]._id,
+      minDiff,
+      startTimeStamp,
+      endTimeStamp
+    );
 
-      setSeconds(0);
-      setMinutes(defaultInitialMinutes);
-      setInitialMinutes(defaultInitialMinutes);
-      resetTimeout();
-      store.setIsTick(false);
-    }
+    setSeconds(0);
+    setMinutes(defaultRestMinutes);
+
+    resetTimeout();
+  };
+
+  const stopRestTimer = () => {
+    store.setTimerState(TimerStates.off);
+
+    setSeconds(0);
+    setMinutes(defaultInitialMinutes);
+    setInitialMinutes(defaultInitialMinutes);
+
+    resetTimeout();
   };
 
   const resetTimeout = () => {

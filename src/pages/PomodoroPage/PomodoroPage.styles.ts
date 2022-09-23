@@ -1,12 +1,17 @@
+import { TimerStates } from 'config/pomoconf';
 import styled from 'styled-components';
 import colors from 'styles/colors';
 
-export const Wrapper = styled.div<{ isTick: boolean }>`
+export const Wrapper = styled.div<{ timerState: TimerStates }>`
   width: 100vw;
   height: 100vh;
 
-  background-color: ${({ isTick }) =>
-    isTick ? colors.red : colors.lightBrown};
+  background-color: ${({ timerState }) =>
+    timerState === TimerStates.work
+      ? colors.red
+      : timerState === TimerStates.rest
+      ? colors.green
+      : colors.lightBrown};
 `;
 
 export const Container = styled.div`
