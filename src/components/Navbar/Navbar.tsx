@@ -62,7 +62,7 @@ const Navbar = () => {
               {sectionButtons.map(({ section, image, callback }) => (
                 <ExtraButtonWrapper
                   key={section}
-                  active={section === activeSection} // todo incorrect now
+                  active={section === activeSection}
                 >
                   <IconButton
                     image={image}
