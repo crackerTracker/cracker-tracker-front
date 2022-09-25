@@ -1,4 +1,6 @@
 export const images = {
+  settingsGrayishBlue: require('./settingsGrayishBlue.svg'),
+
   datesCalendarWhite: require('./datesCalendarWhite.svg'),
   monthsCalendarWhite: require('./monthsCalendarWhite.svg'),
 

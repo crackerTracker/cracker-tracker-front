@@ -12,6 +12,7 @@ type Props = {
   backgroundColor?: string;
   hoverColor?: string;
   color?: string;
+  className?: string;
 };
 
 const IconButton: React.FC<Props> = ({
@@ -25,6 +26,7 @@ const IconButton: React.FC<Props> = ({
   backgroundColor = 'transparent',
   hoverColor = undefined,
   color = 'black',
+  className = '',
 }) => {
   return (
     <StyledButton
@@ -35,6 +37,7 @@ const IconButton: React.FC<Props> = ({
       backgroundColor={backgroundColor}
       hoverColor={hoverColor}
       color={color}
+      className={className}
     >
       {image ? <Image image={image} /> : children}
     </StyledButton>

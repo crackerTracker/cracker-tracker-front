@@ -9,7 +9,7 @@ import {
 import { Col, Row } from 'antd';
 import ControlPanel from './ControlPanel';
 import DateCard from './DateCard';
-import { useTrackerStore } from 'stores/hooks';
+import { useNavbarStore, useTrackerStore } from 'stores/hooks';
 import { observer } from 'mobx-react-lite';
 import useInitSectionNavbar from 'utils/hooks/useInitSectionNavbar';
 import { trackerNavbarIcons } from 'config/navbar';
@@ -18,10 +18,17 @@ import CategoriesDrawer from './CategoriesDrawer';
 import useDrawer from 'utils/hooks/useDrawer';
 
 const Tracker = () => {
+  const { setActiveSection } = useNavbarStore();
   const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
 
   const showDrawer = useCallback(() => {
+    setActiveSection(TrackerSectionsEnum.categories);
     onDrawerOpen();
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    setActiveSection(null);
+    onDrawerClose();
   }, []);
 
   useInitSectionNavbar(trackerNavbarIcons, {
@@ -62,7 +69,7 @@ const Tracker = () => {
           </Col>
         </Row>
       </Container>
-      <CategoriesDrawer visible={visible} onDrawerClose={onDrawerClose} />
+      <CategoriesDrawer visible={visible} onDrawerClose={closeDrawer} />
     </>
   );
 };

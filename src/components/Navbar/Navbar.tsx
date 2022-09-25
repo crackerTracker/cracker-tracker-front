@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import {
   Buttons,
@@ -7,14 +8,17 @@ import {
   MainButtonWrapper,
   MainPart,
   ScrollContainer,
+  SettingsButton,
   StyledDivider,
 } from './Navbar.styles';
 import IconButton from 'components/IconButton';
 import colors from 'styles/colors';
 import { useNavbarStore } from 'stores/hooks';
 import useInitNavbar from 'components/Navbar/useInitNavbar';
-import { observer } from 'mobx-react-lite';
 import useObserveURL from './useObserveURL';
+import { images } from 'img/icons';
+import { Dropdown } from 'antd';
+import useSettingsButton from './useSettingsButton';
 
 const Navbar = () => {
   useInitNavbar();
@@ -22,6 +26,12 @@ const Navbar = () => {
 
   const { routesButtons, sectionButtons, activeRoute, activeSection } =
     useNavbarStore();
+
+  const {
+    isSettingsDropdownVisible,
+    onChangeSettingsDropdownVisible,
+    settingButtonMenu,
+  } = useSettingsButton();
 
   return (
     <Container>
@@ -57,7 +67,7 @@ const Navbar = () => {
                   <IconButton
                     image={image}
                     onClick={callback}
-                    hoverColor={'transparent'}
+                    hoverColor="transparent"
                   />
                 </ExtraButtonWrapper>
               ))}
@@ -65,6 +75,18 @@ const Navbar = () => {
           </ScrollContainer>
         </>
       )}
+
+      <Dropdown
+        visible={isSettingsDropdownVisible}
+        onVisibleChange={onChangeSettingsDropdownVisible}
+        overlay={settingButtonMenu}
+        trigger={['click']}
+      >
+        <SettingsButton
+          image={images.settingsGrayishBlue.default}
+          active={isSettingsDropdownVisible}
+        />
+      </Dropdown>
     </Container>
   );
 };
