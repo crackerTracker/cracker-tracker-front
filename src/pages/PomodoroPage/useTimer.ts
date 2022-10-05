@@ -1,6 +1,9 @@
 import {
   defaultInitialMinutes,
+  defaultLongRestMinutes,
   defaultRestMinutes,
+  maxSeriesCount,
+  pomoSeriesItem,
   TimerStates,
 } from 'config/pomoconf';
 import { useEffect, useRef, useState } from 'react';
@@ -69,7 +72,7 @@ export const useTimer = () => {
     );
 
     setSeconds(0);
-    setMinutes(defaultRestMinutes);
+    setMinutes(getCurrentRestMinutes());
 
     resetTimeout();
   };
@@ -117,6 +120,22 @@ export const useTimer = () => {
     }
   };
 
+  const changePomoSeries = () => {
+    const storageItem = localStorage.getItem(pomoSeriesItem);
+    const currentSeries = Number(storageItem);
+
+    !storageItem || currentSeries === maxSeriesCount
+      ? localStorage.setItem(pomoSeriesItem, '0')
+      : localStorage.setItem(pomoSeriesItem, String(currentSeries + 1));
+  };
+
+  const getCurrentRestMinutes = () => {
+    const currentSeries = Number(localStorage.getItem(pomoSeriesItem));
+    return currentSeries === maxSeriesCount
+      ? defaultLongRestMinutes
+      : defaultRestMinutes;
+  };
+
   useEffect(() => {
     if (seconds === 59) setMinutes((m) => m - 1);
     if (seconds === 0 && minutes === 0) stopTimer();
@@ -132,6 +151,7 @@ export const useTimer = () => {
     addMinutes,
     diffMinutes,
     setOption,
+    changePomoSeries,
     seconds,
     minutes,
     option,

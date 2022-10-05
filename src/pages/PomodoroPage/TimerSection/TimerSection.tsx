@@ -29,6 +29,7 @@ const TimerSection: FC = () => {
     stopTimer,
     addMinutes,
     diffMinutes,
+    changePomoSeries,
     seconds,
     minutes,
     option,
@@ -42,6 +43,11 @@ const TimerSection: FC = () => {
     { value: '20', label: '20 минут' },
   ];
 
+  const onTimerStart = () => {
+    startTimer();
+    changePomoSeries();
+  };
+
   return (
     <Container>
       <CurrentTask>{taskName}</CurrentTask>
@@ -53,7 +59,7 @@ const TimerSection: FC = () => {
       <Row justify="center" gutter={[12, 24]}>
         <Col span={10}>
           <CustomButton
-            onClick={startTimer}
+            onClick={onTimerStart}
             isDisabled={!plannedPomosAmount || timerState !== TimerStates.off}
             styles={{
               verticalMargins: '0px',
