@@ -3,8 +3,9 @@ import {
   defaultLongRestMinutes,
   defaultRestMinutes,
   maxSeriesCount,
+  OptionsEnum,
   pomoSeriesItem,
-  TimerStates,
+  TimerStatesEnum,
 } from 'config/pomoconf';
 import { useEffect, useRef, useState } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
@@ -23,15 +24,15 @@ export const useTimer = () => {
   const { markPomoDone, plannedPomosData } = usePomodoroStore();
 
   const [option, setOption] = useState<OptionType>({
-    add: '1 минута',
-    diff: '1 минута',
+    add: OptionsEnum[1],
+    diff: OptionsEnum[1],
   });
 
   const timerId = useRef<NodeJS.Timeout | null>(null);
 
   const startTimer = () => {
-    if (store.timerState === TimerStates.off)
-      store.setTimerState(TimerStates.work);
+    if (store.timerState === TimerStatesEnum.off)
+      store.setTimerState(TimerStatesEnum.work);
 
     resetTimeout();
 
@@ -42,13 +43,13 @@ export const useTimer = () => {
   };
 
   const stopTimer = () => {
-    if (store.timerState === TimerStates.rest) {
+    if (store.timerState === TimerStatesEnum.rest) {
       stopRestTimer();
     }
 
-    if (store.timerState === TimerStates.work) {
+    if (store.timerState === TimerStatesEnum.work) {
       stopWorkTimer();
-      store.setTimerState(TimerStates.rest);
+      store.setTimerState(TimerStatesEnum.rest);
       startTimer();
     }
   };
@@ -60,14 +61,14 @@ export const useTimer = () => {
     const endTimeStamp = endTime.toISOString();
 
     const startTime = new Date(endTime.getTime() - spentMs);
-    const startTimeStamp = startTime.toISOString();
+    const startTimeISOString = startTime.toISOString();
 
     const minDiff = initialMinutes - minutes > 0 ? initialMinutes - minutes : 1;
 
     markPomoDone(
       plannedPomosData[0]._id,
       minDiff,
-      startTimeStamp,
+      startTimeISOString,
       endTimeStamp
     );
 
@@ -78,7 +79,7 @@ export const useTimer = () => {
   };
 
   const stopRestTimer = () => {
-    store.setTimerState(TimerStates.off);
+    store.setTimerState(TimerStatesEnum.off);
 
     setSeconds(0);
     setMinutes(defaultInitialMinutes);

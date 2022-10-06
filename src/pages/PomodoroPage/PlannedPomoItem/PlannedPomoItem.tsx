@@ -1,5 +1,5 @@
 import { Col, Dropdown, Menu, Row } from 'antd';
-import { TimerStates } from 'config/pomoconf';
+import { defaultInitialMinutes, TimerStatesEnum } from 'config/pomoconf';
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
@@ -42,60 +42,68 @@ const PlannedPomoItem: FC<PlannedPomoType> = ({
   } = usePomodoroStore();
 
   useEffect(() => {
-    if (_id === plannedPomosData[0]._id) {
-      setAmount(plannedPomosData[0].pomodorosAmount);
+    const firstPomo = plannedPomosData[0];
+    const lastPomo = plannedPomosData[plannedPomosData.length - 1];
+    // to refresh first pomo amount when timer is over
+    if (_id === firstPomo._id) {
+      setAmount(firstPomo.pomodorosAmount);
     }
-    if (_id === plannedPomosData[plannedPomosData.length - 1]._id) {
-      setAmount(plannedPomosData[plannedPomosData.length - 1].pomodorosAmount);
+    // to refresh last pomo amount when adding pomo with the same name
+    if (_id === lastPomo._id) {
+      setAmount(lastPomo.pomodorosAmount);
     }
   }, [plannedPomosData, _id]);
 
-  const menuAddPomo = () => {
+  const menuAddPomo = async () => {
     setAmount((amount) => Number(amount) + 1);
-    editPlannedPomo(_id, pomoName, Number(amount) + 1);
+    await editPlannedPomo(_id, pomoName, Number(amount) + 1);
   };
 
-  const menuDeletePomo = () => {
+  const menuDeletePomo = async () => {
     setAmount((amount) => Number(amount) - 1);
-    deletePlannedPomo(_id);
+    await deletePlannedPomo(_id);
   };
 
-  const approveEditing = () => {
+  const approveEditing = async () => {
     approveChanges();
-    editPlannedPomo(_id, pomoName, Number(amount));
+    await editPlannedPomo(_id, pomoName, Number(amount));
   };
 
-  const deletePomoStack = () => {
-    deleteAllPlanned(_id);
+  const deletePomoStack = async () => {
+    await deleteAllPlanned(_id);
     menuDeleteClick();
   };
 
-  const isSetDisabled = () => {
-    return plannedPomosData[0]._id === _id && timerState === TimerStates.work;
-  };
+  const isSetDisabled =
+    plannedPomosData[0]._id === _id && timerState === TimerStatesEnum.work;
 
   const calculateTime = () => {
-    const spentMs = 50 * 60000;
+    const spentMs = defaultInitialMinutes * 60000;
     const endTime = new Date();
-    const endTimeStamp = endTime.toISOString();
+    const endTimeISOString = endTime.toISOString();
 
     const startTime = new Date(endTime.getTime() - spentMs);
-    const startTimeStamp = startTime.toISOString();
+    const startTimeISOString = startTime.toISOString();
 
-    return { endTimeStamp, startTimeStamp };
+    return { endTimeISOString, startTimeISOString };
   };
 
-  const menuMarkDone = () => {
-    const { endTimeStamp, startTimeStamp } = calculateTime();
-    return markPomoDone(_id, 50, startTimeStamp, endTimeStamp);
+  const menuMarkDone = async () => {
+    const { endTimeISOString, startTimeISOString } = calculateTime();
+    await markPomoDone(
+      _id,
+      defaultInitialMinutes,
+      startTimeISOString,
+      endTimeISOString
+    );
   };
 
   const menu = (
     <Menu>
-      <Menu.Item key="1" onClick={menuEditClick} disabled={isSetDisabled()}>
+      <Menu.Item key="1" onClick={menuEditClick} disabled={isSetDisabled}>
         Редактировать
       </Menu.Item>
-      <Menu.Item key="2" onClick={menuMarkDone} disabled={isSetDisabled()}>
+      <Menu.Item key="2" onClick={menuMarkDone} disabled={isSetDisabled}>
         Отметить выполненным
       </Menu.Item>
       <Menu.Item key="3" onClick={menuAddPomo}>
@@ -104,7 +112,7 @@ const PlannedPomoItem: FC<PlannedPomoType> = ({
       <Menu.Item key="4" onClick={menuDeletePomo} disabled={amount <= 1}>
         Убавить помидор
       </Menu.Item>
-      <Menu.Item key="5" onClick={deletePomoStack} disabled={isSetDisabled()}>
+      <Menu.Item key="5" onClick={deletePomoStack} disabled={isSetDisabled}>
         Удалить
       </Menu.Item>
     </Menu>
