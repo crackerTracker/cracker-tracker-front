@@ -100,11 +100,11 @@ type YearAlias = number;
 type MonthIndexType = number; // from 0 to 11
 type TimestampAlias = number;
 
-type TasksMapType = Record<TimestampAlias, TaskType[]>;
+export type DaysTasksMapType = Record<TimestampAlias, TaskType[]>;
 
-type TaskMonthsMapType = Record<MonthIndexType, TasksMapType>;
+export type TaskMonthsMapType = Record<MonthIndexType, DaysTasksMapType>;
 
-type TaskMonthsByYearsMapType = Record<YearAlias, TaskMonthsMapType>;
+export type TaskMonthsByYearsMapType = Record<YearAlias, TaskMonthsMapType>;
 
 export const normalizeTaskMonths = (
   months: TaskMonthApiType[],
@@ -129,4 +129,16 @@ export const normalizeTaskMonths = (
 
     return yearsMap;
   }, {} as TaskMonthsByYearsMapType);
+};
+
+export type DayType = {
+  timestamp: TimestampAlias;
+  tasks: TaskType[];
+};
+
+export const DaysMapToArray = (daysMap: DaysTasksMapType): DayType[] => {
+  return Object.entries(daysMap).map(([timestamp, daysTasks]) => ({
+    timestamp: Number(timestamp),
+    tasks: daysTasks,
+  }));
 };

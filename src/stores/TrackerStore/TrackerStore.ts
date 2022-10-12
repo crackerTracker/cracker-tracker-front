@@ -9,12 +9,18 @@ import {
   normalizeCategories,
   normalizeCategory,
   normalizeTask,
+  normalizeTaskMonths,
+  TasksByMonthsApiResponseType,
+  TaskMonthsByYearsMapType,
+  DaysTasksMapType,
+  DayType,
+  DaysMapToArray,
 } from './types';
-import { mockCategories, mockTasks } from './mock';
 import { SelectOptionType } from 'types/antd';
-import request from 'utils/request';
+import request from 'utils/request/request';
 import { endpoints } from 'config/endpoints';
 import { getAuthHeader } from 'utils/getAuthHeader';
+import { daysAmountToLoad } from 'config/tracker';
 
 type PrivateFields = 'rootStore';
 
@@ -29,6 +35,14 @@ class TrackerStore {
   public categoriesMap: Record<string, CategoryType> = {};
 
   public datesMap: Record<number, TaskType[]> = {};
+
+  tasksByYearsMonthsMap: TaskMonthsByYearsMapType = {};
+
+  tasksLoading = false; // в процессе загрузки задач
+
+  initializing = false; // в процессе инициализации
+
+  fatalError = false; // есть ли ошибка
 
   constructor(rootStore: RootStore) {
     makeAutoObservable<this, PrivateFields>(this, {
@@ -76,7 +90,63 @@ class TrackerStore {
     return Object.keys(this.datesMap).sort((a, b) => Number(b) - Number(a));
   }
 
-  getAllCategories = async () => {
+  get allTasksArray(): DayType[] {
+    // получаем массив годов (массив мап "номер месяца - мапа дней")
+    const years = Object.values(this.tasksByYearsMonthsMap);
+
+    // получаем массив месяцев (массив мап "timestamp дня - список задач")
+    const months = years.reduce(
+      (acc: DaysTasksMapType[], year) => [...acc, ...Object.values(year)],
+      [] as DaysTasksMapType[]
+    );
+
+    const days = months.reduce(
+      (acc: DayType[], month) => [...acc, ...DaysMapToArray(month)],
+      [] as DayType[]
+    );
+
+    return days.sort((dayA, dayB) => dayB.timestamp - dayA.timestamp);
+  }
+
+  // загружает с бэка задачи; в случае успеха отдаёт мапу с задачами, иначе null
+  loadTasks = async (
+    daysAmount: number,
+    month: number,
+    year: number
+  ): Promise<TaskMonthsByYearsMapType | null> => {
+    if (this.tasksLoading) {
+      return null;
+    }
+
+    try {
+      const response: TasksByMonthsApiResponseType = await request({
+        ...endpoints.getTrackerTasksByMonths,
+        body: {
+          daysAmount,
+          year,
+          month,
+        },
+        headers: getAuthHeader(this.rootStore.authStore.token),
+      });
+
+      if (!response || !Array.isArray(response.months)) {
+        return null;
+      }
+
+      // примечание: сейчас получется, что приходящие данные конвертятся в многоуровневую мапу, после чего в массив дней.
+      // это для заклада на то, что в будущем можно будет разделять и отображать дни по секциям "месяц, год",
+      // а как это будет делаться - не знаю, поэтому сделал как можно более расширяемо
+      return normalizeTaskMonths(response.months, this.categoriesMap);
+    } catch (e) {
+      console.log('TrackerStore.loadTasks', e);
+    }
+
+    return null;
+  };
+
+  // получает все категории пользователя, результат кладёт в this.categoriesMap,
+  // если успех - возвращает true, иначе - false
+  getAllCategories = async (): Promise<boolean> => {
     try {
       const response: ApiCategoryType[] = await request({
         url: endpoints.getAllTrackerCategories.url,
@@ -84,12 +154,63 @@ class TrackerStore {
         headers: getAuthHeader(this.rootStore.authStore.token),
       });
 
+      if (!Array.isArray(response)) {
+        return false;
+      }
+
       runInAction(() => {
         this.categoriesMap = normalizeCategories(response);
       });
+
+      return true;
     } catch (e) {
       console.log('TrackerStore.getAllCategories', e);
     }
+
+    return false;
+  };
+
+  // todo не инициализировать, если уже проинициализировано?
+  // загружает сначала категории, затем задачи, начиная с текущего месяца;
+  // в случае, если что-то из этого не придёт, присвоит fatalError true
+  init = async () => {
+    if (this.initializing) {
+      return;
+    }
+
+    if (this.fatalError) {
+      this.fatalError = false;
+    }
+
+    this.initializing = true;
+
+    const gotAllCategories = await this.getAllCategories();
+
+    if (!gotAllCategories) {
+      runInAction(() => {
+        this.fatalError = true;
+      });
+      return;
+    }
+
+    const currentDate = new Date();
+    const initialTasks = await this.loadTasks(
+      daysAmountToLoad,
+      currentDate.getMonth(),
+      currentDate.getFullYear()
+    );
+
+    if (!initialTasks) {
+      runInAction(() => {
+        this.fatalError = true;
+      });
+      return;
+    }
+
+    runInAction(() => {
+      this.tasksByYearsMonthsMap = initialTasks;
+      this.initializing = false;
+    });
   };
 
   // todo доработать типы тела запроса
