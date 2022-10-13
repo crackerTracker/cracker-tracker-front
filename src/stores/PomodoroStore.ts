@@ -1,4 +1,4 @@
-import request from 'utils/request';
+import { request } from 'utils/request';
 import { makeAutoObservable, runInAction } from 'mobx';
 import RootStore from './RootStore';
 import { endpoints } from 'config/endpoints';

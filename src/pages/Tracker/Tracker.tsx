@@ -16,6 +16,7 @@ import { trackerNavbarIcons } from 'config/navbar';
 import { TrackerSectionsEnum } from 'config/tracker';
 import CategoriesDrawer from './CategoriesDrawer';
 import useDrawer from 'utils/hooks/useDrawer';
+import InfiniteScroll from 'react-infinite-scroller';
 
 const Tracker = () => {
   const { setActiveSection } = useNavbarStore();
@@ -35,12 +36,10 @@ const Tracker = () => {
     [TrackerSectionsEnum.categories]: showDrawer,
   });
 
-  const { datesArray, getAllTasksInDatesMap, getAllCategories } =
-    useTrackerStore();
+  const { allDaysArray, init } = useTrackerStore();
 
   useEffect(() => {
-    getAllCategories();
-    getAllTasksInDatesMap();
+    init();
   }, []);
 
   const windowWidth = document.documentElement.clientWidth;
@@ -55,15 +54,27 @@ const Tracker = () => {
                 <ControlPanel />
               </ControlPanelWrapper>
               <Relative>
-                <Cards>
-                  <Row gutter={[24, 24]}>
-                    {datesArray.map((timestamp) => (
-                      <Col key={timestamp} span={windowWidth <= 1500 ? 8 : 6}>
-                        <DateCard timestamp={Number(timestamp)} />
-                      </Col>
-                    ))}
-                  </Row>
-                </Cards>
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={() => console.log('hi')}
+                  hasMore={true}
+                  loader={
+                    <div className="loader" key={0}>
+                      Loading ...
+                    </div>
+                  }
+                  useWindow={false}
+                >
+                  <Cards>
+                    <Row gutter={[24, 24]}>
+                      {allDaysArray.map((day, timestamp) => (
+                        <Col key={timestamp} span={windowWidth <= 1500 ? 8 : 6}>
+                          <DateCard day={day} />
+                        </Col>
+                      ))}
+                    </Row>
+                  </Cards>
+                </InfiniteScroll>
               </Relative>
             </Flex>
           </Col>

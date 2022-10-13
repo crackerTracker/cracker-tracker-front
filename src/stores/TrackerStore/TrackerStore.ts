@@ -17,7 +17,7 @@ import {
   DaysMapToArray,
 } from './types';
 import { SelectOptionType } from 'types/antd';
-import request from 'utils/request/request';
+import { request } from 'utils/request';
 import { endpoints } from 'config/endpoints';
 import { getAuthHeader } from 'utils/getAuthHeader';
 import { daysAmountToLoad } from 'config/tracker';
@@ -92,7 +92,7 @@ class TrackerStore {
     return Object.keys(this.datesMap).sort((a, b) => Number(b) - Number(a));
   }
 
-  get allTasksArray(): DayType[] {
+  get allDaysArray(): DayType[] {
     // получаем массив годов (массив мап "номер месяца - мапа дней")
     const years = Object.values(this.tasksByYearsMonthsMap);
 
