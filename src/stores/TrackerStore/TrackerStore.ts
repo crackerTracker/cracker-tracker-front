@@ -42,6 +42,8 @@ class TrackerStore {
 
   initializing = false; // в процессе инициализации
 
+  initialized = false; // проинициализировано
+
   fatalError = false; // есть ли ошибка
 
   constructor(rootStore: RootStore) {
@@ -170,11 +172,10 @@ class TrackerStore {
     return false;
   };
 
-  // todo не инициализировать, если уже проинициализировано?
   // загружает сначала категории, затем задачи, начиная с текущего месяца;
   // в случае, если что-то из этого не придёт, присвоит fatalError true
   init = async () => {
-    if (this.initializing) {
+    if (this.initializing || this.initialized) {
       return;
     }
 
@@ -210,7 +211,16 @@ class TrackerStore {
     runInAction(() => {
       this.tasksByYearsMonthsMap = initialTasks;
       this.initializing = false;
+      this.initialized = true;
     });
+  };
+
+  // запускает инициализацию заново;
+  // на случай, если понадобится инициализировать приложение снова после неудачной инициализации
+  reinit = async (): Promise<void> => {
+    this.initialized = false;
+    this.fatalError = false;
+    await this.init();
   };
 
   // todo доработать типы тела запроса
