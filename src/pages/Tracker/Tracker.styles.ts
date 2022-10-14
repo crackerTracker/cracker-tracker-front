@@ -33,3 +33,9 @@ export const Relative = styled.div`
 export const Cards = styled.div`
   padding: 30px 0;
 `;
+
+export const LoaderContainer = styled.div`
+  ${flex({
+    justify: 'center',
+  })}
+`;

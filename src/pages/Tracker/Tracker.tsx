@@ -4,6 +4,7 @@ import {
   Container,
   ControlPanelWrapper,
   Flex,
+  LoaderContainer,
   Relative,
 } from './Tracker.styles';
 import { Col, Row } from 'antd';
@@ -17,7 +18,10 @@ import { TrackerSectionsEnum } from 'config/tracker';
 import CategoriesDrawer from './CategoriesDrawer';
 import useDrawer from 'utils/hooks/useDrawer';
 import InfiniteScroll from 'react-infinite-scroller';
+import { SpinnerCircularFixed } from 'spinners-react';
+import colors, { halfOpacityColors } from 'styles/colors';
 
+// todo динамически отображать изменения при внесении задач
 const Tracker = () => {
   const { setActiveSection } = useNavbarStore();
   const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
@@ -36,7 +40,8 @@ const Tracker = () => {
     [TrackerSectionsEnum.categories]: showDrawer,
   });
 
-  const { allDaysArray, init } = useTrackerStore();
+  const { allDaysArray, init, loadMoreAfterLastMonth, canLoadMoreExtraTasks } =
+    useTrackerStore();
 
   useEffect(() => {
     init();
@@ -55,13 +60,20 @@ const Tracker = () => {
               </ControlPanelWrapper>
               <Relative>
                 <InfiniteScroll
-                  pageStart={0}
-                  loadMore={() => console.log('hi')}
-                  hasMore={true}
+                  initialLoad={false}
+                  loadMore={loadMoreAfterLastMonth}
+                  hasMore={canLoadMoreExtraTasks}
                   loader={
-                    <div className="loader" key={0}>
-                      Loading ...
-                    </div>
+                    <LoaderContainer>
+                      {/* todo мб вынести в компонент */}
+                      <SpinnerCircularFixed
+                        size={70}
+                        thickness={150}
+                        speed={150}
+                        color={colors.brown}
+                        secondaryColor={halfOpacityColors.brown}
+                      />
+                    </LoaderContainer>
                   }
                   useWindow={false}
                 >

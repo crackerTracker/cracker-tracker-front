@@ -131,6 +131,41 @@ export const normalizeTaskMonths = (
   }, {} as TaskMonthsByYearsMapType);
 };
 
+// мёржит к первой мапе вторую, первая мапа изменяется;
+// работает в полной мере корректно при условии того, что у мап нет совпадающих месяцев в годах;
+// если есть - месяцы из mapB перетирают совпадающие месяцы из mapA в совпадающих годах;
+// возвращается изменнённая первая мапа, ссылка сохраняется
+export const mergeToTaskMonthsByYearsMaps = (
+  mapA: TaskMonthsByYearsMapType,
+  mapB: TaskMonthsByYearsMapType
+): TaskMonthsByYearsMapType => {
+  Object.entries(mapB).forEach(([year, monthsMap]) => {
+    if (!year || !monthsMap) {
+      return;
+    }
+
+    const yearNumber = Number(year);
+
+    if (mapA[yearNumber]) {
+      Object.entries(monthsMap).forEach(([month, daysMap]) => {
+        if (!month || !daysMap) {
+          return;
+        }
+
+        const monthNumber = Number(month);
+
+        mapA[yearNumber][monthNumber] = daysMap;
+      });
+
+      return;
+    }
+
+    mapA[yearNumber] = monthsMap;
+  });
+
+  return mapA;
+};
+
 export type DayType = {
   timestamp: TimestampAlias;
   tasks: TaskType[];

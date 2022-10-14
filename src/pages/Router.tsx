@@ -27,7 +27,7 @@ const Router: React.FC<Props> = ({ isAuthenticated }) => {
               <Route index element={<TodoAll />} />
               <Route path="week" element={<TodoWeek />} />
             </Route>
-            <Route path="*" element={<Navigate to="/todo" replace />} />
+            <Route path="*" element={<Navigate to="/tracker" replace />} />
           </Routes>
         </>
       ) : (

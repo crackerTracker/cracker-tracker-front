@@ -1,5 +1,5 @@
 import RootStore from 'stores/RootStore';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable, runInAction, toJS } from 'mobx';
 import {
   ApiCategoryType,
   CategoryType,
@@ -15,6 +15,7 @@ import {
   DaysTasksMapType,
   DayType,
   DaysMapToArray,
+  mergeToTaskMonthsByYearsMaps,
 } from './types';
 import { SelectOptionType } from 'types/antd';
 import { request } from 'utils/request';
@@ -39,6 +40,10 @@ class TrackerStore {
   tasksByYearsMonthsMap: TaskMonthsByYearsMapType = {};
 
   tasksLoading = false; // в процессе загрузки задач
+
+  extraTasksLoading = false; // в процессе дозагрузки задач (бесконечный скролл)
+
+  canLoadMoreExtraTasks = false; // может ли загрузить ещё задачи для бесконечного скролла
 
   initializing = false; // в процессе инициализации
 
@@ -92,6 +97,42 @@ class TrackerStore {
     return Object.keys(this.datesMap).sort((a, b) => Number(b) - Number(a));
   }
 
+  get lastLoadedDay(): DayType | null {
+    const days = this.allDaysArray;
+    return days[days.length - 1] ?? null;
+  }
+
+  // отдаём именно UTC-месяц для обращения к бд, так как использовние местного времени
+  // может вызвать смещение месяца, это может стать причиной пропуска месяца или запроса уже имеющихся задач
+  get prevUTCMonthForLastLoaded(): number | null {
+    const lastDay = this.lastLoadedDay;
+
+    if (!lastDay) {
+      return null;
+    }
+
+    const date = new Date(lastDay.timestamp); // получаем дату по текущему часовому поясу, ибо не можем сразу создать дату в UTC
+    date.setUTCMonth(date.getUTCMonth() - 1); // меняем именно utc-месяц, так как обращаемся к апи именно по utc
+    return date.getUTCMonth(); // возвращаем utc-месяц
+  }
+
+  // отдаёт предыдущий последнему загруженному дню год в utc (чтобы обращаться к бд, где всё хранится в utc)
+  get prevUTCYearForLastLoaded(): number | null {
+    const lastDay = this.lastLoadedDay;
+
+    if (!lastDay) {
+      return null;
+    }
+
+    // получаем именно utc, так как обращаемся к бд, где всё хранится в utc
+    const year = new Date(lastDay.timestamp).getUTCFullYear();
+
+    // если следующий для загрузки месяц равен декабрю (движение в обратную сторону),
+    // значит следующий месяц (январь) был в следующем за ним году, значит нужно загрузить предыдущий год,
+    // уменьшив год последнего загруженного дня на один
+    return this.prevUTCMonthForLastLoaded === 11 ? year - 1 : year;
+  }
+
   get allDaysArray(): DayType[] {
     // получаем массив годов (массив мап "номер месяца - мапа дней")
     const years = Object.values(this.tasksByYearsMonthsMap);
@@ -116,9 +157,14 @@ class TrackerStore {
     month: number,
     year: number
   ): Promise<TaskMonthsByYearsMapType | null> => {
+    // todo убрать
+    console.log('loadTasks this.tasksLoading', this.tasksLoading);
+
     if (this.tasksLoading) {
       return null;
     }
+
+    this.tasksLoading = true;
 
     try {
       const response: TasksByMonthsApiResponseType = await request({
@@ -132,16 +178,35 @@ class TrackerStore {
       });
 
       if (!response || !Array.isArray(response.months)) {
+        runInAction(() => {
+          this.tasksLoading = false;
+        });
         return null;
       }
 
       // примечание: сейчас получется, что приходящие данные конвертятся в многоуровневую мапу, после чего в массив дней.
       // это для заклада на то, что в будущем можно будет разделять и отображать дни по секциям "месяц, год",
       // а как это будет делаться - не знаю, поэтому сделал как можно более расширяемо
-      return normalizeTaskMonths(response.months, this.categoriesMap);
+      const normalized = normalizeTaskMonths(
+        response.months,
+        this.categoriesMap
+      );
+
+      runInAction(() => {
+        this.canLoadMoreExtraTasks =
+          response.collectedDays < response.totalEarlierDays;
+
+        this.tasksLoading = false;
+      });
+
+      return normalized;
     } catch (e) {
       console.log('TrackerStore.loadTasks', e);
     }
+
+    runInAction(() => {
+      this.tasksLoading = false;
+    });
 
     return null;
   };
@@ -195,6 +260,7 @@ class TrackerStore {
     }
 
     const currentDate = new Date();
+    // здесь нам важнее, чтобы пользователь получал данные, начиная с месяца и года по его времени, а не по UTC
     const initialTasks = await this.loadTasks(
       daysAmountToLoad,
       currentDate.getMonth(),
@@ -213,6 +279,9 @@ class TrackerStore {
       this.initializing = false;
       this.initialized = true;
     });
+
+    // todo убрать
+    console.log('initialized success', initialTasks);
   };
 
   // запускает инициализацию заново;
@@ -221,6 +290,69 @@ class TrackerStore {
     this.initialized = false;
     this.fatalError = false;
     await this.init();
+  };
+
+  loadMoreAfterLastMonth = async (): Promise<void> => {
+    // todo убрать
+    console.log(
+      'start loadMoreAfterLastMonth',
+      'this.tasksLoading',
+      this.tasksLoading,
+      'this.initialized',
+      this.initialized,
+      'extraTasksLoading',
+      this.extraTasksLoading
+    );
+
+    if (this.tasksLoading || this.extraTasksLoading || !this.initialized) {
+      return;
+    }
+
+    const nextMonthToLoad = this.prevUTCMonthForLastLoaded;
+    const nextYearToLoad = this.prevUTCYearForLastLoaded;
+
+    // todo убрать
+    console.log(
+      'nextMonthToLoad',
+      nextMonthToLoad,
+      'nextYearToLoad',
+      nextYearToLoad
+    );
+
+    if (!nextMonthToLoad || !nextYearToLoad) {
+      return;
+    }
+
+    this.extraTasksLoading = true;
+
+    try {
+      const tasks = await this.loadTasks(
+        daysAmountToLoad,
+        nextMonthToLoad,
+        nextYearToLoad
+      );
+
+      // todo убрать
+      console.log('tasks', tasks);
+
+      if (!tasks) {
+        return;
+      }
+
+      const merged = mergeToTaskMonthsByYearsMaps(
+        this.tasksByYearsMonthsMap,
+        tasks
+      );
+
+      // todo убрать
+      console.log('merged', toJS(merged));
+    } catch (e) {
+      console.log('TrackerStore.loadMoreAfterLastMonth error', e);
+    }
+
+    runInAction(() => {
+      this.extraTasksLoading = false;
+    });
   };
 
   // todo доработать типы тела запроса
