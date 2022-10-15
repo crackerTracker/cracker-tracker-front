@@ -166,10 +166,20 @@ class TrackerStore {
     }
   };
 
-  getMonthByDate = (date: Date): DaysTasksMapType => {
-    return this.tasksByYearsMonthsMap[date.getUTCFullYear()][
-      date.getUTCMonth()
-    ];
+  getMonthByDate = (date: Date): DaysTasksMapType | null => {
+    const year = this.tasksByYearsMonthsMap[date.getUTCFullYear()];
+
+    if (!year) {
+      return null;
+    }
+
+    const month = year[date.getUTCMonth()];
+
+    if (!month) {
+      return null;
+    }
+
+    return month;
   };
 
   getLoadedTaskByDateAndId = (
@@ -528,8 +538,48 @@ class TrackerStore {
 
       const loadedMonthWithAddedTimestamp = this.getMonthByDate(date);
 
-      // если месяц, в который мы добавили задачу, ещё не был загружен, ничего не делать;
+      // если месяц, в который мы добавили задачу, ещё не был загружен
       if (!loadedMonthWithAddedTimestamp) {
+        const loadedDaysAmount = this.allDaysArray.length;
+
+        // если при этом задач достаточно, чтобы они занимали весь экран
+        if (loadedDaysAmount >= daysAmountToLoad) {
+          return;
+        }
+
+        // ...иначе, если задач меньше, чем на весь экран
+        const month = date.getUTCMonth();
+        const year = date.getUTCFullYear();
+
+        const addedFirstTask = normalizeTask(response);
+        const addedTimestampFirstTask = addedFirstTask.timestamp;
+
+        // формируем новую мапу с одним лишь созданным днём
+        const mapForNewMonth = {
+          [year]: {
+            [month]: {
+              [addedTimestampFirstTask]: [addedFirstTask],
+            },
+          },
+        };
+
+        // если загруженных дней вообще нет, присвоить главной мапе созданную мапу
+        if (loadedDaysAmount === 0) {
+          runInAction(() => {
+            this.tasksByYearsMonthsMap = mapForNewMonth;
+          });
+          return;
+        }
+
+        // ...иначе, если хоть какие-то дни уже были загружены ранее,
+        // смёржить сформированную мапу и имеющуюся
+        runInAction(() => {
+          mergeToTaskMonthsByYearsMaps(
+            this.tasksByYearsMonthsMap,
+            mapForNewMonth
+          );
+        });
+
         return;
       }
 
