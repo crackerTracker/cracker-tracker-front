@@ -104,7 +104,7 @@ const ListItem: React.FC<Props> = ({ task }) => {
       return;
     }
 
-    const result = await editTask(id, {
+    const result = await editTask(id, timestamp, {
       categoryId: selectedCategoryOption.value,
       minutesSpent: convertSpentTimeStringToMins(time),
     });

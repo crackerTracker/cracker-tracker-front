@@ -21,7 +21,6 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { SpinnerCircularFixed } from 'spinners-react';
 import colors, { halfOpacityColors } from 'styles/colors';
 
-// todo динамически отображать изменения при внесении задач
 const Tracker = () => {
   const { setActiveSection } = useNavbarStore();
   const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
@@ -40,11 +39,19 @@ const Tracker = () => {
     [TrackerSectionsEnum.categories]: showDrawer,
   });
 
-  const { allDaysArray, init, loadMoreAfterLastMonth, canLoadMoreExtraTasks } =
-    useTrackerStore();
+  const {
+    allDaysArray,
+    init,
+    loadMoreAfterLastMonth,
+    canLoadMoreExtraTasks,
+    setScrollContainerRef,
+  } = useTrackerStore();
+
+  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     init();
+    setScrollContainerRef(scrollContainerRef.current);
   }, []);
 
   const windowWidth = document.documentElement.clientWidth;
@@ -58,7 +65,7 @@ const Tracker = () => {
               <ControlPanelWrapper>
                 <ControlPanel />
               </ControlPanelWrapper>
-              <Relative>
+              <Relative ref={scrollContainerRef}>
                 <InfiniteScroll
                   initialLoad={false}
                   loadMore={loadMoreAfterLastMonth}
@@ -79,11 +86,16 @@ const Tracker = () => {
                 >
                   <Cards>
                     <Row gutter={[24, 24]}>
-                      {allDaysArray.map((day, timestamp) => (
-                        <Col key={timestamp} span={windowWidth <= 1500 ? 8 : 6}>
-                          <DateCard day={day} />
-                        </Col>
-                      ))}
+                      {allDaysArray.map((day) => {
+                        return (
+                          <Col
+                            key={day.timestamp}
+                            span={windowWidth <= 1500 ? 8 : 6}
+                          >
+                            <DateCard day={day} />
+                          </Col>
+                        );
+                      })}
                     </Row>
                   </Cards>
                 </InfiniteScroll>

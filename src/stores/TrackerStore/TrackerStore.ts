@@ -1,11 +1,10 @@
 import RootStore from 'stores/RootStore';
-import { makeAutoObservable, runInAction, toJS } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import {
   ApiCategoryType,
   CategoryType,
   TaskType,
   ApiTaskType,
-  normalizeTasksToDatesMap,
   normalizeCategories,
   normalizeCategory,
   normalizeTask,
@@ -16,12 +15,14 @@ import {
   DayType,
   DaysMapToArray,
   mergeToTaskMonthsByYearsMaps,
+  TaskMonthsMapType,
 } from './types';
 import { SelectOptionType } from 'types/antd';
 import { request } from 'utils/request';
 import { endpoints } from 'config/endpoints';
 import { getAuthHeader } from 'utils/getAuthHeader';
 import { daysAmountToLoad } from 'config/tracker';
+import convertToZeroTimestamp from 'utils/convertToZeroTimestamp';
 
 type PrivateFields = 'rootStore';
 
@@ -34,8 +35,6 @@ class TrackerStore {
   private rootStore: RootStore;
 
   public categoriesMap: Record<string, CategoryType> = {};
-
-  public datesMap: Record<number, TaskType[]> = {};
 
   tasksByYearsMonthsMap: TaskMonthsByYearsMapType = {};
 
@@ -50,6 +49,8 @@ class TrackerStore {
   initialized = false; // проинициализировано
 
   fatalError = false; // есть ли ошибка
+
+  scrollContainerRef: HTMLDivElement | null = null;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable<this, PrivateFields>(this, {
@@ -91,10 +92,6 @@ class TrackerStore {
       },
       []
     );
-  }
-
-  get datesArray() {
-    return Object.keys(this.datesMap).sort((a, b) => Number(b) - Number(a));
   }
 
   get lastLoadedDay(): DayType | null {
@@ -151,15 +148,84 @@ class TrackerStore {
     return days.sort((dayA, dayB) => dayB.timestamp - dayA.timestamp);
   }
 
+  get localYearMonth(): { year: number; month: number } {
+    const currentDate = new Date();
+    return { year: currentDate.getFullYear(), month: currentDate.getMonth() };
+  }
+
+  setScrollContainerRef = (ref: HTMLDivElement | null) => {
+    this.scrollContainerRef = ref;
+  };
+
+  scrollContainerTop = (): void => {
+    if (this.scrollContainerRef) {
+      this.scrollContainerRef.scrollTo({
+        top: 0,
+        left: 0,
+      });
+    }
+  };
+
+  getMonthByDate = (date: Date): DaysTasksMapType => {
+    return this.tasksByYearsMonthsMap[date.getUTCFullYear()][
+      date.getUTCMonth()
+    ];
+  };
+
+  getLoadedTaskByDateAndId = (
+    id: string,
+    date: Date
+  ): {
+    yearMonthMap: TaskMonthsMapType;
+    monthDaysMap: DaysTasksMapType;
+    dayTasks: TaskType[];
+    dayTimestamp: number;
+    dayIndex: number;
+    task: TaskType;
+  } | null => {
+    const loadedYearWithTask =
+      this.tasksByYearsMonthsMap[date.getUTCFullYear()];
+
+    if (!loadedYearWithTask) {
+      return null;
+    }
+
+    const loadedMonthWithTask = loadedYearWithTask[date.getUTCMonth()];
+
+    if (!loadedMonthWithTask) {
+      return null;
+    }
+
+    const dayTimestamp = date.getTime();
+
+    const dayTasks = loadedMonthWithTask[dayTimestamp];
+
+    if (!dayTasks) {
+      return null;
+    }
+
+    const dayIndex = dayTasks.findIndex((task) => task.id === id);
+
+    if (dayIndex === -1) {
+      return null;
+    }
+
+    return {
+      dayIndex,
+      task: dayTasks[dayIndex],
+      dayTimestamp,
+      dayTasks,
+      yearMonthMap: loadedYearWithTask,
+      monthDaysMap: loadedMonthWithTask,
+    };
+  };
+
   // загружает с бэка задачи; в случае успеха отдаёт мапу с задачами, иначе null
   loadTasks = async (
     daysAmount: number,
     month: number,
     year: number
   ): Promise<TaskMonthsByYearsMapType | null> => {
-    // todo убрать
-    console.log('loadTasks this.tasksLoading', this.tasksLoading);
-
     if (this.tasksLoading) {
       return null;
     }
@@ -237,6 +303,23 @@ class TrackerStore {
     return false;
   };
 
+  // закгружает дни с задачами, начиная с текущего месяца;
+  // вместо имеющихся данных о днях записывает полученные
+  loadInitialDays = async (): Promise<TaskMonthsByYearsMapType | null> => {
+    const { year, month } = this.localYearMonth;
+    // здесь нам важнее, чтобы пользователь получал данные, начиная с месяца и года по его времени, а не по UTC
+    const initialTasks = await this.loadTasks(daysAmountToLoad, month, year);
+
+    if (!initialTasks) {
+      runInAction(() => {
+        this.fatalError = true;
+      });
+      return null;
+    }
+
+    return initialTasks;
+  };
+
   // загружает сначала категории, затем задачи, начиная с текущего месяца;
   // в случае, если что-то из этого не придёт, присвоит fatalError true
   init = async () => {
@@ -259,15 +342,9 @@ class TrackerStore {
       return;
     }
 
-    const currentDate = new Date();
-    // здесь нам важнее, чтобы пользователь получал данные, начиная с месяца и года по его времени, а не по UTC
-    const initialTasks = await this.loadTasks(
-      daysAmountToLoad,
-      currentDate.getMonth(),
-      currentDate.getFullYear()
-    );
+    const initialDays = await this.loadInitialDays();
 
-    if (!initialTasks) {
+    if (!initialDays) {
       runInAction(() => {
         this.fatalError = true;
       });
@@ -275,49 +352,33 @@ class TrackerStore {
     }
 
     runInAction(() => {
-      this.tasksByYearsMonthsMap = initialTasks;
+      this.tasksByYearsMonthsMap = initialDays;
       this.initializing = false;
       this.initialized = true;
     });
-
-    // todo убрать
-    console.log('initialized success', initialTasks);
   };
 
   // запускает инициализацию заново;
-  // на случай, если понадобится инициализировать приложение снова после неудачной инициализации
+  // на случай, если понадобится инициализировать приложение снова после неудачной инициализации;
   reinit = async (): Promise<void> => {
+    this.scrollContainerTop();
+    this.tasksLoading = false;
+    this.extraTasksLoading = false;
+    this.initializing = false;
     this.initialized = false;
     this.fatalError = false;
+    this.canLoadMoreExtraTasks = true;
+    this.tasksByYearsMonthsMap = {};
     await this.init();
   };
 
   loadMoreAfterLastMonth = async (): Promise<void> => {
-    // todo убрать
-    console.log(
-      'start loadMoreAfterLastMonth',
-      'this.tasksLoading',
-      this.tasksLoading,
-      'this.initialized',
-      this.initialized,
-      'extraTasksLoading',
-      this.extraTasksLoading
-    );
-
     if (this.tasksLoading || this.extraTasksLoading || !this.initialized) {
       return;
     }
 
     const nextMonthToLoad = this.prevUTCMonthForLastLoaded;
     const nextYearToLoad = this.prevUTCYearForLastLoaded;
-
-    // todo убрать
-    console.log(
-      'nextMonthToLoad',
-      nextMonthToLoad,
-      'nextYearToLoad',
-      nextYearToLoad
-    );
 
     if (!nextMonthToLoad || !nextYearToLoad) {
       return;
@@ -332,20 +393,11 @@ class TrackerStore {
         nextYearToLoad
       );
 
-      // todo убрать
-      console.log('tasks', tasks);
-
       if (!tasks) {
         return;
       }
 
-      const merged = mergeToTaskMonthsByYearsMaps(
-        this.tasksByYearsMonthsMap,
-        tasks
-      );
-
-      // todo убрать
-      console.log('merged', toJS(merged));
+      mergeToTaskMonthsByYearsMaps(this.tasksByYearsMonthsMap, tasks);
     } catch (e) {
       console.log('TrackerStore.loadMoreAfterLastMonth error', e);
     }
@@ -379,10 +431,10 @@ class TrackerStore {
   };
 
   thereIsTaskWithCategory = (categoryId: string) => {
-    const datesTasks = Object.values(this.datesMap);
+    const datesTasks = this.allDaysArray;
 
     for (let i = 0; i < datesTasks.length; i++) {
-      const tasks = datesTasks[i];
+      const tasks = datesTasks[i].tasks;
 
       if (tasks.find(({ category }) => category.id === categoryId)) {
         return true;
@@ -404,7 +456,7 @@ class TrackerStore {
       });
 
       if (this.thereIsTaskWithCategory(toDeleteId)) {
-        await this.getAllTasksInDatesMap();
+        await this.reinit();
       }
 
       runInAction(() => {
@@ -448,38 +500,16 @@ class TrackerStore {
           ? fieldsToEdit.isArchived === undefined
           : true)
       ) {
-        await this.getAllTasksInDatesMap();
+        await this.loadInitialDays();
       }
     } catch (e) {
       console.log('TrackerStore.editCategory', e);
     }
   };
 
-  getAllTasksInDatesMap = async () => {
-    try {
-      const response: ApiTaskType[] = await request({
-        url: endpoints.getAllTrackerTasks.url,
-        method: endpoints.getAllTrackerTasks.method,
-        headers: getAuthHeader(this.rootStore.authStore.token),
-      });
+  addTask = async (categoryId: string, minutesSpent: number, date: Date) => {
+    const zeroTimestamp = convertToZeroTimestamp(date.getTime());
 
-      runInAction(() => {
-        this.datesMap = normalizeTasksToDatesMap(
-          response,
-          this.categoriesMap || undefined
-        );
-      });
-    } catch (e) {
-      console.log('TrackerStore.getAllTasks', e);
-    }
-  };
-
-  // todo заменить таймстемп на дату
-  addTask = async (
-    categoryId: string,
-    minutesSpent: number,
-    zeroTimestamp: number
-  ) => {
     try {
       const response: ApiTaskType = await request({
         url: endpoints.addTrackerTask.url,
@@ -492,22 +522,43 @@ class TrackerStore {
         },
       });
 
+      if (!response) {
+        return;
+      }
+
+      const loadedMonthWithAddedTimestamp = this.getMonthByDate(date);
+
+      // если месяц, в который мы добавили задачу, ещё не был загружен, ничего не делать;
+      if (!loadedMonthWithAddedTimestamp) {
+        return;
+      }
+
       const added = normalizeTask(response);
-      const timestamp = added.timestamp;
+      const addedTimestamp = added.timestamp;
 
       runInAction(() => {
-        if (!this.datesMap[timestamp]) {
-          this.datesMap[timestamp] = [added];
-        } else {
-          const indexTaskWithSameCategory = this.datesMap[timestamp].findIndex(
-            ({ category }) => category.id === added.category.id
-          );
+        // ...иначе если дня (массива с задачами) по заданному timestamp'у в загруженных месяцах не оказалось
+        // создать в месяце день с массивом задач, положить туда созданную задачу
+        if (!loadedMonthWithAddedTimestamp[addedTimestamp]) {
+          loadedMonthWithAddedTimestamp[addedTimestamp] = [added];
+          return;
+        }
 
-          if (indexTaskWithSameCategory !== -1) {
-            this.datesMap[timestamp][indexTaskWithSameCategory] = added;
-          } else {
-            this.datesMap[timestamp].push(added);
-          }
+        const dayTasks = loadedMonthWithAddedTimestamp[addedTimestamp];
+
+        // ...иначе если день по заданному timestamp'у есть,
+        // найти задачу с той же категорией в массиве задач дня
+        const indexTaskWithSameCategory = dayTasks.findIndex(
+          ({ category }) => category.id === added.category.id
+        );
+
+        // если в дне задача с такой же категорией есть, заменить её на созданную задачу
+        // (на бэке время за категории суммируется и отдаётся итоговое)
+        if (indexTaskWithSameCategory !== -1) {
+          dayTasks[indexTaskWithSameCategory] = added;
+        } else {
+          // иначе добавить задачу в конец массива задач
+          dayTasks.push(added);
         }
       });
     } catch (e) {
@@ -516,31 +567,58 @@ class TrackerStore {
   };
 
   // todo рассмотреть передачу индекса изменяемой задачи, чтобы не делать поиск по массиву
-  deleteTask = async (toDeleteId: string, timestamp: number) => {
-    const indexTaskToDelete = this.datesMap[timestamp].findIndex(
-      ({ id }) => id === toDeleteId
-    );
+  deleteTask = async (toDeleteId: string, timestamp: number): Promise<void> => {
+    const date = new Date(timestamp);
 
-    if (indexTaskToDelete === -1) {
+    const task = this.getLoadedTaskByDateAndId(toDeleteId, date);
+
+    if (!task) {
       return;
     }
 
+    const {
+      monthDaysMap: loadedMonthWithTaskToDelete,
+      dayIndex: loadedTaskToDeleteIndex,
+    } = task;
+
     try {
-      await request({
+      const response = await request({
         url: endpoints.deleteTrackerTask.url,
         method: endpoints.deleteTrackerTask.method,
         headers: getAuthHeader(this.rootStore.authStore.token),
         body: {
-          toDeleteId: toDeleteId,
+          toDeleteId,
         },
       });
 
-      runInAction(() => {
-        if (this.datesMap[timestamp].length === 1) {
-          delete this.datesMap[timestamp];
-        } else {
-          this.datesMap[timestamp].splice(indexTaskToDelete, 1);
+      if (!response) {
+        return;
+      }
+
+      // если в дне есть лишь одна задача - удаляемая -, то удалить день из месяца
+      if (loadedMonthWithTaskToDelete[timestamp].length === 1) {
+        runInAction(() => {
+          delete loadedMonthWithTaskToDelete[timestamp];
+        });
+
+        // если после удаления дня оказывается, что дней меньше,
+        // чем число дней для подгрузки, загрузить ещё дни
+        if (
+          this.allDaysArray.length < daysAmountToLoad &&
+          this.canLoadMoreExtraTasks
+        ) {
+          await this.loadMoreAfterLastMonth();
         }
+
+        return;
+      }
+
+      // ...иначе удалить задачу из массива задач дня
+      runInAction(() => {
+        loadedMonthWithTaskToDelete[timestamp].splice(
+          loadedTaskToDeleteIndex,
+          1
+        );
       });
     } catch (e) {
       console.log('TrackerStore.addTask', e);
@@ -550,12 +628,23 @@ class TrackerStore {
   // todo рассмотреть передачу индекса изменяемой задачи, чтобы не делать поиск по массиву
   editTask = async (
     toEditId: string,
+    timestamp: number,
     toEditFields: {
       date?: string;
       categoryId?: string;
       minutesSpent?: number;
     } = {}
   ): Promise<boolean> => {
+    const date = new Date(timestamp);
+
+    const task = this.getLoadedTaskByDateAndId(toEditId, date);
+
+    if (!task) {
+      return false;
+    }
+
+    const { dayIndex: taskToEditIndex, dayTasks: dayWithEditedTask } = task;
+
     try {
       const response: ApiTaskType = await request({
         url: endpoints.editTrackerTask.url,
@@ -567,17 +656,14 @@ class TrackerStore {
         },
       });
 
-      const edited = normalizeTask(response);
-      const indexEdited = this.datesMap[edited.timestamp].findIndex(
-        ({ id }) => id === edited.id
-      );
-
-      if (indexEdited === -1) {
-        throw new Error('Что-то пошло не так');
+      if (!response) {
+        return false;
       }
 
+      const edited = normalizeTask(response);
+
       runInAction(() => {
-        this.datesMap[edited.timestamp][indexEdited] = edited;
+        dayWithEditedTask[taskToEditIndex] = edited;
       });
 
       return true;
