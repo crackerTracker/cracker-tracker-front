@@ -30,10 +30,6 @@ class PomodoroStore {
     return this.rootStore.authStore.token;
   }
 
-  setTimerState = (state: TimerStatesEnum) => {
-    this.timerState = state;
-  };
-
   get plannedPomosData() {
     return this._plannedPomosData;
   }
@@ -41,6 +37,38 @@ class PomodoroStore {
   get donePomosData() {
     return this._donePomosData;
   }
+
+  get planTime() {
+    const resultTime = this.plannedPomosAmount * this.pomoTime;
+    return this._printTime(resultTime);
+  }
+
+  get doneTime() {
+    const resultTime = this._donePomosData
+      .map((pomo) => pomo.minutesSpent)
+      .reduce((time, mins) => mins + time, 0);
+    return this._printTime(resultTime);
+  }
+
+  get taskName() {
+    return this.plannedPomosData[0]?.name ?? '';
+  }
+
+  get plannedPomosAmount() {
+    return this.plannedPomosData.length
+      ? this.plannedPomosData
+          .map((item) => item.pomodorosAmount)
+          .reduce((sum, item) => sum + item)
+      : 0;
+  }
+
+  get donePomosAmount() {
+    return this._donePomosData.length;
+  }
+
+  setTimerState = (state: TimerStatesEnum) => {
+    this.timerState = state;
+  };
 
   requestAllPomos = async () => {
     this.isLoading = true;
@@ -192,41 +220,11 @@ class PomodoroStore {
 
   // Stats
 
-  //todo поднять геттеры
-
-  get planTime() {
-    const resultTime = this.plannedPomosAmount * this.pomoTime;
-    return this._printTime(resultTime);
-  }
-
-  get doneTime() {
-    const resultTime = this._donePomosData
-      .map((pomo) => pomo.minutesSpent)
-      .reduce((time, mins) => mins + time, 0);
-    return this._printTime(resultTime);
-  }
-
   private _printTime = (resultTime: number) => {
     const hours = Math.trunc(resultTime / 60);
     const mins = resultTime - hours * 60;
     return `${hours}ч ${mins}м`;
   };
-
-  get taskName() {
-    return this.plannedPomosData[0]?.name ?? '';
-  }
-
-  get plannedPomosAmount() {
-    return this.plannedPomosData.length
-      ? this.plannedPomosData
-          .map((item) => item.pomodorosAmount)
-          .reduce((sum, item) => sum + item)
-      : 0;
-  }
-
-  get donePomosAmount() {
-    return this._donePomosData.length;
-  }
 }
 
 export default PomodoroStore;
