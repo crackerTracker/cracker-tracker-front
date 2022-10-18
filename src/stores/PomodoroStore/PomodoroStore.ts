@@ -1,23 +1,10 @@
 import request from 'utils/request';
 import { getAuthHeader } from 'utils/getAuthHeader';
 import { makeAutoObservable, runInAction } from 'mobx';
-import RootStore from './RootStore';
+import RootStore from '../RootStore';
 import { endpoints } from 'config/endpoints';
 import { defaultPomoTime, TimerStatesEnum } from 'config/pomoconf';
-
-export type PlannedPomoType = {
-  _id: string;
-  name: string;
-  pomodorosAmount: number;
-};
-
-export type DonePomoType = {
-  _id: string;
-  name: string;
-  minutesSpent: number;
-  startTime: string;
-  endTime: string;
-};
+import { DonePomoType, PlannedPomoType } from './types';
 
 type PrivateFields = 'rootStore';
 

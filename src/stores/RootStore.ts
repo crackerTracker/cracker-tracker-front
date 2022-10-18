@@ -1,5 +1,5 @@
 import AuthStore from './AuthStore';
-import PomodoroStore from './PomodoroStore';
+import PomodoroStore from './PomodoroStore/PomodoroStore';
 import TrackerStore from './TrackerStore/TrackerStore';
 import NavbarStore from './NavbarStore/NavbarStore';
 import TodoStore from './TodoStore/TodoStore';
