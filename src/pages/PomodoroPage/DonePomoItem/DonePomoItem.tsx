@@ -34,8 +34,8 @@ const DonePomoItem: FC<Props> = ({
     pomoName,
     isEdit,
     spentMinutes,
-    startTimeMoment: memoStartMoment,
-    endTimeMoment: memoEndMoment,
+    startTimeMoment,
+    endTimeMoment,
     approveEditing,
     deletePomoStack,
     menuEditClick,
@@ -86,7 +86,7 @@ const DonePomoItem: FC<Props> = ({
               <StyledTimeRange>
                 <StyledTimePicker
                   format={format}
-                  value={memoStartMoment}
+                  value={startTimeMoment}
                   bordered={false}
                   allowClear={false}
                   disabled
@@ -94,7 +94,7 @@ const DonePomoItem: FC<Props> = ({
                 <StyledText>-</StyledText>
                 <StyledTimePicker
                   format={format}
-                  value={memoEndMoment}
+                  value={endTimeMoment}
                   bordered={false}
                   allowClear={false}
                   disabled
