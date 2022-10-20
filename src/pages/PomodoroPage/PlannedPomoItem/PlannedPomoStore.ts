@@ -12,9 +12,9 @@ export class PlannedPomoStore extends PomoItemStore {
 
   constructor(
     pomodoroStore: PomodoroStore,
-    { _id, name, pomodorosAmount }: PlannedPomoType
+    { id, name, pomodorosAmount }: PlannedPomoType
   ) {
-    super(pomodoroStore, { _id, name });
+    super(pomodoroStore, { id, name });
 
     makeObservable<this, PrivateFields>(this, {
       _pomoAmount: observable,
@@ -40,7 +40,7 @@ export class PlannedPomoStore extends PomoItemStore {
   get isSetDisabled(): boolean {
     const firstPomo = this.pomodoroStore.plannedPomosData[0];
     const timerState = this.pomodoroStore.timerState;
-    return firstPomo._id === this.id && timerState === TimerStatesEnum.work;
+    return firstPomo.id === this.id && timerState === TimerStatesEnum.work;
   }
 
   get pomoAmount(): number {

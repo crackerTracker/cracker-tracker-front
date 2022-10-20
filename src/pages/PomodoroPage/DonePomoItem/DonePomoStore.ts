@@ -20,9 +20,9 @@ export class DonePomoStore extends PomoItemStore {
 
   constructor(
     pomodoroStore: PomodoroStore,
-    { _id, name, endTime, startTime, minutesSpent }: DonePomoType
+    { id, name, endTime, startTime, minutesSpent }: DonePomoType
   ) {
-    super(pomodoroStore, { _id, name });
+    super(pomodoroStore, { id, name });
 
     makeObservable<this, PrivateFields>(this, {
       pomodoroStore: false,
@@ -48,23 +48,22 @@ export class DonePomoStore extends PomoItemStore {
     this.temporaryMinutes = minutesSpent;
   }
 
-  get startTimeMoment() {
-    const startTimeString = new Date(this.startTime)
-      .toLocaleTimeString()
-      .slice(0, -3);
-    return moment(startTimeString, format);
+  get startTimeMoment(): moment.Moment {
+    return this._getTimeMoment(this.startTime);
   }
 
-  get endTimeMoment() {
-    const endTimeString = new Date(this.endTime)
-      .toLocaleTimeString()
-      .slice(0, -3);
-    return moment(endTimeString, format);
+  get endTimeMoment(): moment.Moment {
+    return this._getTimeMoment(this.endTime);
   }
 
   get spentMinutes(): number {
     return this._spentMinutes;
   }
+
+  private _getTimeMoment = (date: string | Date): moment.Moment => {
+    const timeString = new Date(date).toLocaleTimeString().slice(0, -3);
+    return moment(timeString, format);
+  };
 
   setSpentMinutes = (minutes: number | string): void => {
     this._spentMinutes = Number(minutes);
@@ -94,18 +93,16 @@ export class DonePomoStore extends PomoItemStore {
       new Date(this.endTime).getTime() - newSpentMs
     );
     const newStartTimeISOString = newStartTime.toISOString();
-    const newEndTimeISOString = new Date(this.endTime).toISOString();
 
     await this.pomodoroStore.editDonePomo(
       this.id,
       this.pomoName,
       Number(this._spentMinutes),
       newStartTimeISOString,
-      newEndTimeISOString
+      this.endTime
     );
 
     this.setStartTime(newStartTimeISOString);
-    this.setEndTime(newEndTimeISOString);
     this.setIsEdit(false);
   };
 

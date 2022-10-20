@@ -16,12 +16,12 @@ type Props = {
 };
 
 const PlannedPomoItem: FC<Props> = ({
-  plannedPomo: { _id, name, pomodorosAmount },
+  plannedPomo: { id, name, pomodorosAmount },
 }) => {
   const pomodoroStore = usePomodoroStore();
 
   const plannedPomoStore = useLocalObservable(
-    () => new PlannedPomoStore(pomodoroStore, { _id, name, pomodorosAmount })
+    () => new PlannedPomoStore(pomodoroStore, { id, name, pomodorosAmount })
   );
 
   const {
@@ -46,14 +46,14 @@ const PlannedPomoItem: FC<Props> = ({
     const firstPomo = plannedPomosData[0];
     const lastPomo = plannedPomosData[plannedPomosData.length - 1];
     // to refresh first pomo amount when timer is over
-    if (_id === firstPomo._id) {
+    if (id === firstPomo.id) {
       setPomoAmount(firstPomo.pomodorosAmount);
     }
     // to refresh last pomo amount when adding pomo with the same name
-    if (_id === lastPomo._id) {
+    if (id === lastPomo.id) {
       setPomoAmount(lastPomo.pomodorosAmount);
     }
-  }, [plannedPomosData, _id]);
+  }, [plannedPomosData, id]);
 
   const menu = (
     <Menu>

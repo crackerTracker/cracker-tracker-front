@@ -20,11 +20,11 @@ type Props = {
 };
 
 const DonePomoItem: FC<Props> = ({
-  donePomo: { _id, endTime, minutesSpent, name, startTime },
+  donePomo: { id, endTime, minutesSpent, name, startTime },
 }) => {
   const pomodoroStore = usePomodoroStore();
 
-  const donePomoProps = { _id, name, endTime, minutesSpent, startTime };
+  const donePomoProps = { id, name, endTime, minutesSpent, startTime };
 
   const donePomoStore = useLocalObservable(
     () => new DonePomoStore(pomodoroStore, donePomoProps)
