@@ -86,16 +86,14 @@ const Tracker = () => {
                 >
                   <Cards>
                     <Row gutter={[24, 24]}>
-                      {allDaysArray.map((day) => {
-                        return (
-                          <Col
-                            key={day.timestamp}
-                            span={windowWidth <= 1500 ? 8 : 6}
-                          >
-                            <DateCard day={day} />
-                          </Col>
-                        );
-                      })}
+                      {allDaysArray.map((day) => (
+                        <Col
+                          key={day.timestamp}
+                          span={windowWidth <= 1500 ? 8 : 6}
+                        >
+                          <DateCard day={day} />
+                        </Col>
+                      ))}
                     </Row>
                   </Cards>
                 </InfiniteScroll>
