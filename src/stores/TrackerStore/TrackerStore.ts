@@ -10,7 +10,6 @@ import {
   normalizeCategory,
   normalizeTask,
 } from './types';
-import { mockCategories, mockTasks } from './mock';
 import { SelectOptionType } from 'types/antd';
 import request from 'utils/request';
 import { endpoints } from 'config/endpoints';

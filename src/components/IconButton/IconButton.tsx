@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Image, StyledButton } from './IconButton.styles';
 
-type Props = {
+export type IconButtonProps = {
   children?: React.ReactNode;
   onClick?: VoidFunction | ((e: any) => void);
   isLoading?: boolean;
@@ -15,7 +15,7 @@ type Props = {
   className?: string;
 };
 
-const IconButton: React.FC<Props> = ({
+const IconButton: React.FC<IconButtonProps> = ({
   onClick = () => {},
   isLoading = false,
   isDisabled = false,

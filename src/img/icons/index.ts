@@ -25,6 +25,8 @@ export const images = {
   closeDarkBrown: require('./closeDarkBrown.svg'),
   brushBrown: require('./brushBrown.svg'),
   checkBrown: require('./checkBrown.svg'),
+  solidGraphBrown: require('./solidGraphBrown.svg'),
+  solidPieChartBrown: require('./solidPieChartBrown.svg'),
 
   checkWhite: require('./checkWhite.svg'),
   crossWhite: require('./crossWhite.svg'),

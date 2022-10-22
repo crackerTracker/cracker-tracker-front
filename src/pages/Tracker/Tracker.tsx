@@ -107,7 +107,7 @@ const Tracker = () => {
         onDrawerClose={closeDrawer(TrackerSectionsEnum.categories)}
       />
       <ChartsDrawer
-        visible={chartsDrawerVisible}
+        visible={true}
         onDrawerClose={closeDrawer(TrackerSectionsEnum.charts)}
       />
     </>
