@@ -18,8 +18,10 @@ import { TrackerSectionsEnum } from 'config/tracker';
 import CategoriesDrawer from './CategoriesDrawer';
 import useDrawer from 'utils/hooks/useDrawer';
 import InfiniteScroll from 'react-infinite-scroller';
-import { SpinnerCircularFixed } from 'spinners-react';
-import colors, { halfOpacityColors } from 'styles/colors';
+import Spinner, {
+  SpinnerSizesEnum,
+  SpinnerThemesEnum,
+} from 'components/Spinner';
 
 const Tracker = () => {
   const { setActiveSection } = useNavbarStore();
@@ -74,13 +76,9 @@ const Tracker = () => {
                   hasMore={canLoadMoreExtraTasks}
                   loader={
                     <LoaderContainer>
-                      {/* todo мб вынести в компонент */}
-                      <SpinnerCircularFixed
-                        size={70}
-                        thickness={150}
-                        speed={150}
-                        color={colors.brown}
-                        secondaryColor={halfOpacityColors.brown}
+                      <Spinner
+                        theme={SpinnerThemesEnum.brown}
+                        size={SpinnerSizesEnum.l}
                       />
                     </LoaderContainer>
                   }
