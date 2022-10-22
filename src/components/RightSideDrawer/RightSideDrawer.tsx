@@ -10,7 +10,7 @@ import {
   Container,
 } from './RightSideDrawer.styles';
 
-interface RightSideDrawerProps {
+export interface RightSideDrawerProps {
   children?: React.ReactNode;
   footerChildren?: React.ReactNode;
   onDrawerClose: VoidFunction;
