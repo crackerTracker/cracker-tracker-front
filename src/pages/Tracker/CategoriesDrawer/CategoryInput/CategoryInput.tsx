@@ -15,6 +15,7 @@ import ColorButton from './ColorButton';
 import ColorPicker from './ColorPicker';
 import { useTrackerStore } from 'stores/hooks';
 import { message } from 'antd';
+import { observer } from 'mobx-react-lite';
 
 type Props = {
   editedCategory: CategoryType | null;
@@ -28,7 +29,7 @@ const CategoryInput: React.FC<Props> = ({
   setEditedCategory,
   isDrawerVisible,
 }) => {
-  const { createCategory, editCategory } = useTrackerStore();
+  const { createCategory, editCategory, categoryEditing } = useTrackerStore();
   const [color, setColor] = useState<string | null>(null);
   const [colorPicking, setColorPicking] = useState(false);
   const [name, setName] = useState('');
@@ -136,6 +137,7 @@ const CategoryInput: React.FC<Props> = ({
           value={name}
           onChange={onChangeName}
           placeholder="Введите название категории"
+          disabled={categoryEditing}
         />
 
         {!editedCategory && (
@@ -181,20 +183,27 @@ const CategoryInput: React.FC<Props> = ({
                 />
               </ColorPickerWrapper>
 
-              <ColorButton color={color} onClick={onClickColorPick} />
-            </ButtonWrapper>
-
-            <ButtonWrapper>
-              <Button
-                image={images.checkBrown.default}
-                onClick={onClickApproveEditing}
+              <ColorButton
+                isDisabled={categoryEditing}
+                color={color}
+                onClick={onClickColorPick}
               />
             </ButtonWrapper>
 
-            <ButtonWrapper>
+            <ButtonWrapper isDisabled={categoryEditing}>
+              <Button
+                image={images.checkBrown.default}
+                onClick={onClickApproveEditing}
+                isLoading={categoryEditing}
+                isDisabled={categoryEditing}
+              />
+            </ButtonWrapper>
+
+            <ButtonWrapper isDisabled={categoryEditing}>
               <Button
                 image={images.closeBrown.default}
                 onClick={onClickCancelEditing}
+                isDisabled={categoryEditing}
               />
             </ButtonWrapper>
           </>
@@ -204,4 +213,4 @@ const CategoryInput: React.FC<Props> = ({
   );
 };
 
-export default CategoryInput;
+export default observer(CategoryInput);
