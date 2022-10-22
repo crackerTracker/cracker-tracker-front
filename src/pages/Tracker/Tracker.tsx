@@ -16,23 +16,56 @@ import { trackerNavbarIcons } from 'config/navbar';
 import { TrackerSectionsEnum } from 'config/tracker';
 import CategoriesDrawer from './CategoriesDrawer';
 import useDrawer from 'utils/hooks/useDrawer';
+import ChartsDrawer from './ChartsDrawer';
 
 const Tracker = () => {
   const { setActiveSection } = useNavbarStore();
-  const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
+  const {
+    visible: categoriesDrawerVisible,
+    onDrawerOpen: onCategoriesDrawerOpen,
+    onDrawerClose: onCategoriesDrawerClose,
+  } = useDrawer();
+  const {
+    visible: chartsDrawerVisible,
+    onDrawerOpen: onChartsDrawerOpen,
+    onDrawerClose: onChartsDrawerClose,
+  } = useDrawer();
 
-  const showDrawer = useCallback(() => {
-    setActiveSection(TrackerSectionsEnum.categories);
-    onDrawerOpen();
-  }, []);
+  const showDrawer = useCallback(
+    (section: TrackerSectionsEnum) => () => {
+      setActiveSection(section);
+      switch (section) {
+        case TrackerSectionsEnum.charts:
+          onChartsDrawerOpen();
+          break;
+        case TrackerSectionsEnum.categories:
+          onCategoriesDrawerOpen();
+          break;
+      }
+    },
+    []
+  );
 
-  const closeDrawer = useCallback(() => {
-    setActiveSection(null);
-    onDrawerClose();
-  }, []);
+  const closeDrawer = useCallback(
+    (section: TrackerSectionsEnum) => () => {
+      setActiveSection(null);
+      switch (section) {
+        case TrackerSectionsEnum.charts:
+          onChartsDrawerClose();
+          break;
+        case TrackerSectionsEnum.categories:
+          onCategoriesDrawerClose();
+          break;
+      }
+    },
+    []
+  );
 
   useInitSectionNavbar(trackerNavbarIcons, {
-    [TrackerSectionsEnum.categories]: showDrawer,
+    [TrackerSectionsEnum.categories]: showDrawer(
+      TrackerSectionsEnum.categories
+    ),
+    [TrackerSectionsEnum.charts]: showDrawer(TrackerSectionsEnum.charts),
   });
 
   const { datesArray, getAllTasksInDatesMap, getAllCategories } =
@@ -69,7 +102,14 @@ const Tracker = () => {
           </Col>
         </Row>
       </Container>
-      <CategoriesDrawer visible={visible} onDrawerClose={closeDrawer} />
+      <CategoriesDrawer
+        visible={categoriesDrawerVisible}
+        onDrawerClose={closeDrawer(TrackerSectionsEnum.categories)}
+      />
+      <ChartsDrawer
+        visible={chartsDrawerVisible}
+        onDrawerClose={closeDrawer(TrackerSectionsEnum.charts)}
+      />
     </>
   );
 };
