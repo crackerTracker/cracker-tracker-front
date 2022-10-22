@@ -50,6 +50,8 @@ class TrackerStore {
 
   fatalError = false; // есть ли ошибка
 
+  categoryEditing = false; // в процессе редактирования категории
+
   // контейнер, в котором скроллятся дни;
   // может потребоваться для контролирования скролла
   scrollContainerRef: HTMLDivElement | null = null;
@@ -487,6 +489,12 @@ class TrackerStore {
       isArchived?: boolean;
     } = {}
   ) => {
+    if (this.categoryEditing) {
+      return;
+    }
+
+    this.categoryEditing = true;
+
     try {
       const response: ApiCategoryType = await request({
         url: endpoints.editTrackerCategory.url,
@@ -497,6 +505,13 @@ class TrackerStore {
           ...fieldsToEdit,
         },
       });
+
+      if (!response) {
+        runInAction(() => {
+          this.categoryEditing = false;
+        });
+        return;
+      }
 
       const edited = normalizeCategory(response);
 
@@ -523,6 +538,10 @@ class TrackerStore {
     } catch (e) {
       console.log('TrackerStore.editCategory', e);
     }
+
+    runInAction(() => {
+      this.categoryEditing = false;
+    });
   };
 
   addTask = async (categoryId: string, minutesSpent: number, date: Date) => {
