@@ -313,7 +313,7 @@ class TrackerStore {
     return false;
   };
 
-  // закгружает дни с задачами, начиная с текущего месяца;
+  // загружает дни с задачами, начиная с текущего месяца;
   // вместо имеющихся данных о днях записывает полученные
   loadInitialDays = async (): Promise<TaskMonthsByYearsMapType | null> => {
     const { year, month } = this.localYearMonth;
@@ -510,7 +510,13 @@ class TrackerStore {
           ? fieldsToEdit.isArchived === undefined
           : true)
       ) {
-        await this.loadInitialDays();
+        const initialDays = await this.loadInitialDays();
+        if (initialDays) {
+          this.scrollContainerTop();
+          runInAction(() => {
+            this.tasksByYearsMonthsMap = initialDays;
+          });
+        }
       }
     } catch (e) {
       console.log('TrackerStore.editCategory', e);
@@ -714,6 +720,12 @@ class TrackerStore {
 
       runInAction(() => {
         dayWithEditedTask[taskToEditIndex] = edited;
+
+        // чтобы обновить ссылку на мапу и триггернуть обновление:
+        this.tasksByYearsMonthsMap = Object.assign(
+          {},
+          this.tasksByYearsMonthsMap
+        );
       });
 
       return true;
