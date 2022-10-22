@@ -1,7 +1,11 @@
 import React, { memo } from 'react';
 import { Image, StyledButton } from './IconButton.styles';
+import Spinner, {
+  SpinnerSizesEnum,
+  SpinnerThemesEnum,
+} from 'components/Spinner';
 
-type Props = {
+export type IconButtonProps = {
   children?: React.ReactNode;
   onClick?: VoidFunction | ((e: any) => void);
   isLoading?: boolean;
@@ -13,9 +17,11 @@ type Props = {
   hoverColor?: string;
   color?: string;
   className?: string;
+  loadingSpinnerTheme?: SpinnerThemesEnum;
+  loadingSpinnerSize?: SpinnerSizesEnum;
 };
 
-const IconButton = React.forwardRef<HTMLDivElement, Props>(
+const IconButton = React.forwardRef<HTMLDivElement, IconButtonProps>(
   (
     {
       onClick = () => {},
@@ -29,6 +35,8 @@ const IconButton = React.forwardRef<HTMLDivElement, Props>(
       hoverColor = undefined,
       color = 'black',
       className = '',
+      loadingSpinnerTheme = SpinnerThemesEnum.brown,
+      loadingSpinnerSize = SpinnerSizesEnum.xs,
     },
     ref
   ) => {
@@ -44,7 +52,13 @@ const IconButton = React.forwardRef<HTMLDivElement, Props>(
         className={className}
         ref={ref}
       >
-        {image ? <Image image={image} /> : children}
+        {isLoading ? (
+          <Spinner size={loadingSpinnerSize} theme={loadingSpinnerTheme} />
+        ) : image ? (
+          <Image image={image} />
+        ) : (
+          children
+        )}
       </StyledButton>
     );
   }
