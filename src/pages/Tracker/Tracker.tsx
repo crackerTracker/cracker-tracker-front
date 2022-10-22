@@ -51,6 +51,8 @@ const Tracker = () => {
 
   useEffect(() => {
     init();
+
+    // инициализировать реф контейнера, в котором скроллятся дни
     setScrollContainerRef(scrollContainerRef.current);
   }, []);
 

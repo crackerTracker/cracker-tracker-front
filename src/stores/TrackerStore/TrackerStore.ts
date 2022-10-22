@@ -50,6 +50,8 @@ class TrackerStore {
 
   fatalError = false; // есть ли ошибка
 
+  // контейнер, в котором скроллятся дни;
+  // может потребоваться для контролирования скролла
   scrollContainerRef: HTMLDivElement | null = null;
 
   constructor(rootStore: RootStore) {
