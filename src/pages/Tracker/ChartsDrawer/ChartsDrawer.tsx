@@ -9,6 +9,7 @@ import ToggleIconButton from './components/ToggleIconButton';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import ChartsDrawerStore from './store/ChartDrawerStore';
 import { TrackerChartsEnum } from './config';
+import ChartPanel from './components/ChartPanel';
 
 type Props = Pick<RightSideDrawerProps, 'visible' | 'onDrawerClose'>;
 
@@ -17,6 +18,7 @@ const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
     () => new ChartsDrawerStore()
   );
 
+  // todo добавить логику переключения графиков
   const onClickChangeChartType = React.useCallback(
     (chartType: TrackerChartsEnum) => () => {
       onChangeChartType(chartType);
@@ -28,7 +30,7 @@ const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
     <RightSideDrawer
       visible={visible}
       onDrawerClose={onDrawerClose}
-      headerTitle={'Статистика'}
+      headerTitle="Статистика"
       footerChildren={
         <Row justify="end">
           <ToggleIconButton
@@ -44,7 +46,9 @@ const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
         </Row>
       }
     >
-      <ChartBlock>dfsdfds</ChartBlock>
+      <ChartBlock>
+        <ChartPanel />
+      </ChartBlock>
       <CategoriesBlock>dfsdfds</CategoriesBlock>
     </RightSideDrawer>
   );

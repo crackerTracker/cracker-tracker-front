@@ -12,7 +12,7 @@ export const images = {
   deletePeach: require('./deletePeach.svg'),
 
   plusGrayishBlue: require('./plusGrayishBlue.svg'),
-  openTodoModalArrow: require('./openTodoModalArrow.svg'),
+  upArrowBrown: require('./upArrowBrown.svg'),
 
   todoToggleAll: require('./todoToggleAll.svg'),
   todoToggleWDate: require('./todoToggleWDate.svg'),

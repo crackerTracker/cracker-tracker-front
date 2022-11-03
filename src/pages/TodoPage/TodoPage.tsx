@@ -128,7 +128,7 @@ const TodoPage: FC = () => {
           />
           <Space size="large">
             <IconButton
-              image={images.openTodoModalArrow.default}
+              image={images.upArrowBrown.default}
               onClick={onModalOpen}
               squareSide="70px"
             />
