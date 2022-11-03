@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { Menu, Row } from 'antd';
-import TitleSelector from './components/SimpleDatesSelector';
+import SimpleDatesSelector from './components/SimpleDatesSelector';
 import { DatesTitle } from './components/ui';
+import DatePicker from './components/DatePicker';
+import { NoShrink } from './Control.styles';
+import { Moment } from 'moment';
 
 const Control: React.FC = () => {
   const menu = React.useCallback(
@@ -48,11 +51,16 @@ const Control: React.FC = () => {
     []
   );
 
+  const onPickDate = (date: Moment | null) => console.log(date);
+
   return (
-    <Row>
+    <Row justify="space-between">
       {/* todo добавить логику отображения либо селектора, либо одного заголовка */}
       {/*<DatesTitle>За последние 7 дней</DatesTitle>*/}
-      <TitleSelector options={menu} />
+      <SimpleDatesSelector options={menu} />
+      <NoShrink>
+        <DatePicker onPick={onPickDate} />
+      </NoShrink>
     </Row>
   );
 };

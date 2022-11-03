@@ -27,6 +27,9 @@ export const images = {
   checkBrown: require('./checkBrown.svg'),
   solidGraphBrown: require('./solidGraphBrown.svg'),
   solidPieChartBrown: require('./solidPieChartBrown.svg'),
+  calendarWithClockBrown: require('./calendarWithClockBrown.svg'),
+  bigDateCalendarBrown: require('./bigDateCalendarBrown.svg'),
+  datesCalendarBrown: require('./datesCalendarBrown.svg'),
 
   checkWhite: require('./checkWhite.svg'),
   crossWhite: require('./crossWhite.svg'),
