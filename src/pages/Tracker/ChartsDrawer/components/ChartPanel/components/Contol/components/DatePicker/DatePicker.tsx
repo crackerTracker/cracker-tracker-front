@@ -4,6 +4,8 @@ import { images } from 'img/icons';
 import IconButton from 'components/IconButton';
 import { Relative } from '../ui';
 import { Moment } from 'moment';
+import 'moment/locale/ru';
+import locale from 'antd/es/date-picker/locale/ru_RU';
 
 type Props = {
   onPick?: (moment: null | Moment) => void;
@@ -22,6 +24,7 @@ const DatePicker: React.FC<Props> = ({ onPick }) => {
         open={opened}
         onOpenChange={toggleOpened}
         onChange={onPick}
+        locale={locale}
       />
       <IconButton
         image={images.datesCalendarBrown.default}
