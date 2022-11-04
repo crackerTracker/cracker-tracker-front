@@ -1,8 +1,7 @@
 import { message } from 'antd';
 import { action, computed, makeObservable, observable } from 'mobx';
 import { FormEvent } from 'react';
-import PomodoroStore from 'stores/PomodoroStore/PomodoroStore';
-import { CommonPomoType } from 'stores/PomodoroStore/types';
+import PomodoroStore, { CommonPomoType } from 'stores/PomodoroStore';
 
 type PrivateFields =
   | 'pomodoroStore'

@@ -2,7 +2,7 @@ import { Col, Dropdown, Menu, Row } from 'antd';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import React, { FC, useEffect } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
-import { PlannedPomoType } from 'stores/PomodoroStore/types';
+import { PlannedPomoType } from 'stores/PomodoroStore';
 import {
   InputGroup,
   StyledButton,

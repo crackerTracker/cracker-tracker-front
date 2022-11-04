@@ -3,7 +3,7 @@ import { observer, useLocalObservable } from 'mobx-react-lite';
 import React, { FC } from 'react';
 import { format } from 'config/pomoconf';
 import { usePomodoroStore } from 'stores/hooks';
-import { DonePomoType } from 'stores/PomodoroStore/types';
+import { DonePomoType } from 'stores/PomodoroStore';
 import {
   InputGroup,
   StyledButton,

@@ -1,7 +1,6 @@
 import { action, computed, makeObservable, observable } from 'mobx';
-import PomodoroStore from 'stores/PomodoroStore/PomodoroStore';
+import PomodoroStore, { PlannedPomoType } from 'stores/PomodoroStore';
 import { defaultInitialMinutes, TimerStatesEnum } from 'config/pomoconf';
-import { PlannedPomoType } from 'stores/PomodoroStore/types';
 import { PomoItemStore } from '../PomoItemStore';
 
 type PrivateFields = 'pomodoroStore' | '_pomoAmount' | 'temporaryAmount';

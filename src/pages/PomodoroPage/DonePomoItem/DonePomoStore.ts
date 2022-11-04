@@ -1,8 +1,7 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 import moment from 'moment';
-import PomodoroStore from 'stores/PomodoroStore/PomodoroStore';
 import { format } from 'config/pomoconf';
-import { DonePomoType } from 'stores/PomodoroStore/types';
+import PomodoroStore, { DonePomoType } from 'stores/PomodoroStore';
 import { PomoItemStore } from '../PomoItemStore';
 
 type PrivateFields =
