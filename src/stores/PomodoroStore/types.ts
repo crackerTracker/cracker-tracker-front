@@ -24,6 +24,11 @@ type UniquePomoProps = PlannedPomoProps | DonePomoProps;
 // all properties for api planned or done item
 export type ApiPomoType<T extends UniquePomoProps> = T & ApiCommonPomoType;
 
+export type ApiAllPomosType = {
+  plan: ApiPomoType<PlannedPomoProps>[];
+  done: ApiPomoType<DonePomoProps>[];
+};
+
 // all properties for normalized planned or done item
 type PomoType<T extends UniquePomoProps> = CommonPomoType &
   Omit<ApiPomoType<T>, '_id'>;
@@ -45,8 +50,5 @@ export const normalizePomoItem = <T extends UniquePomoProps>({
 export const normalizePomoItems = <T extends UniquePomoProps>(
   items: ApiPomoType<T>[]
 ): PomoType<T>[] => {
-  return items.reduce(
-    (pomos, item) => [...pomos, normalizePomoItem<T>(item)],
-    [] as PomoType<T>[]
-  );
+  return items.map((item) => normalizePomoItem<T>(item));
 };

@@ -5,7 +5,7 @@ import RootStore from '../RootStore';
 import { endpoints } from 'config/endpoints';
 import { defaultPomoTime, TimerStatesEnum } from 'config/pomoconf';
 import {
-  ApiPomoType,
+  ApiAllPomosType,
   DonePomoProps,
   DonePomoType,
   normalizePomoItems,
@@ -14,11 +14,6 @@ import {
 } from './types';
 
 type PrivateFields = 'rootStore';
-
-type ApiAllPomosType = {
-  plan: ApiPomoType<PlannedPomoProps>[];
-  done: ApiPomoType<DonePomoProps>[];
-};
 
 class PomodoroStore {
   private rootStore: RootStore;
