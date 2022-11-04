@@ -5,6 +5,8 @@ import { DatesTitle } from './components/ui';
 import DatePicker from './components/DatePicker';
 import { NoShrink } from './Control.styles';
 import { Moment } from 'moment';
+import WeekPicker from './components/WeekPicker';
+import Days7RangePicker from './components/Days7RangePicker';
 
 const Control: React.FC = () => {
   const menu = React.useCallback(
@@ -60,6 +62,8 @@ const Control: React.FC = () => {
       <SimpleDatesSelector options={menu} />
       <NoShrink>
         <DatePicker onPick={onPickDate} />
+        <WeekPicker onPick={onPickDate} />
+        <Days7RangePicker />
       </NoShrink>
     </Row>
   );
