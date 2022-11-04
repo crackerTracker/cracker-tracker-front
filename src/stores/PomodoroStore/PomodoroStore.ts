@@ -6,10 +6,8 @@ import { endpoints } from 'config/endpoints';
 import { defaultPomoTime, TimerStatesEnum } from 'config/pomoconf';
 import {
   ApiAllPomosType,
-  DonePomoProps,
   DonePomoType,
   normalizePomoItems,
-  PlannedPomoProps,
   PlannedPomoType,
 } from './types';
 
@@ -89,10 +87,8 @@ class PomodoroStore {
 
       runInAction(() => {
         if (data) {
-          this._plannedPomosData = normalizePomoItems<PlannedPomoProps>(
-            data.plan
-          );
-          this._donePomosData = normalizePomoItems<DonePomoProps>(data.done);
+          this._plannedPomosData = normalizePomoItems<'planned'>(data.plan);
+          this._donePomosData = normalizePomoItems<'done'>(data.done);
         }
       });
     } catch (e: any) {

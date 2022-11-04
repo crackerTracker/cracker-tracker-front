@@ -1,7 +1,36 @@
+type PomoConditionType = 'done' | 'planned';
+
+// api types
+
 type ApiCommonPomoType = {
   _id: string;
   name: string;
 };
+
+type ApiPlannedPomoProps = {
+  pomodorosAmount: number;
+};
+
+type ApiDonePomoProps = {
+  minutesSpent: number;
+  startTime: string;
+  endTime: string;
+};
+
+type ApiUniquePomoProps<T extends PomoConditionType> = T extends 'planned'
+  ? ApiPlannedPomoProps
+  : ApiDonePomoProps;
+
+// all properties for api planned or done item
+type ApiPomoType<T extends PomoConditionType> = ApiUniquePomoProps<T> &
+  ApiCommonPomoType;
+
+export type ApiAllPomosType = {
+  plan: ApiPomoType<'planned'>[];
+  done: ApiPomoType<'done'>[];
+};
+
+// frontend types
 
 export type CommonPomoType = {
   id: string;
@@ -9,45 +38,39 @@ export type CommonPomoType = {
 };
 
 // unique properties for pomo items
-export type PlannedPomoProps = {
+type PlannedPomoProps = {
   pomodorosAmount: number;
 };
 
-export type DonePomoProps = {
+type DonePomoProps = {
   minutesSpent: number;
   startTime: string;
   endTime: string;
 };
 
-type UniquePomoProps = PlannedPomoProps | DonePomoProps;
-
-// all properties for api planned or done item
-export type ApiPomoType<T extends UniquePomoProps> = T & ApiCommonPomoType;
-
-export type ApiAllPomosType = {
-  plan: ApiPomoType<PlannedPomoProps>[];
-  done: ApiPomoType<DonePomoProps>[];
-};
+type UniquePomoProps<T extends PomoConditionType> = T extends 'planned'
+  ? PlannedPomoProps
+  : DonePomoProps;
 
 // all properties for normalized planned or done item
-type PomoType<T extends UniquePomoProps> = CommonPomoType &
-  Omit<ApiPomoType<T>, '_id'>;
+type PomoType<T extends PomoConditionType> = UniquePomoProps<T> &
+  CommonPomoType;
 
-export type PlannedPomoType = PomoType<PlannedPomoProps>;
+export type PlannedPomoType = PomoType<'planned'>;
 
-export type DonePomoType = PomoType<DonePomoProps>;
+export type DonePomoType = PomoType<'done'>;
 
-export const normalizePomoItem = <T extends UniquePomoProps>({
+export const normalizePomoItem = <T extends PomoConditionType>({
   _id,
   ...rest
 }: ApiPomoType<T>): PomoType<T> => {
   return {
     id: _id,
     ...rest,
-  };
+  } as unknown as PomoType<T>;
 };
 
-export const normalizePomoItems = <T extends UniquePomoProps>(
+export const normalizePomoItems = <T extends PomoConditionType>(
   items: ApiPomoType<T>[]
 ): PomoType<T>[] => {
   return items.map((item) => normalizePomoItem<T>(item));
