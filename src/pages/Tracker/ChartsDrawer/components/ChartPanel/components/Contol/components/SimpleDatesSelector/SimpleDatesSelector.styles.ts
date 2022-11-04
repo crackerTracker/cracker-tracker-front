@@ -5,12 +5,12 @@ import { Row } from 'antd';
 
 export const AntRow = styled(Row)`
   ${animate('opacity')};
-  opacity: 0.8;
+  opacity: 1;
   user-select: none;
 
   &:hover {
     cursor: pointer;
-    opacity: 1;
+    opacity: 0.7;
   }
 ` as typeof Row;
 
