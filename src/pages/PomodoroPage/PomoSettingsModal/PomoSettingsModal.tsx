@@ -7,8 +7,14 @@ import {
   defaultRestMinutes,
   pomoRestSettings,
 } from 'config/pomoconf';
-import { RestMinutesType, RestType } from '../useTimer';
 import { SettingsItem, StyledInputNumber } from './PomoSettingsModal.styles';
+
+enum RestType {
+  short = 'short',
+  long = 'long',
+}
+
+type RestMinutesType = Record<RestType, number>;
 
 const PomoSettingsModal: FC<ModalProps> = ({
   isOpen,
