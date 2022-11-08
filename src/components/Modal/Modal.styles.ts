@@ -39,7 +39,7 @@ export const Background = styled.div`
   height: 100vh;
 
   position: fixed;
-  z-index: 1;
+  z-index: 100;
 
   background-color: rgba(0, 0, 0, 0.5);
 
@@ -57,7 +57,7 @@ export const Container = styled.div<{
   position: fixed;
   left: 50%;
   top: 50%;
-  z-index: 2;
+  z-index: 101;
 
   ${flex({ direction: 'column' })}
 
@@ -92,8 +92,13 @@ export const Title = styled.h1`
 `;
 
 export const Content = styled.div`
+  margin-right: -35px;
+  padding-right: 35px;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
   flex: 1 1 auto;
-  overflow: auto;
   ${scroller};
 `;
 
