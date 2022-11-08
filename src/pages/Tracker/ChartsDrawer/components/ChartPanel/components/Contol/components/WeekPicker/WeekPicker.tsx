@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Relative } from '../ui';
 // todo стили
-import { StyledDatePicker } from '../DatePicker/DatePicker.styles';
+import { StyledDatePicker } from '../ui';
 import locale from 'antd/es/date-picker/locale/ru_RU';
 import IconButton from 'components/IconButton';
 import { images } from 'img/icons';

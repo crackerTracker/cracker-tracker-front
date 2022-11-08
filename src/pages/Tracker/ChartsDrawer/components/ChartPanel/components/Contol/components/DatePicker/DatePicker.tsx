@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyledDatePicker } from './DatePicker.styles';
+import { StyledDatePicker } from '../ui';
 import { images } from 'img/icons';
 import IconButton from 'components/IconButton';
 import { Relative } from '../ui';

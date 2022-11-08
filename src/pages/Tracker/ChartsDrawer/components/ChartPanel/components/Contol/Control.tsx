@@ -7,6 +7,7 @@ import { NoShrink } from './Control.styles';
 import { Moment } from 'moment';
 import WeekPicker from './components/WeekPicker';
 import Days7RangePicker from './components/Days7RangePicker';
+import { RangeValue } from 'rc-picker/lib/interface';
 
 const Control: React.FC = () => {
   const menu = React.useCallback(
@@ -55,6 +56,8 @@ const Control: React.FC = () => {
 
   const onPickDate = (date: Moment | null) => console.log(date);
 
+  const onPickRange = (dates: RangeValue<Moment>) => console.log(dates);
+
   return (
     <Row justify="space-between">
       {/* todo добавить логику отображения либо селектора, либо одного заголовка */}
@@ -63,7 +66,7 @@ const Control: React.FC = () => {
       <NoShrink>
         <DatePicker onPick={onPickDate} />
         <WeekPicker onPick={onPickDate} />
-        <Days7RangePicker />
+        <Days7RangePicker onPick={onPickRange} />
       </NoShrink>
     </Row>
   );
