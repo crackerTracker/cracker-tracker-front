@@ -1,4 +1,7 @@
-type PomoConditionType = 'done' | 'planned';
+export enum PomoConditionType {
+  done,
+  planned,
+}
 
 // api types
 
@@ -17,17 +20,16 @@ type ApiDonePomoProps = {
   endTime: string;
 };
 
-type ApiUniquePomoProps<T extends PomoConditionType> = T extends 'planned'
-  ? ApiPlannedPomoProps
-  : ApiDonePomoProps;
+type ApiUniquePomoProps<T extends PomoConditionType> =
+  T extends PomoConditionType.planned ? ApiPlannedPomoProps : ApiDonePomoProps;
 
 // all properties for api planned or done item
 type ApiPomoType<T extends PomoConditionType> = ApiUniquePomoProps<T> &
   ApiCommonPomoType;
 
 export type ApiAllPomosType = {
-  plan: ApiPomoType<'planned'>[];
-  done: ApiPomoType<'done'>[];
+  plan: ApiPomoType<PomoConditionType.planned>[];
+  done: ApiPomoType<PomoConditionType.done>[];
 };
 
 // frontend types
@@ -48,17 +50,16 @@ type DonePomoProps = {
   endTime: string;
 };
 
-type UniquePomoProps<T extends PomoConditionType> = T extends 'planned'
-  ? PlannedPomoProps
-  : DonePomoProps;
+type UniquePomoProps<T extends PomoConditionType> =
+  T extends PomoConditionType.planned ? PlannedPomoProps : DonePomoProps;
 
 // all properties for normalized planned or done item
 type PomoType<T extends PomoConditionType> = UniquePomoProps<T> &
   CommonPomoType;
 
-export type PlannedPomoType = PomoType<'planned'>;
+export type PlannedPomoType = PomoType<PomoConditionType.planned>;
 
-export type DonePomoType = PomoType<'done'>;
+export type DonePomoType = PomoType<PomoConditionType.done>;
 
 export const normalizePomoItem = <T extends PomoConditionType>({
   _id,

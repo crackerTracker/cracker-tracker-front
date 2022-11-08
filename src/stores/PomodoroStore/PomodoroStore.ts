@@ -9,6 +9,7 @@ import {
   DonePomoType,
   normalizePomoItems,
   PlannedPomoType,
+  PomoConditionType,
 } from './types';
 
 type PrivateFields = 'rootStore';
@@ -87,8 +88,11 @@ class PomodoroStore {
 
       runInAction(() => {
         if (data) {
-          this._plannedPomosData = normalizePomoItems<'planned'>(data.plan);
-          this._donePomosData = normalizePomoItems<'done'>(data.done);
+          this._plannedPomosData =
+            normalizePomoItems<PomoConditionType.planned>(data.plan);
+          this._donePomosData = normalizePomoItems<PomoConditionType.done>(
+            data.done
+          );
         }
       });
     } catch (e: any) {
