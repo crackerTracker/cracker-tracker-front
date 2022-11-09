@@ -7,48 +7,33 @@ import { Moment } from 'moment';
 import WeekPicker from './components/WeekPicker';
 import { RangeValue } from 'rc-picker/lib/interface';
 import RangePicker from './components/RangePicker';
-import { BAR_CHART_MAX_CHOOSING_DAYS } from 'pages/Tracker/ChartsDrawer/config';
+import {
+  BAR_CHART_MAX_CHOOSING_DAYS,
+  SimpleDatesEnum,
+  simpleDatesOrder,
+  simpleDatesTexts,
+} from 'pages/Tracker/ChartsDrawer/config';
 
 const Control: React.FC = () => {
-  const menu = React.useCallback(
+  const [selectedSimpleDate, setSelectedSimpleDate] =
+    React.useState<SimpleDatesEnum>(SimpleDatesEnum.today);
+
+  const optionsGetter = React.useCallback(
+    // А аргументе приходит колбэк для закрытия меню выбора
     (closeDropdownCallback: VoidFunction) => (
       <Menu>
-        <Menu.Item
-          key="1"
-          onClick={() => {
-            console.log('Сегодня');
-            closeDropdownCallback();
-          }}
-        >
-          Сегодня
-        </Menu.Item>
-        <Menu.Item
-          key="2"
-          onClick={() => {
-            console.log('Вчера');
-            closeDropdownCallback();
-          }}
-        >
-          Вчера
-        </Menu.Item>
-        <Menu.Item
-          key="3"
-          onClick={() => {
-            console.log('Последние 7 дней');
-            closeDropdownCallback();
-          }}
-        >
-          Последние 7 дней
-        </Menu.Item>
-        <Menu.Item
-          key="4"
-          onClick={() => {
-            console.log('Последние 30 дней');
-            closeDropdownCallback();
-          }}
-        >
-          Последние 30 дней
-        </Menu.Item>
+        {simpleDatesOrder.map((simpleDate) => (
+          <Menu.Item
+            key={simpleDate}
+            // Без useCallback, так как в данном случае нецелесообразно
+            onClick={() => {
+              setSelectedSimpleDate(simpleDate);
+              closeDropdownCallback();
+            }}
+          >
+            {simpleDatesTexts[simpleDate]}
+          </Menu.Item>
+        ))}
       </Menu>
     ),
     []
@@ -62,7 +47,10 @@ const Control: React.FC = () => {
     <Row justify="space-between">
       {/* todo добавить логику отображения либо селектора, либо одного заголовка */}
       {/*<DatesTitle>За последние 7 дней</DatesTitle>*/}
-      <SimpleDatesSelector options={menu} />
+      <SimpleDatesSelector
+        optionsGetter={optionsGetter}
+        selected={selectedSimpleDate}
+      />
       <NoShrink>
         <DatePicker onPick={onPickDate} />
         <WeekPicker onPick={onPickDate} />

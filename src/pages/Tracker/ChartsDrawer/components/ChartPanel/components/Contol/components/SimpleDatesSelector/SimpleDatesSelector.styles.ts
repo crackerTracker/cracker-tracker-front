@@ -8,6 +8,10 @@ export const AntRow = styled(Row)`
   opacity: 1;
   user-select: none;
 
+  // Равно длине самого широкого текста - для того,
+  // чтобы выпдающее меню не скакало по ширине и было зафиксировано
+  min-width: 225px;
+
   &:hover {
     cursor: pointer;
     opacity: 0.7;
