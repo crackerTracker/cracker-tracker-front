@@ -6,17 +6,18 @@ import { CategoriesBlock, ChartBlock } from './ChartsDrawer.styles';
 import { Row } from 'antd';
 import { images } from 'img/icons';
 import ToggleIconButton from './components/ToggleIconButton';
-import { observer, useLocalObservable } from 'mobx-react-lite';
-import ChartsDrawerStore from './store/ChartDrawerStore';
+import { observer } from 'mobx-react-lite';
 import { TrackerChartsEnum } from './config';
 import ChartPanel from './components/ChartPanel';
+import {
+  useChartsDrawerStore,
+  withChartsDrawerStoreProvider,
+} from './store/ChartDrawerStore/context';
 
 type Props = Pick<RightSideDrawerProps, 'visible' | 'onDrawerClose'>;
 
 const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
-  const { chartType, onChangeChartType } = useLocalObservable(
-    () => new ChartsDrawerStore()
-  );
+  const { chartType, onChangeChartType } = useChartsDrawerStore();
 
   // todo добавить логику переключения графиков
   const onClickChangeChartType = React.useCallback(
@@ -54,4 +55,4 @@ const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
   );
 };
 
-export default observer(ChartsDrawer);
+export default withChartsDrawerStoreProvider(observer(ChartsDrawer));
