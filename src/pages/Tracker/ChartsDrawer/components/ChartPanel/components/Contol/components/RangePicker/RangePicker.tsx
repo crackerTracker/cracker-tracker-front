@@ -1,24 +1,19 @@
 import * as React from 'react';
-import { Relative } from '../ui';
-import { images } from 'img/icons';
-import IconButton from 'components/IconButton';
-import { AntdRangePicker } from './Days7RangePicker.styles';
-import { observer, useLocalObservable } from 'mobx-react-lite';
-import HiddenRangePickerModel from 'stores/models/HiddenRangePickerModel';
-import { BAR_CHART_MAX_CHOOSING_DAYS } from 'pages/Tracker/ChartsDrawer/config';
 import { RangeValue } from 'rc-picker/lib/interface';
 import { Moment } from 'moment';
+import { observer, useLocalObservable } from 'mobx-react-lite';
+import HiddenRangePickerModel from 'stores/models/HiddenRangePickerModel';
+import { Relative } from '../ui';
+import { AntdRangePicker } from './RangePicker.styles';
+import IconButton from 'components/IconButton';
+import { images } from 'img/icons';
 
 type Props = {
   onPick?: (value: RangeValue<Moment>) => void;
+  maxDaysToSelect?: number | null;
 };
 
-/**
- * Пикер диапазона дат с ограничением в 7 дней,
- * первой датой всегда выбрается стартовая.
- * В аргумент во внешний обработчик попадает
- */
-const Days7RangePicker: React.FC<Props> = ({ onPick }) => {
+const RangePicker: React.FC<Props> = ({ onPick, maxDaysToSelect = null }) => {
   const {
     value,
     disableButtonTimer,
@@ -29,9 +24,7 @@ const Days7RangePicker: React.FC<Props> = ({ onPick }) => {
     setContainerElement,
     clickStartDateInput,
     setValue,
-  } = useLocalObservable(
-    () => new HiddenRangePickerModel(BAR_CHART_MAX_CHOOSING_DAYS)
-  );
+  } = useLocalObservable(() => new HiddenRangePickerModel(maxDaysToSelect));
 
   const containerRef = React.useRef<null | HTMLDivElement>(null);
 
@@ -72,4 +65,4 @@ const Days7RangePicker: React.FC<Props> = ({ onPick }) => {
   );
 };
 
-export default observer(Days7RangePicker);
+export default observer(RangePicker);

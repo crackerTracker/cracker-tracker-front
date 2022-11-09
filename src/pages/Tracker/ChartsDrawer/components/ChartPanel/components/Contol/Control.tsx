@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Menu, Row } from 'antd';
 import SimpleDatesSelector from './components/SimpleDatesSelector';
-import { DatesTitle } from './components/ui';
 import DatePicker from './components/DatePicker';
 import { NoShrink } from './Control.styles';
 import { Moment } from 'moment';
 import WeekPicker from './components/WeekPicker';
-import Days7RangePicker from './components/Days7RangePicker';
 import { RangeValue } from 'rc-picker/lib/interface';
+import RangePicker from './components/RangePicker';
+import { BAR_CHART_MAX_CHOOSING_DAYS } from 'pages/Tracker/ChartsDrawer/config';
 
 const Control: React.FC = () => {
   const menu = React.useCallback(
@@ -66,7 +66,11 @@ const Control: React.FC = () => {
       <NoShrink>
         <DatePicker onPick={onPickDate} />
         <WeekPicker onPick={onPickDate} />
-        <Days7RangePicker onPick={onPickRange} />
+        <RangePicker onPick={onPickRange} />
+        <RangePicker
+          onPick={onPickRange}
+          maxDaysToSelect={BAR_CHART_MAX_CHOOSING_DAYS}
+        />
       </NoShrink>
     </Row>
   );
