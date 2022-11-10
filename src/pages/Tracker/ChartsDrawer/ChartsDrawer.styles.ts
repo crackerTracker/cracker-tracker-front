@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { commonDrawerBlockStyles } from 'styles/mixins';
+import { commonDrawerBlockStyles, flex } from 'styles/mixins';
 import { TrackerChartsEnum } from './config';
 
 export const Block = styled.div`
@@ -13,6 +13,10 @@ export const ChartBlock = styled(Block)<{ chartType?: TrackerChartsEnum }>`
 
   height: ${({ chartType = TrackerChartsEnum.pie }) =>
     chartType === TrackerChartsEnum.pie ? 540 : 600}px;
+
+  ${flex({
+    direction: 'column',
+  })};
 `;
 
 export const CategoriesBlock = styled(Block)`

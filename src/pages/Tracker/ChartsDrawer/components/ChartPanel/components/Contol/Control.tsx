@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Menu, Row } from 'antd';
+import { Menu } from 'antd';
 import SimpleDatesSelector from './components/SimpleDatesSelector';
 import DatePicker from './components/DatePicker';
-import { NoShrink } from './Control.styles';
+import { NoShrink, NoShrinkRow } from './Control.styles';
 import { Moment } from 'moment';
 import WeekPicker from './components/WeekPicker';
 import { RangeValue } from 'rc-picker/lib/interface';
@@ -44,7 +44,7 @@ const Control: React.FC = () => {
   const onPickRange = (dates: RangeValue<Moment>) => console.log(dates);
 
   return (
-    <Row justify="space-between">
+    <NoShrinkRow justify="space-between">
       {/* todo добавить логику отображения либо селектора, либо одного заголовка */}
       {/*<DatesTitle>За последние 7 дней</DatesTitle>*/}
       <SimpleDatesSelector
@@ -60,7 +60,7 @@ const Control: React.FC = () => {
           maxDaysToSelect={BAR_CHART_MAX_CHOOSING_DAYS}
         />
       </NoShrink>
-    </Row>
+    </NoShrinkRow>
   );
 };
 

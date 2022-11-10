@@ -4,10 +4,10 @@ import Control from './components/Contol';
 
 const ChartPanel: React.FC = () => {
   return (
-    <div>
+    <>
       <Control />
       <Chart />
-    </div>
+    </>
   );
 };
 
