@@ -1,41 +1,40 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { List } from 'antd';
-import moment from 'moment';
-import { weekDayFormat } from 'config/tracker';
-import { getMinsAndHoursStringFromMins } from 'utils/getMinsAndHoursFromMins';
 import ListItem from './ListItem';
 import { StyledCard } from './DateCard.styles';
-import { useTrackerStore } from 'stores/hooks';
 import { observer } from 'mobx-react-lite';
+import { DayType } from 'stores/TrackerStore/types';
+import DateCardStore from './DateCardStore';
 
 type Props = {
-  timestamp: number;
+  day: DayType;
 };
 
-const DateCard: React.FC<Props> = ({ timestamp }) => {
-  const { datesMap } = useTrackerStore();
-  const tasks = datesMap[timestamp];
+const DateCard: React.FC<Props> = ({ day }) => {
+  const [isFirstRender, setIsFirstRender] = React.useState(true);
 
-  const fullDate = useMemo(() => {
-    const date = new Date(timestamp);
-    return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
-  }, [timestamp]);
+  const [{ dayTitle, totalTimeString, tasks }, setDateCardStore] =
+    React.useState(() => new DateCardStore(day));
 
-  const weekDay = useMemo(
-    () => moment(timestamp).format(weekDayFormat),
-    [timestamp]
+  // подписаться на изменение day и пересоздавать локальный стор при наличии изменений,
+  // исключая первый рендер компонента
+  React.useEffect(() => {
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      return;
+    }
+
+    setDateCardStore(() => new DateCardStore(day));
+  }, [day]);
+
+  const renderListItem = React.useCallback(
+    (task) => <ListItem key={task.category.id} task={task} />,
+    []
   );
 
-  const totalMinutes = tasks.reduce((sum, task) => sum + task.minutesSpent, 0);
-  const totalTime = getMinsAndHoursStringFromMins(totalMinutes);
-
   return (
-    <StyledCard title={`${fullDate}, ${weekDay}`} extra={totalTime}>
-      <List
-        size="small"
-        dataSource={tasks}
-        renderItem={(task) => <ListItem key={task.category.id} task={task} />}
-      />
+    <StyledCard title={dayTitle} extra={totalTimeString}>
+      <List size="small" dataSource={tasks} renderItem={renderListItem} />
     </StyledCard>
   );
 };

@@ -3,7 +3,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import moment from 'moment';
 import 'moment/locale/ru';
 import RootStore from 'stores/RootStore';
-import request from 'utils/request';
+import { request } from 'utils/request';
 import { endpoints } from './endpoints';
 import { SubtodoType, TodoType } from './types';
 

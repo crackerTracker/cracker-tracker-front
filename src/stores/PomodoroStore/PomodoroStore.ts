@@ -1,4 +1,4 @@
-import request from 'utils/request';
+import { request } from 'utils/request';
 import { getAuthHeader } from 'utils/getAuthHeader';
 import { makeAutoObservable, runInAction } from 'mobx';
 import RootStore from '../RootStore';
