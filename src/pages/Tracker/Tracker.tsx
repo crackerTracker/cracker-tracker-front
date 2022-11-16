@@ -4,6 +4,7 @@ import {
   Container,
   ControlPanelWrapper,
   Flex,
+  LoaderContainer,
   Relative,
 } from './Tracker.styles';
 import { Col, Row } from 'antd';
@@ -17,6 +18,11 @@ import { TrackerSectionsEnum } from 'config/tracker';
 import CategoriesDrawer from './CategoriesDrawer';
 import useDrawer from 'utils/hooks/useDrawer';
 import ChartsDrawer from './ChartsDrawer';
+import InfiniteScroll from 'react-infinite-scroller';
+import Spinner, {
+  SpinnerSizesEnum,
+  SpinnerThemesEnum,
+} from 'components/Spinner';
 
 const Tracker = () => {
   const { setActiveSection } = useNavbarStore();
@@ -68,12 +74,21 @@ const Tracker = () => {
     [TrackerSectionsEnum.charts]: showDrawer(TrackerSectionsEnum.charts),
   });
 
-  const { datesArray, getAllTasksInDatesMap, getAllCategories } =
-    useTrackerStore();
+  const {
+    allDaysArray,
+    init,
+    loadMoreAfterLastMonth,
+    canLoadMoreExtraTasks,
+    setScrollContainerRef,
+  } = useTrackerStore();
+
+  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    getAllCategories();
-    getAllTasksInDatesMap();
+    init();
+
+    // инициализировать реф контейнера, в котором скроллятся дни
+    setScrollContainerRef(scrollContainerRef.current);
   }, []);
 
   const windowWidth = document.documentElement.clientWidth;
@@ -87,16 +102,34 @@ const Tracker = () => {
               <ControlPanelWrapper>
                 <ControlPanel />
               </ControlPanelWrapper>
-              <Relative>
-                <Cards>
-                  <Row gutter={[24, 24]}>
-                    {datesArray.map((timestamp) => (
-                      <Col key={timestamp} span={windowWidth <= 1500 ? 8 : 6}>
-                        <DateCard timestamp={Number(timestamp)} />
-                      </Col>
-                    ))}
-                  </Row>
-                </Cards>
+              <Relative ref={scrollContainerRef}>
+                <InfiniteScroll
+                  initialLoad={false}
+                  loadMore={loadMoreAfterLastMonth}
+                  hasMore={canLoadMoreExtraTasks}
+                  loader={
+                    <LoaderContainer>
+                      <Spinner
+                        theme={SpinnerThemesEnum.brown}
+                        size={SpinnerSizesEnum.l}
+                      />
+                    </LoaderContainer>
+                  }
+                  useWindow={false}
+                >
+                  <Cards>
+                    <Row gutter={[24, 24]}>
+                      {allDaysArray.map((day) => (
+                        <Col
+                          key={day.timestamp}
+                          span={windowWidth <= 1500 ? 8 : 6}
+                        >
+                          <DateCard day={day} />
+                        </Col>
+                      ))}
+                    </Row>
+                  </Cards>
+                </InfiniteScroll>
               </Relative>
             </Flex>
           </Col>

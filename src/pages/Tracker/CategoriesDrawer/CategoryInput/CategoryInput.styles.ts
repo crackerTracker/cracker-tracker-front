@@ -49,14 +49,18 @@ export const StyledInput = styled(Input).attrs({
     border-color: transparent;
     box-shadow: none;
   }
-`;
+` as typeof Input;
 
-export const ButtonWrapper = styled.div<{ withoutOpacityChange?: boolean }>`
+export const ButtonWrapper = styled.div<{
+  withoutOpacityChange?: boolean;
+  isDisabled?: boolean;
+}>`
   position: relative;
   margin-left: 8px;
 
-  ${({ withoutOpacityChange }) =>
+  ${({ withoutOpacityChange, isDisabled }) =>
     !withoutOpacityChange &&
+    !isDisabled &&
     css`
       opacity: 0.8;
 

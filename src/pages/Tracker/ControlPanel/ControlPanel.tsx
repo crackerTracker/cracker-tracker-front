@@ -8,7 +8,6 @@ import { useTrackerStore } from 'stores/hooks';
 import timeValidator from 'utils/timeValidator';
 import { InputStatusesEnum } from 'types/antd';
 import { Moment } from 'moment';
-import convertToZeroTimestamp from 'utils/convertToZeroTimestamp';
 import convertSpentTimeStringToMins from 'utils/convertSpentTimeStringToMins';
 import { observer } from 'mobx-react-lite';
 import useTimeTrackingInput from 'utils/hooks/useTimeTrackingInput';
@@ -60,7 +59,8 @@ const ControlPanel = () => {
     }
 
     const dateString = date.dateString;
-    if (!dateString || new Date(dateString) > new Date()) {
+    const dateMoment = date.moment;
+    if (!dateMoment || !dateString || new Date(dateString) > new Date()) {
       setDateError(true);
       return;
     }
@@ -73,11 +73,8 @@ const ControlPanel = () => {
     resetControlPanel();
 
     const minutesSpent = convertSpentTimeStringToMins(time.trim());
-    const zeroTimestamp = convertToZeroTimestamp(
-      new Date(dateString).getTime()
-    );
 
-    await addTask(categoryId, minutesSpent, zeroTimestamp);
+    await addTask(categoryId, minutesSpent, dateMoment.toDate());
   };
 
   const onKeyDownEnter = async (e: React.KeyboardEvent<HTMLInputElement>) => {

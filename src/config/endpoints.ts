@@ -36,6 +36,10 @@ export const endpoints = {
     url: '/api/tracker/tasks',
     method: 'GET',
   },
+  getTrackerTasksByMonths: {
+    url: '/api/tracker/tasksByMonths',
+    method: 'GET',
+  },
   addTrackerTask: {
     url: '/api/tracker/addTask',
     method: 'POST',

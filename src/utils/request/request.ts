@@ -1,13 +1,16 @@
 import { message } from 'antd';
 import { BASE_URL } from 'config/links';
+import { RequestMethodsEnum } from './types';
+import getQueryString from './getQueryString';
 
 type RequestParams = {
   url: string;
-  method: string;
+  method: RequestMethodsEnum | string;
   headers: any;
   body?: any;
 };
 
+// correct only if the get url hasn't a query while get-request
 const request = async ({
   url,
   method,
@@ -15,14 +18,18 @@ const request = async ({
   body = null,
 }: RequestParams) => {
   try {
-    if (body) {
+    const isGet = method === RequestMethodsEnum.GET;
+
+    if (body && !isGet) {
       body = JSON.stringify(body);
       headers['Content-Type'] = 'application/json';
     }
 
-    const response = await fetch(`${BASE_URL}${url}`, {
+    const formedUrl = isGet ? `${url}${getQueryString(body)}` : url;
+
+    const response = await fetch(`${BASE_URL}${formedUrl}`, {
       method,
-      body,
+      body: isGet ? undefined : body,
       headers,
     });
     const data = await response.json();

@@ -13,7 +13,7 @@ interface IChartStore<ApiLoadT, LoadReturnT, ChartConfigT> {
   _load(from: string, to: string): LoadReturnT;
 
   /**
-   * Статичный метод нормализации данных
+   * Статический метод нормализации данных
    * @param data данные из апи в соответствии с дженериком ApiLoadT
    * @return нормализованные данные в соответствии с дженериком LoadReturnT
    */

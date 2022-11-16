@@ -6,8 +6,4 @@ const rootContainer = document.getElementById('root');
 // @ts-ignore
 const root = createRoot(rootContainer);
 
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+root.render(<App />);

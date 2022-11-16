@@ -1,14 +1,17 @@
 import React from 'react';
 import colors, { transparentColors } from 'styles/colors';
 import { Color } from '../CategoryInput.styles';
-import IconButton from 'components/IconButton/IconButton';
+import IconButton, { IconButtonProps } from 'components/IconButton/IconButton';
 
 type Props = {
   color: string;
-  onClick?: VoidFunction | ((e: any) => void);
-};
+} & Pick<IconButtonProps, 'isDisabled' | 'onClick'>;
 
-const ColorButton: React.FC<Props> = ({ color, onClick = undefined }) => {
+const ColorButton: React.FC<Props> = ({
+  color,
+  onClick = undefined,
+  isDisabled = false,
+}) => {
   return (
     <IconButton
       backgroundColor={transparentColors.white[0.8]}
@@ -16,6 +19,7 @@ const ColorButton: React.FC<Props> = ({ color, onClick = undefined }) => {
       paddings={'8px'}
       hoverColor={colors.white}
       onClick={onClick}
+      isDisabled={isDisabled}
     >
       <Color color={color} />
     </IconButton>

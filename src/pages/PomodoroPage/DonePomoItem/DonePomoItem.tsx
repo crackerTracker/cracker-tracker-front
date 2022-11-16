@@ -1,11 +1,9 @@
 import { Col, Dropdown, Menu, Row } from 'antd';
+import { observer, useLocalObservable } from 'mobx-react-lite';
+import React, { FC } from 'react';
 import { format } from 'config/pomoconf';
-import { observer } from 'mobx-react-lite';
-import moment from 'moment';
-import React, { FC, useMemo } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
-import { DonePomoType } from 'stores/PomodoroStore';
-import { usePomoItem } from '../usePomoItem';
+import { DonePomoType } from 'stores/PomodoroStore/types';
 import {
   InputGroup,
   StyledButton,
@@ -15,57 +13,36 @@ import {
   StyledTimePicker,
   StyledTimeRange,
 } from './DonePomoItem.style';
+import { DonePomoStore } from './DonePomoStore';
 
-const DonePomoItem: FC<DonePomoType> = ({
-  _id,
-  name,
-  minutesSpent,
-  startTime,
-  endTime,
+type Props = {
+  donePomo: DonePomoType;
+};
+
+const DonePomoItem: FC<Props> = ({
+  donePomo: { _id, endTime, minutesSpent, name, startTime },
 }) => {
-  const { editDonePomo, deleteDonePomo } = usePomodoroStore();
+  const pomodoroStore = usePomodoroStore();
+
+  const donePomoProps = { _id, name, endTime, minutesSpent, startTime };
+
+  const donePomoStore = useLocalObservable(
+    () => new DonePomoStore(pomodoroStore, donePomoProps)
+  );
 
   const {
     pomoName,
-    amount,
     isEdit,
-    setAmount,
+    spentMinutes,
+    startTimeMoment,
+    endTimeMoment,
+    approveEditing,
+    deletePomoStack,
     menuEditClick,
-    menuDeleteClick,
     changeHandler,
     cancelChanges,
-    approveChanges,
-  } = usePomoItem({
-    defaultAmount: minutesSpent,
-    name,
-  });
-
-  const memoStartMoment = useMemo(() => {
-    const startTimeString = new Date(startTime)
-      .toLocaleTimeString()
-      .slice(0, -3);
-    return moment(startTimeString, format);
-  }, [startTime]);
-
-  const memoEndMoment = useMemo(() => {
-    const endTimeString = new Date(endTime).toLocaleTimeString().slice(0, -3);
-    return moment(endTimeString, format);
-  }, [endTime]);
-
-  const approveEditing = () => {
-    const newSpentMs = Number(amount) * 60000;
-    const newStartTime = new Date(new Date(endTime).getTime() - newSpentMs);
-    const newStartStamp = newStartTime.toISOString();
-    const newEndStamp = new Date(endTime).toISOString();
-
-    editDonePomo(_id, pomoName, Number(amount), newStartStamp, newEndStamp);
-    approveChanges();
-  };
-
-  const deletePomoStack = () => {
-    deleteDonePomo(_id);
-    menuDeleteClick();
-  };
+    setSpentMinutes,
+  } = donePomoStore;
 
   const menu = (
     <Menu>
@@ -96,10 +73,10 @@ const DonePomoItem: FC<DonePomoType> = ({
             <Col>
               <StyledInputNumber
                 min={1}
-                value={amount}
+                value={spentMinutes}
                 bordered={false}
                 disabled={!isEdit}
-                onChange={setAmount}
+                onChange={setSpentMinutes}
               />
 
               <StyledText>м &nbsp; &#8226; </StyledText>
@@ -109,7 +86,7 @@ const DonePomoItem: FC<DonePomoType> = ({
               <StyledTimeRange>
                 <StyledTimePicker
                   format={format}
-                  value={memoStartMoment}
+                  value={startTimeMoment}
                   bordered={false}
                   allowClear={false}
                   disabled
@@ -117,7 +94,7 @@ const DonePomoItem: FC<DonePomoType> = ({
                 <StyledText>-</StyledText>
                 <StyledTimePicker
                   format={format}
-                  value={memoEndMoment}
+                  value={endTimeMoment}
                   bordered={false}
                   allowClear={false}
                   disabled
