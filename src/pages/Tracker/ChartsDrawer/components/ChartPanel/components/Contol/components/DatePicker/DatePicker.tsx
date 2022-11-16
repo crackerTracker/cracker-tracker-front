@@ -6,6 +6,7 @@ import { Relative } from '../ui';
 import { Moment } from 'moment';
 import 'moment/locale/ru';
 import locale from 'antd/es/date-picker/locale/ru_RU';
+import { CHART_DRAWER_CALENDAR_ICON_SIZE } from '../../uiConfig';
 
 type Props = {
   onPick?: (moment: null | Moment) => void;
@@ -29,7 +30,7 @@ const DatePicker: React.FC<Props> = ({ onPick }) => {
       <IconButton
         image={images.datesCalendarBrown.default}
         onClick={toggleOpened}
-        squareSide="28px"
+        squareSide={CHART_DRAWER_CALENDAR_ICON_SIZE}
         paddings="0"
       />
     </Relative>

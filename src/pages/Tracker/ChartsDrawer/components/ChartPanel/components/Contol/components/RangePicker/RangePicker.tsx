@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { RangeValue } from 'rc-picker/lib/interface';
+import locale from 'antd/es/date-picker/locale/ru_RU';
 import { Moment } from 'moment';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import HiddenRangePickerModel from 'stores/models/HiddenRangePickerModel';
@@ -7,6 +8,7 @@ import { Relative } from '../ui';
 import { AntdRangePicker } from './RangePicker.styles';
 import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
+import { CHART_DRAWER_CALENDAR_ICON_SIZE } from '../../uiConfig';
 
 type Props = {
   onPick?: (value: RangeValue<Moment>) => void;
@@ -53,12 +55,13 @@ const RangePicker: React.FC<Props> = ({ onPick, maxDaysToSelect = null }) => {
         onCalendarChange={onCalendarChange}
         onOpenChange={onOpenChange}
         placement="bottomRight"
+        locale={locale}
       />
       <IconButton
         image={images.datesCalendarBrown.default}
         onClick={onClickButton}
         isDisabled={!!disableButtonTimer}
-        squareSide="28px"
+        squareSide={CHART_DRAWER_CALENDAR_ICON_SIZE}
         paddings="0"
       />
     </Relative>
