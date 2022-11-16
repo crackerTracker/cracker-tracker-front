@@ -11,7 +11,10 @@ import {
 type Props = {
   // Колбэк, вызывав который, получаем antd-компонент Menu с Menu.Item'ами внутри
   optionsGetter: (closeDropdownCallback: VoidFunction) => React.ReactElement;
-  selected: SimpleDatesEnum;
+
+  // Выбранная дата: либо SimpleDatesEnum,
+  // либо строка, образованная от выбранной пикером даты
+  selected: SimpleDatesEnum | string;
 };
 
 const SimpleDatesSelector: React.FC<Props> = ({ optionsGetter, selected }) => {
@@ -24,6 +27,11 @@ const SimpleDatesSelector: React.FC<Props> = ({ optionsGetter, selected }) => {
     [optionsGetter, closeDropdown]
   );
 
+  const selectedDateTitle = React.useMemo(
+    () => simpleDatesTexts[selected as SimpleDatesEnum] ?? selected,
+    [selected]
+  );
+
   return (
     <Dropdown
       overlay={options}
@@ -33,7 +41,7 @@ const SimpleDatesSelector: React.FC<Props> = ({ optionsGetter, selected }) => {
     >
       <AntRow align="middle">
         <Space>
-          <DatesTitle>{simpleDatesTexts[selected]}</DatesTitle>
+          <DatesTitle>{selectedDateTitle}</DatesTitle>
           <UpArrow drowdownVisible={visible} />
         </Space>
       </AntRow>
