@@ -13,6 +13,7 @@ class ChartsDrawerStore {
       _chartType: observable,
 
       chartType: computed,
+      isPieChart: computed,
 
       _setChartType: action,
       onChangeChartType: action,
@@ -21,6 +22,10 @@ class ChartsDrawerStore {
 
   get chartType(): TrackerChartsEnum {
     return this._chartType;
+  }
+
+  get isPieChart(): boolean {
+    return this._chartType === TrackerChartsEnum.pie;
   }
 
   // todo возможно, не понадобится
