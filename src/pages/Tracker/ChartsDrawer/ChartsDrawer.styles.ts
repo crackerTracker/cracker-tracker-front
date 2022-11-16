@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { commonDrawerBlockStyles, flex } from 'styles/mixins';
+import { commonDrawerBlockStyles, flex, scroller, square } from 'styles/mixins';
 import { TrackerChartsEnum } from './config';
 
 export const Block = styled.div`
@@ -20,5 +20,17 @@ export const ChartBlock = styled(Block)<{ chartType?: TrackerChartsEnum }>`
 `;
 
 export const CategoriesBlock = styled(Block)`
+  position: relative;
   flex-grow: 1;
+  overflow: hidden;
+`;
+
+export const ScrollContainer = styled.div`
+  ${scroller};
+  ${square('100%')};
+  padding: 12px 24px;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
 `;

@@ -2,13 +2,18 @@ import * as React from 'react';
 import RightSideDrawer, {
   RightSideDrawerProps,
 } from 'components/RightSideDrawer';
-import { CategoriesBlock, ChartBlock } from './ChartsDrawer.styles';
+import {
+  CategoriesBlock,
+  ChartBlock,
+  ScrollContainer,
+} from './ChartsDrawer.styles';
 import { Row } from 'antd';
 import { images } from 'img/icons';
 import ToggleIconButton from './components/ToggleIconButton';
 import { observer } from 'mobx-react-lite';
 import { TrackerChartsEnum } from './config';
 import ChartPanel from './components/ChartPanel';
+import CategoriesList from './components/List';
 import {
   useChartsDrawerStore,
   withChartsDrawerStoreProvider,
@@ -50,7 +55,11 @@ const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
       <ChartBlock>
         <ChartPanel />
       </ChartBlock>
-      <CategoriesBlock>dfsdfds</CategoriesBlock>
+      <CategoriesBlock>
+        <ScrollContainer>
+          <CategoriesList />
+        </ScrollContainer>
+      </CategoriesBlock>
     </RightSideDrawer>
   );
 };
