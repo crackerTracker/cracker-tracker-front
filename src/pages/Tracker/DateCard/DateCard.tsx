@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { List } from 'antd';
 import moment from 'moment';
-import { weekDayFormat } from 'config/tracker';
+import { WEEK_DAY_FORMAT } from 'config/tracker';
 import { getMinsAndHoursStringFromMins } from 'utils/getMinsAndHoursFromMins';
 import ListItem from './ListItem';
 import { StyledCard } from './DateCard.styles';
@@ -22,7 +22,7 @@ const DateCard: React.FC<Props> = ({ timestamp }) => {
   }, [timestamp]);
 
   const weekDay = useMemo(
-    () => moment(timestamp).format(weekDayFormat),
+    () => moment(timestamp).format(WEEK_DAY_FORMAT),
     [timestamp]
   );
 
