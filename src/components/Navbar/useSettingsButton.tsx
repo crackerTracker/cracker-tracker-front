@@ -1,7 +1,7 @@
 import { useAuthStore } from 'stores/hooks';
 import React from 'react';
 import { Menu } from 'antd';
-import useModal from 'components/Modal/useModal';
+import { useModal } from 'components/Modal';
 
 const useSettingsButton = () => {
   const [isDropdownVisible, setIsDropdownVisible] = React.useState(false);
