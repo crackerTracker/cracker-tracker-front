@@ -94,7 +94,7 @@ const Navbar = () => {
       </Container>
 
       <PomoSettingsModal
-        title={'Настройка помидора'}
+        title="Настройка помидора"
         isOpen={isModalOpen}
         onClose={closeModal}
       />

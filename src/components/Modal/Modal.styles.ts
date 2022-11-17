@@ -7,31 +7,35 @@ export const ModalTransitionStyle = createGlobalStyle`
     --scale-ratio: 1;
     --opacity-value: 1;
 
-  .my-node-enter {
-    --opacity-value: 0;
-    --scale-ratio: 0.5;
-  }
-  .my-node-enter-active {
-    --opacity-value: 1;
-    --scale-ratio: 1;
-  }
-  .my-node-exit {
-    --opacity-value: 1;
-    --scale-ratio: 1;
-  }
-  .my-node-exit-active {
-    --opacity-value: 0;
-    --scale-ratio: 0.5;
-  }
-
-  .my-node-enter, .my-node-enter-active, .my-node-exit, .my-node-exit-active{
-    .background, .modal{
-      opacity: var(--opacity-value);
+    .modal-transition-{
+      &enter {
+        --opacity-value: 0;
+        --scale-ratio: 0.5;
+      }
+      &enter-active {
+        --opacity-value: 1;
+        --scale-ratio: 1;
+      }
+      &exit {
+        --opacity-value: 1;
+        --scale-ratio: 1;
+      }
+      &exit-active {
+        --opacity-value: 0;
+        --scale-ratio: 0.5;
+      }
     }
-    .modal{
-      transform: scale(var(--scale-ratio)) translate3d(-50%, -50%, 0);
+    
+    .modal-transition-{
+      &enter, &enter-active, &exit, &exit-active {
+        .modal-background, .modal-container {
+          opacity: var(--opacity-value);
+        }
+        .modal-container {
+          transform: scale(var(--scale-ratio)) translate3d(-50%, -50%, 0);
+        }
+      }
     }
-  }
 `;
 
 export const Background = styled.div`
@@ -47,11 +51,11 @@ export const Background = styled.div`
 `;
 
 export const Container = styled.div<{
-  width?: string;
-  height?: string;
+  width: string;
+  height: string;
 }>`
-  width: ${({ width }) => width || '844px'};
-  height: ${({ height }) => height || '625px'};
+  width: ${({ width }) => width};
+  height: ${({ height }) => height};
   padding: 45px;
 
   position: fixed;
@@ -67,7 +71,7 @@ export const Container = styled.div<{
   transform: scale(1) translate3d(-50%, -50%, 0);
   transition: transform 0.2s ease, opacity 0.2s ease;
 
-  /* to make modal transform from center (maybe because of left: 50%) */
+  /* to make modal transform from center */
   transform-origin: left;
 `;
 
@@ -77,8 +81,7 @@ export const Header = styled.div`
 `;
 
 export const Title = styled.h1`
-  margin: 0;
-  margin-right: 10px;
+  margin: 0 10px 0 0;
 
   font-size: 28px;
   line-height: 1.2;
@@ -103,7 +106,6 @@ export const Content = styled.div`
 `;
 
 // to prevent close button shrinking
-export const StyledIconButton = styled(IconButton)<{ squareSide: string }>`
-  min-width: ${({ squareSide }) => squareSide};
-  min-height: ${({ squareSide }) => squareSide};
+export const StyledIconButton = styled(IconButton)`
+  flex-shrink: 0;
 `;

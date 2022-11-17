@@ -26,8 +26,8 @@ const Modal: FC<ModalProps> = ({
   onClose,
   title,
   footer,
-  width,
-  height,
+  width = '844px',
+  height = '625px',
 }) => {
   const nodeRef = useRef(null);
 
@@ -52,10 +52,10 @@ const Modal: FC<ModalProps> = ({
         unmountOnExit
         in={isOpen}
         nodeRef={nodeRef}
-        classNames="my-node"
+        classNames="modal-transition"
       >
         <div ref={nodeRef}>
-          <Container width={width} height={height} className="modal">
+          <Container width={width} height={height} className="modal-container">
             <Header>
               <Title>{title}</Title>
               <StyledIconButton
@@ -71,7 +71,7 @@ const Modal: FC<ModalProps> = ({
             <footer>{footer}</footer>
           </Container>
 
-          <Background onClick={onClose} className="background" />
+          <Background onClick={onClose} className="modal-background" />
         </div>
       </CSSTransition>
     </>
