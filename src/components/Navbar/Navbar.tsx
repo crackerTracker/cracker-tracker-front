@@ -19,7 +19,7 @@ import useObserveURL from './useObserveURL';
 import { images } from 'img/icons';
 import { Dropdown } from 'antd';
 import useSettingsButton from './useSettingsButton';
-import PomoSettingsModal from 'pages/PomodoroPage/PomoSettingsModal';
+import { PomoSettingsModal } from 'components/modals';
 
 const Navbar = () => {
   useInitNavbar();
