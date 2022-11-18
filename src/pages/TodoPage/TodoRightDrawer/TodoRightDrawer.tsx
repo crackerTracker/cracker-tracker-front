@@ -1,16 +1,23 @@
-import { Col, ConfigProvider, Row } from 'antd';
+import React, { FC, useEffect, useMemo } from 'react';
+import { observer } from 'mobx-react-lite';
+import { Col, ConfigProvider, Dropdown, Row } from 'antd';
+import locale from 'antd/lib/locale/ru_RU';
+import 'moment/locale/ru';
 import IconButton from 'components/IconButton';
 import RightSideDrawer from 'components/RightSideDrawer';
 import { images } from 'img/icons';
-import React, { FC } from 'react';
 import DrawerTodoCard from '../DrawerTodoCard';
-import { StyledDatePicker, StyledTextArea } from './TodoRightDrawer.styles';
+import {
+  GroupMenu,
+  GroupMenuHeader,
+  GroupMenuItem,
+  StyledDatePicker,
+  StyledIconButton,
+  StyledTextArea,
+} from './TodoRightDrawer.styles';
 import useTodo from '../useTodo';
-import { observer } from 'mobx-react-lite';
 import formDateStringFromISO from 'utils/formDateStringFromISO';
 import { useTodoStore } from 'stores/hooks';
-import 'moment/locale/ru';
-import locale from 'antd/lib/locale/ru_RU';
 
 type TodoRightDrawerProps = {
   _id: string;
@@ -36,7 +43,7 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
     datePickerHandler,
   } = useTodo({ _id });
 
-  const { editTodo } = useTodoStore();
+  const { editTodo, getGroups, groups } = useTodoStore();
 
   const onTextareaBlur = () => {
     editTodo(_id, todoName, isChecked, deadline, note);
@@ -46,6 +53,41 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
     deleteDeadline();
     editTodo(_id, todoName, isChecked, null);
   };
+
+  useEffect(() => {
+    getGroups();
+  }, []);
+
+  const addToGroup = (groupId: string) => {
+    editTodo(
+      _id,
+      todoName,
+      isChecked,
+      deadline,
+      note,
+      undefined,
+      undefined,
+      groupId
+    );
+  };
+
+  // todo consider no groups case
+  const groupsMenu = useMemo(() => {
+    // todo change to li?
+    // "Menu is rendered as a ul ... its children should be Menu.* or encapsulated HOCs"
+    const MenuHeader = () => <GroupMenuHeader>Выбор группы</GroupMenuHeader>;
+
+    return (
+      <GroupMenu>
+        <MenuHeader />
+        {groups.map(({ _id, name }) => (
+          <GroupMenuItem key={_id} onClick={() => addToGroup(_id)}>
+            {name}
+          </GroupMenuItem>
+        ))}
+      </GroupMenu>
+    );
+  }, [groups]);
 
   return (
     <RightSideDrawer
@@ -66,7 +108,7 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
                     onChange={onDeadlineChange}
                     bordered={false}
                   />
-                  <IconButton
+                  <StyledIconButton
                     image={images.clock.default}
                     squareSide="35px"
                     onClick={datePickerHandler}
@@ -75,15 +117,26 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
                 </Col>
 
                 {!!deadline && (
-                  <Col offset={1}>
-                    <IconButton
+                  <Col>
+                    <StyledIconButton
                       image={images.closeBrown.default}
                       squareSide="15px"
                       onClick={onDeadlineDelete}
                       paddings="0"
+                      margin="0 20px 0 0"
                     />
                   </Col>
                 )}
+
+                <Col>
+                  <Dropdown overlay={groupsMenu} trigger={['click']}>
+                    <IconButton
+                      image={images.addToGroupBrown.default}
+                      squareSide="35px"
+                      paddings="0"
+                    />
+                  </Dropdown>
+                </Col>
               </Row>
             </Col>
 

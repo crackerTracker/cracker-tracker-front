@@ -1,11 +1,12 @@
-import { TodosToggleEnum, weekPageHeaderDateFormat } from 'config/todo';
 import { makeAutoObservable, runInAction } from 'mobx';
 import moment from 'moment';
 import 'moment/locale/ru';
+import { TodosToggleEnum, weekPageHeaderDateFormat } from 'config/todo';
 import RootStore from 'stores/RootStore';
+import { getAuthHeader } from 'utils/getAuthHeader';
 import { request } from 'utils/request';
 import { endpoints } from './endpoints';
-import { SubtodoType, TodoType } from './types';
+import { SubtodoType, TodoGroupType, TodoType } from './types';
 
 type PrivateFields = 'rootStore';
 
@@ -25,6 +26,8 @@ class TodoStore {
   public tempTodoName = '';
 
   private _todos: TodoType[] = [];
+
+  public groups: TodoGroupType[] = [];
 
   constructor(rootStore: RootStore) {
     makeAutoObservable<this, PrivateFields>(this, {
@@ -69,6 +72,10 @@ class TodoStore {
 
   setHeaderDate = (date: string) => {
     this.headerDate = date;
+  };
+
+  setGroups = (groups: TodoGroupType[]) => {
+    this.groups = groups;
   };
 
   requestTodos = async () => {
@@ -179,6 +186,21 @@ class TodoStore {
       await this.requestTodos();
     } catch (e: any) {
       console.log('TodoStore.deleteTodo', e.message);
+    }
+  };
+
+  getGroups = async () => {
+    try {
+      const data: TodoGroupType[] = await request({
+        ...endpoints.getGroups,
+        headers: getAuthHeader(this.token),
+      });
+
+      if (data) {
+        this.setGroups(data);
+      }
+    } catch (e: any) {
+      console.log('TodoStore.getGroups', e.message);
     }
   };
 }
