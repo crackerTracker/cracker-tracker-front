@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { images } from 'img/icons';
 import {
@@ -31,16 +31,19 @@ const Modal: FC<ModalProps> = ({
 }) => {
   const nodeRef = useRef(null);
 
-  const keydownHandler = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      onClose();
-    }
-  };
+  const keydownHandler = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
   useEffect(() => {
     document.body.addEventListener('keydown', keydownHandler);
     return () => document.body.removeEventListener('keydown', keydownHandler);
-  }, []);
+  }, [keydownHandler]);
 
   return (
     <>

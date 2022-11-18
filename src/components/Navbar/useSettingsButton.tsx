@@ -17,7 +17,7 @@ const useSettingsButton = () => {
 
   const { openModal, closeModal, isModalOpen } = useModal();
 
-  const modalHandler = React.useCallback(() => {
+  const pomoSettingsModalHandler = React.useCallback(() => {
     openModal();
     setIsDropdownVisible(false);
   }, []);
@@ -25,7 +25,7 @@ const useSettingsButton = () => {
   const menu = React.useMemo(
     () => (
       <Menu>
-        <Menu.Item key="2" onClick={modalHandler}>
+        <Menu.Item key="2" onClick={pomoSettingsModalHandler}>
           Настройка помидора
         </Menu.Item>
         <Menu.Item key="1" onClick={logoutHandler}>

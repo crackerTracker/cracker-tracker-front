@@ -21,7 +21,7 @@ const PomoSettingsModal: FC<ModalProps> = ({
   title,
   onClose,
 }: ModalProps) => {
-  const getRestSettings = useCallback(() => {
+  const getRestSettings = useCallback((): RestMinutesType => {
     const restSettingsItem = localStorage.getItem(pomoRestSettings);
 
     if (restSettingsItem) {
@@ -47,16 +47,18 @@ const PomoSettingsModal: FC<ModalProps> = ({
     }
   };
 
-  const onCancel = () => {
+  const onCancel = useCallback(() => {
     setTempRestMinutes(getRestSettings());
     onClose();
-  };
+  }, [onClose]);
 
-  const onSave = () => {
+  const onSave = useCallback(() => {
     localStorage.setItem(pomoRestSettings, JSON.stringify(tempRestMinutes));
     message.success('Сохранено');
     onClose();
-  };
+  }, [tempRestMinutes, onClose]);
+
+  const formatInputMinutes = useCallback((val?: number) => `${val} мин`, []);
 
   return (
     <Modal
@@ -79,7 +81,7 @@ const PomoSettingsModal: FC<ModalProps> = ({
               onChange={onChange(RestType.short)}
               value={tempRestMinutes.short}
               bordered={false}
-              formatter={(val) => `${val} мин`}
+              formatter={formatInputMinutes}
             />
           </div>
         </SettingsItem>
@@ -92,7 +94,7 @@ const PomoSettingsModal: FC<ModalProps> = ({
               onChange={onChange(RestType.long)}
               value={tempRestMinutes.long}
               bordered={false}
-              formatter={(val) => `${val} мин`}
+              formatter={formatInputMinutes}
             />
           </div>
         </SettingsItem>
