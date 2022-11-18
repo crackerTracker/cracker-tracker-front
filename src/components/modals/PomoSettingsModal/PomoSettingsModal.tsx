@@ -1,41 +1,20 @@
-import React, { FC, useState, memo, useCallback, useMemo } from 'react';
+import React, { FC, useState, memo, useCallback } from 'react';
 import { message } from 'antd';
 import Modal, { ModalProps } from 'components/Modal';
 import Button from 'components/Button';
-import {
-  defaultLongRestMinutes,
-  defaultRestMinutes,
-  pomoRestSettings,
-} from 'config/pomoconf';
+import { pomoRestSettings, RestMinutesType, RestType } from 'config/pomoconf';
 import { SettingsItem, StyledInputNumber } from './PomoSettingsModal.styles';
-
-enum RestType {
-  short = 'short',
-  long = 'long',
-}
-
-type RestMinutesType = Record<RestType, number>;
+import { formatInputMinutes, getRestSettings } from './PomoSettingsModal.utils';
 
 const PomoSettingsModal: FC<ModalProps> = ({
   isOpen,
   title,
   onClose,
 }: ModalProps) => {
-  const getRestSettings = useCallback((): RestMinutesType => {
-    const restSettingsItem = localStorage.getItem(pomoRestSettings);
-
-    if (restSettingsItem) {
-      return JSON.parse(restSettingsItem);
-    }
-
-    return { short: defaultRestMinutes, long: defaultLongRestMinutes };
-  }, []);
-
-  const restSettings = useMemo(() => getRestSettings(), []);
-
   // to handle inputs and to be able to cancel changes on modal close
-  const [tempRestMinutes, setTempRestMinutes] =
-    useState<RestMinutesType>(restSettings);
+  const [tempRestMinutes, setTempRestMinutes] = useState<RestMinutesType>(
+    getRestSettings()
+  );
 
   // to handle antd input based on its rest type
   const onChange = (name: RestType) => (value: number) => {
@@ -58,8 +37,6 @@ const PomoSettingsModal: FC<ModalProps> = ({
     onClose();
   }, [tempRestMinutes, onClose]);
 
-  const formatInputMinutes = useCallback((val?: number) => `${val} мин`, []);
-
   return (
     <Modal
       isOpen={isOpen}
@@ -77,7 +54,7 @@ const PomoSettingsModal: FC<ModalProps> = ({
           <div>
             <StyledInputNumber
               min={1}
-              defaultValue={restSettings.short}
+              defaultValue={getRestSettings().short}
               onChange={onChange(RestType.short)}
               value={tempRestMinutes.short}
               bordered={false}
@@ -90,7 +67,7 @@ const PomoSettingsModal: FC<ModalProps> = ({
           <div>
             <StyledInputNumber
               min={1}
-              defaultValue={restSettings.long}
+              defaultValue={getRestSettings().long}
               onChange={onChange(RestType.long)}
               value={tempRestMinutes.long}
               bordered={false}

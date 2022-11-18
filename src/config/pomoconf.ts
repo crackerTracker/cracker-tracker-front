@@ -32,3 +32,10 @@ export enum TimerStatesEnum {
   rest = 'rest',
   off = 'off',
 }
+
+export enum RestType {
+  short = 'short',
+  long = 'long',
+}
+
+export type RestMinutesType = Record<RestType, number>;
