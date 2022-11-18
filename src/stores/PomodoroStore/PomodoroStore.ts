@@ -4,7 +4,13 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import RootStore from '../RootStore';
 import { endpoints } from 'config/endpoints';
 import { defaultPomoTime, TimerStatesEnum } from 'config/pomoconf';
-import { DonePomoType, PlannedPomoType } from './types';
+import {
+  ApiAllPomosType,
+  DonePomoType,
+  normalizePomoItems,
+  PlannedPomoType,
+  PomoConditionType,
+} from './types';
 
 type PrivateFields = 'rootStore';
 
@@ -74,7 +80,7 @@ class PomodoroStore {
     this.isLoading = true;
 
     try {
-      const data = await request({
+      const data: ApiAllPomosType = await request({
         url: endpoints.requestAll.url,
         method: endpoints.requestAll.method,
         headers: getAuthHeader(this.token),
@@ -82,8 +88,11 @@ class PomodoroStore {
 
       runInAction(() => {
         if (data) {
-          this._plannedPomosData = data.plan;
-          this._donePomosData = data.done;
+          this._plannedPomosData =
+            normalizePomoItems<PomoConditionType.planned>(data.plan);
+          this._donePomosData = normalizePomoItems<PomoConditionType.done>(
+            data.done
+          );
         }
       });
     } catch (e: any) {

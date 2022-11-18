@@ -3,7 +3,7 @@ import { observer, useLocalObservable } from 'mobx-react-lite';
 import React, { FC } from 'react';
 import { format } from 'config/pomoconf';
 import { usePomodoroStore } from 'stores/hooks';
-import { DonePomoType } from 'stores/PomodoroStore/types';
+import { DonePomoType } from 'stores/PomodoroStore';
 import {
   InputGroup,
   StyledButton,
@@ -20,11 +20,11 @@ type Props = {
 };
 
 const DonePomoItem: FC<Props> = ({
-  donePomo: { _id, endTime, minutesSpent, name, startTime },
+  donePomo: { id, endTime, minutesSpent, name, startTime },
 }) => {
   const pomodoroStore = usePomodoroStore();
 
-  const donePomoProps = { _id, name, endTime, minutesSpent, startTime };
+  const donePomoProps = { id, name, endTime, minutesSpent, startTime };
 
   const donePomoStore = useLocalObservable(
     () => new DonePomoStore(pomodoroStore, donePomoProps)

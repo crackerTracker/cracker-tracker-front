@@ -1,8 +1,7 @@
 import { message } from 'antd';
 import { action, computed, makeObservable, observable } from 'mobx';
 import { FormEvent } from 'react';
-import PomodoroStore from 'stores/PomodoroStore/PomodoroStore';
-import { PomoItemType } from 'stores/PomodoroStore/types';
+import PomodoroStore, { CommonPomoType } from 'stores/PomodoroStore';
 
 type PrivateFields =
   | 'pomodoroStore'
@@ -18,7 +17,7 @@ export abstract class PomoItemStore {
   protected _isEdit = false;
   protected temporaryName: string;
 
-  constructor(pomodoroStore: PomodoroStore, { _id, name }: PomoItemType) {
+  constructor(pomodoroStore: PomodoroStore, { id, name }: CommonPomoType) {
     makeObservable<this, PrivateFields>(this, {
       _isEdit: observable,
       _pomoName: observable,
@@ -36,7 +35,7 @@ export abstract class PomoItemStore {
     });
 
     this.pomodoroStore = pomodoroStore;
-    this.id = _id;
+    this.id = id;
     this._pomoName = name;
     this.temporaryName = name;
   }
