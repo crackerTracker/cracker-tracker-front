@@ -1,7 +1,6 @@
 import { action, computed, makeObservable, observable } from 'mobx';
-import PomodoroStore from 'stores/PomodoroStore/PomodoroStore';
+import PomodoroStore, { PlannedPomoType } from 'stores/PomodoroStore';
 import { defaultInitialMinutes, TimerStatesEnum } from 'config/pomoconf';
-import { PlannedPomoType } from 'stores/PomodoroStore/types';
 import { PomoItemStore } from '../PomoItemStore';
 
 type PrivateFields = 'pomodoroStore' | '_pomoAmount' | 'temporaryAmount';
@@ -12,9 +11,9 @@ export class PlannedPomoStore extends PomoItemStore {
 
   constructor(
     pomodoroStore: PomodoroStore,
-    { _id, name, pomodorosAmount }: PlannedPomoType
+    { id, name, pomodorosAmount }: PlannedPomoType
   ) {
-    super(pomodoroStore, { _id, name });
+    super(pomodoroStore, { id, name });
 
     makeObservable<this, PrivateFields>(this, {
       _pomoAmount: observable,
@@ -40,7 +39,7 @@ export class PlannedPomoStore extends PomoItemStore {
   get isSetDisabled(): boolean {
     const firstPomo = this.pomodoroStore.plannedPomosData[0];
     const timerState = this.pomodoroStore.timerState;
-    return firstPomo._id === this.id && timerState === TimerStatesEnum.work;
+    return firstPomo.id === this.id && timerState === TimerStatesEnum.work;
   }
 
   get pomoAmount(): number {

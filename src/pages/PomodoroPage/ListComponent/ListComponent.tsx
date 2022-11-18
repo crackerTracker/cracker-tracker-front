@@ -40,7 +40,7 @@ const ListComponent: FC = () => {
         bordered
         dataSource={plannedPomosData}
         renderItem={(item) => (
-          <List.Item key={(item as PlannedPomoType)._id}>
+          <List.Item key={(item as PlannedPomoType).id}>
             <PlannedPomoItem plannedPomo={item as PlannedPomoType} />
           </List.Item>
         )}
@@ -55,7 +55,7 @@ const ListComponent: FC = () => {
         bordered
         dataSource={donePomosData}
         renderItem={(item) => (
-          <List.Item key={(item as DonePomoType)._id}>
+          <List.Item key={(item as DonePomoType).id}>
             <DonePomoItem donePomo={item as DonePomoType} />
           </List.Item>
         )}
