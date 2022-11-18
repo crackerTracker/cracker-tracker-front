@@ -4,6 +4,7 @@ import {
   defaultRestMinutes,
   maxSeriesCount,
   OptionsEnum,
+  pomoRestSettings,
   pomoSeriesItem,
   TimerStatesEnum,
 } from 'config/pomoconf';
@@ -132,6 +133,13 @@ export const useTimer = () => {
 
   const getCurrentRestMinutes = () => {
     const currentSeries = Number(localStorage.getItem(pomoSeriesItem));
+    const restSettings = localStorage.getItem(pomoRestSettings);
+
+    if (restSettings) {
+      const { short, long } = JSON.parse(restSettings);
+      return currentSeries === maxSeriesCount ? long : short;
+    }
+
     return currentSeries === maxSeriesCount
       ? defaultLongRestMinutes
       : defaultRestMinutes;

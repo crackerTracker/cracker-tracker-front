@@ -10,6 +10,7 @@ export const StyledDrawer = styled(Drawer)`
 `;
 
 export const Container = styled.div`
+  // 48px - vertical paddings
   height: calc(100vh - 48px);
   ${flex({ direction: 'column' })}
 `;
