@@ -116,7 +116,6 @@ export const pieData: ChartData<TrackerChartsEnum.pie, number[], string> = {
   ],
   datasets: [
     {
-      label: '# of Votes',
       data: [120, 190, 30, 50, 20, 30],
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
@@ -126,7 +125,6 @@ export const pieData: ChartData<TrackerChartsEnum.pie, number[], string> = {
         'rgba(153, 102, 255, 0.2)',
         'rgba(255, 159, 64, 0.2)',
       ],
-      borderWidth: 0,
     },
   ],
 };

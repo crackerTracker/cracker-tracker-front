@@ -1,12 +1,22 @@
 import { TrackerChartsEnum } from '../../config';
 import { action, computed, makeObservable, observable } from 'mobx';
 import { ChartsDrawerStorePrivateFieldsToAnnotate } from './config';
+import PieChartController from './store/PieChartController/PieChartController';
+import BarChartController from './store/BarChartContoller/BarChartController';
 
 class ChartsDrawerStore {
   /**
    * Тип отображаемого в данный момент графика
    */
   private _chartType = TrackerChartsEnum.pie;
+
+  private readonly _pieChartController: PieChartController =
+    new PieChartController();
+
+  private readonly _barChartController: BarChartController =
+    new BarChartController();
+
+  // private _barChartStore: BarChartStore;
 
   constructor() {
     makeObservable<this, ChartsDrawerStorePrivateFieldsToAnnotate>(this, {
@@ -37,8 +47,22 @@ class ChartsDrawerStore {
    * Производит оперции по смене типа графика
    * @param chartType тип графика, на который меняем
    */
-  onChangeChartType = (chartType: TrackerChartsEnum): void => {
+  onChangeChartType = async (chartType: TrackerChartsEnum): Promise<void> => {
     this._setChartType(chartType);
+
+    if (
+      chartType === TrackerChartsEnum.pie &&
+      !this._pieChartController.pieChartModel.initialized
+    ) {
+      await this._pieChartController.initModel();
+    }
+
+    if (
+      chartType === TrackerChartsEnum.bar &&
+      !this._barChartController.barChartModel.initialized
+    ) {
+      await this._barChartController.initModel();
+    }
   };
 }
 

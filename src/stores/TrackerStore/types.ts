@@ -5,12 +5,16 @@ export type ApiCategoryType = {
   isArchived: boolean;
 };
 
+export type ApiBaseCategoryType = Omit<ApiCategoryType, 'isArchived'>;
+
 export type CategoryType = {
   id: string;
   name: string;
   color: string;
   isArchived: boolean;
 };
+
+export type BaseCategoryType = Omit<CategoryType, 'isArchived'>;
 
 export type ApiTaskType = {
   _id: string;
@@ -38,6 +42,13 @@ export type TasksByMonthsApiResponseType = {
   collectedDays: number;
   months: TaskMonthApiType[];
 };
+
+export const normalizeBaseCategory = (
+  data: ApiBaseCategoryType
+): BaseCategoryType => ({
+  id: data._id,
+  ...data,
+});
 
 export const normalizeCategory = ({
   _id,
@@ -98,7 +109,7 @@ export const normalizeTasksToDatesMap = (
 
 type YearAlias = number;
 type MonthIndexType = number; // from 0 to 11
-type TimestampAlias = number;
+export type TimestampAlias = number;
 
 export type DaysTasksMapType = Record<TimestampAlias, TaskType[]>;
 
