@@ -1,4 +1,4 @@
-import { DatesSelectionType } from '../../../../types';
+import { ChartDatesBaseSelectionType } from '../../../../types';
 
 /**
  * Даты для столбчатого графика можно выбирать двумя способами:
@@ -6,7 +6,6 @@ import { DatesSelectionType } from '../../../../types';
  * 2. Выбрать диапазон дат из не более 7 дней
  * То есть в столбчатом графике можно выбрать только диапазон дат
  */
-export type BarChartSelectionType = {
+export type BarChartSelectionType = ChartDatesBaseSelectionType & {
   isLast7DaysMode: boolean;
-  selection: DatesSelectionType;
 };

@@ -1,22 +1,15 @@
 import {
   ApiBaseCategoryType,
-  ApiCategoryType,
   BaseCategoryType,
-  CategoryType,
   normalizeBaseCategory,
   TimestampAlias,
 } from 'stores/TrackerStore/types';
 import { ChartData, ChartDataset, ChartOptions } from 'chart.js';
-import {
-  getDefaultBarChartData,
-  getDefaultPieChartData,
-  TrackerChartsEnum,
-} from './config';
+import { getDefaultPieChartData, TrackerChartsEnum } from './config';
 import moment, { Moment } from 'moment';
 import { RangeValue } from 'rc-picker/lib/interface';
-import formatPercent from '../../../utils/formatPercent';
-import { stat } from 'fs';
-import { CAPITAL_L_MOMENT_FORMAT } from '../../../config/ui';
+import formatPercent from 'utils/formatPercent';
+import { CAPITAL_L_MOMENT_FORMAT } from 'config/ui';
 
 /**
  * Загрузить данные можно либо за один день, либо за диапазон дат
@@ -39,6 +32,10 @@ export type DatesSelectionType =
       selectionType: DatesSelectionTypesEnum.range;
       value: RangeValue<Moment>;
     };
+
+export type ChartDatesBaseSelectionType = {
+  selection: DatesSelectionType;
+};
 
 export type ApiStatsCategoryType = ApiBaseCategoryType & {
   minutesSpent: number;

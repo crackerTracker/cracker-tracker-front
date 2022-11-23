@@ -14,10 +14,7 @@ import { observer } from 'mobx-react-lite';
 import { TrackerChartsEnum } from './config';
 import ChartPanel from './components/ChartPanel';
 import CategoriesList from './components/List';
-import {
-  useChartsDrawerStore,
-  withChartsDrawerStoreProvider,
-} from './store/ChartDrawerStore/context';
+import { useChartsDrawerStore, withChartsDrawerStoreProvider } from './store';
 
 type Props = Pick<RightSideDrawerProps, 'visible' | 'onDrawerClose'>;
 

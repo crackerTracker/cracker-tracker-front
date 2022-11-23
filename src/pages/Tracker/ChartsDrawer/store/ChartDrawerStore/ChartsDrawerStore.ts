@@ -1,8 +1,9 @@
 import { TrackerChartsEnum } from '../../config';
 import { action, computed, makeObservable, observable } from 'mobx';
-import { ChartsDrawerStorePrivateFieldsToAnnotate } from './config';
-import PieChartController from './store/PieChartController/PieChartController';
-import BarChartController from './store/BarChartContoller/BarChartController';
+import { PieChartController } from './store/PieChartController';
+import { BarChartController } from './store/BarChartContoller';
+
+export type PrivateFields = '_chartType' | '_setChartType';
 
 class ChartsDrawerStore {
   /**
@@ -19,7 +20,7 @@ class ChartsDrawerStore {
   // private _barChartStore: BarChartStore;
 
   constructor() {
-    makeObservable<this, ChartsDrawerStorePrivateFieldsToAnnotate>(this, {
+    makeObservable<this, PrivateFields>(this, {
       _chartType: observable,
 
       chartType: computed,
@@ -52,14 +53,14 @@ class ChartsDrawerStore {
 
     if (
       chartType === TrackerChartsEnum.pie &&
-      !this._pieChartController.pieChartModel.initialized
+      !this._pieChartController.chartModel.initialized
     ) {
       await this._pieChartController.initModel();
     }
 
     if (
       chartType === TrackerChartsEnum.bar &&
-      !this._barChartController.barChartModel.initialized
+      !this._barChartController.chartModel.initialized
     ) {
       await this._barChartController.initModel();
     }

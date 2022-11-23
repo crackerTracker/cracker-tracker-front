@@ -6,11 +6,11 @@ import {
   PieChartDataType,
   PieChartOptionsType,
 } from './types';
-import { getMinsAndHoursStringFromMins } from '../../../utils/getMinsAndHoursFromMins';
-import { PieChartSelectionType } from './store/ChartDrawerStore/store/PieChartController/types';
+import { getMinsAndHoursStringFromMins } from 'utils/getMinsAndHoursFromMins';
+import { PieChartSelectionType } from './store/ChartDrawerStore/store/PieChartController';
 import moment from 'moment';
-import { BarChartSelectionType } from './store/ChartDrawerStore/store/BarChartContoller/types';
-import { DAYS_IN_WEEK } from '../../../config/time';
+import { BarChartSelectionType } from './store/ChartDrawerStore/store/BarChartContoller';
+import { DAYS_IN_WEEK } from 'config/time';
 
 export enum TrackerChartsEnum {
   pie = 'pie',
@@ -50,7 +50,7 @@ export const BAR_CHART_MAX_CHOOSING_DAYS = 7;
  */
 export const getInitialPieChartSelection = (): PieChartSelectionType => ({
   simpleDate: SimpleDatesEnum.today,
-  dateSelection: {
+  selection: {
     selectionType: DatesSelectionTypesEnum.single,
     value: moment().utc(),
   },

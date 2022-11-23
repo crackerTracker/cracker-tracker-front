@@ -1,35 +1,27 @@
-import { makeAutoObservable } from 'mobx';
+import { computed, makeObservable } from 'mobx';
 import {
   getInitialPieChartSelection,
   simpleDatesTexts,
 } from '../../../../config';
 import { DatesSelectionTypesEnum } from '../../../../types';
-import { CAPITAL_L_MOMENT_FORMAT } from '../../../../../../../config/ui';
-import formatDatesRange from '../../../../../../../utils/formatDatesRange';
+import { CAPITAL_L_MOMENT_FORMAT } from 'config/ui';
+import formatDatesRange from 'utils/formatDatesRange';
 import { PieChartSelectionType } from './types';
-import { Moment } from 'moment';
-import PieChartModel from '../PieChartModel';
+import PieChartModel from './PieChartModel';
+import { AbstractChartController } from '../abstract';
 
 /**
  * Контроллер графика - слой между управляющими элементами и моделью данных
  */
-class PieChartController {
-  /**
-   * Модель данных графика. Занимается загрузкой данных и подготовкой конфига
-   */
-  private readonly _pieChartModel: PieChartModel = new PieChartModel();
-
-  /**
-   * Выбранная дата
-   */
-  private _selectedDate: PieChartSelectionType = getInitialPieChartSelection();
-
+class PieChartController extends AbstractChartController<
+  PieChartModel,
+  PieChartSelectionType
+> {
   constructor() {
-    makeAutoObservable(this);
-  }
-
-  get pieChartModel(): PieChartModel {
-    return this._pieChartModel;
+    super(() => new PieChartModel(), getInitialPieChartSelection);
+    makeObservable(this, {
+      selectedDateTitle: computed,
+    });
   }
 
   /**
@@ -38,13 +30,13 @@ class PieChartController {
    * * Если выбран один день или диапазон, отдастся отформатированная строка
    */
   get selectedDateTitle(): string {
-    const { simpleDate, dateSelection } = this._selectedDate;
+    const { simpleDate, selection } = this._selectedDate;
 
     if (simpleDate) {
       return simpleDatesTexts[simpleDate];
     }
 
-    const { value: selectedDateValue, selectionType } = dateSelection;
+    const { value: selectedDateValue, selectionType } = selection;
 
     if (selectionType === DatesSelectionTypesEnum.single) {
       return selectedDateValue.format(CAPITAL_L_MOMENT_FORMAT);
@@ -66,26 +58,6 @@ class PieChartController {
 
     return '';
   }
-
-  selectDate = async (dateSelection: PieChartSelectionType): Promise<void> => {
-    if (!this._pieChartModel.initialized) {
-      return;
-    }
-
-    this._selectedDate = dateSelection;
-    await this._pieChartModel.onSelectDates(dateSelection.dateSelection);
-  };
-
-  /**
-   * Инициализирует модель графика начальными значениями контроллера
-   */
-  initModel = async (): Promise<void> => {
-    if (this._pieChartModel.initialized) {
-      return;
-    }
-
-    await this._pieChartModel.init(this._selectedDate.dateSelection);
-  };
 }
 
 export default PieChartController;
