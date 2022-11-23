@@ -113,18 +113,6 @@ export type PieChartDatasetType = ChartDataset<TrackerChartsEnum.pie, number[]>;
 export type BarChartDatasetType = ChartDataset<TrackerChartsEnum.bar, number[]>;
 
 /**
- * Надстройка над типом конфига данных для круогового графика,
- * предполагающая те данные, которые не будут контролироваться контроллером
- * (контролируются labels и data с backgroundColor в массиве datasets)
- */
-// export type BasicPieChartDataType = Omit<
-//   PieChartDataType,
-//   'labels' | 'datasets'
-// > & {
-//   datasets: Omit<PieChartDatasetType, 'data' | 'backgroundColor'>[];
-// };
-
-/**
  * Алиас для типа опций кругового графика
  */
 export type PieChartOptionsType = ChartOptions<TrackerChartsEnum.pie>;
@@ -158,32 +146,6 @@ export const normalizeBarChartApiData = ({
     minutesPerCategory: minutesSpentPerCategories,
   };
 };
-
-// export type DatasetValuesType = {
-//   labels: string[];
-//   data: number[];
-//   backgroundColor: string[];
-// };
-//
-// export const getDefaultDatasetValues = (): DatasetValuesType => ({
-//   backgroundColor: [],
-//   data: [],
-//   labels: [],
-// });
-
-// export const normalizePieChartData = (
-//   data: ApiPieChartCategoryRecordType[]
-// ): DatasetValuesType => {
-//   const dataset = getDefaultDatasetValues();
-//
-//   data.forEach(({ minutesSpent, name, color }) => {
-//     dataset.data.push(minutesSpent);
-//     dataset.labels.push(name);
-//     dataset.backgroundColor.push(color);
-//   });
-//
-//   return dataset;
-// };
 
 export const formPieChartDataConfig = (
   data: StatsCategoryType[]

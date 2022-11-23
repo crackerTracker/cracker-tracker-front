@@ -1,11 +1,12 @@
 import AbstractChartModel from './AbstractChartModel';
 import { ChartDatesBaseSelectionType } from '../../../../types';
-import { action, computed, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable, toJS } from 'mobx';
+import { ChartType } from 'chart.js';
 
 type PrivateFields = '_chartModel' | '_selectedDate';
 
 abstract class AbstractChartController<
-  ChartModelT extends AbstractChartModel<any, any, any>,
+  ChartModelT extends AbstractChartModel<any, any, any, any>,
   ChartSelectionT extends ChartDatesBaseSelectionType
 > {
   protected readonly _chartModel: ChartModelT;

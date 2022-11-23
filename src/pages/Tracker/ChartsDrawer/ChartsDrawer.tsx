@@ -19,9 +19,20 @@ import { useChartsDrawerStore, withChartsDrawerStoreProvider } from './store';
 type Props = Pick<RightSideDrawerProps, 'visible' | 'onDrawerClose'>;
 
 const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
-  const { chartType, onChangeChartType } = useChartsDrawerStore();
+  const {
+    chartType,
+    onChangeChartType,
+    barChartController,
+    pieChartController,
+    isPieChart,
+  } = useChartsDrawerStore();
 
-  // todo добавить логику переключения графиков
+  React.useEffect(() => {
+    isPieChart
+      ? pieChartController.initModel()
+      : barChartController.initModel();
+  }, []);
+
   const onClickChangeChartType = React.useCallback(
     (chartType: TrackerChartsEnum) => () => {
       onChangeChartType(chartType);

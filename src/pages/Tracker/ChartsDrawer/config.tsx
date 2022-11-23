@@ -8,9 +8,10 @@ import {
 } from './types';
 import { getMinsAndHoursStringFromMins } from 'utils/getMinsAndHoursFromMins';
 import { PieChartSelectionType } from './store/ChartDrawerStore/store/PieChartController';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { BarChartSelectionType } from './store/ChartDrawerStore/store/BarChartContoller';
 import { DAYS_IN_WEEK } from 'config/time';
+import getLastDaysRange from '../../../utils/getLastDaysRange';
 
 export enum TrackerChartsEnum {
   pie = 'pie',
@@ -29,6 +30,40 @@ export const simpleDatesTexts: Record<SimpleDatesEnum, string> = {
   [SimpleDatesEnum.yesterday]: 'За вчерашний день',
   [SimpleDatesEnum.last7]: 'За последние 7 дней',
   [SimpleDatesEnum.last30]: 'За последние 30 дней',
+};
+
+export const getSimpleDatesSelectionPayload: Record<
+  SimpleDatesEnum,
+  () => PieChartSelectionType
+> = {
+  [SimpleDatesEnum.today]: () => ({
+    simpleDate: SimpleDatesEnum.today,
+    selection: {
+      selectionType: DatesSelectionTypesEnum.single,
+      value: moment().utc(),
+    },
+  }),
+  [SimpleDatesEnum.yesterday]: () => ({
+    simpleDate: SimpleDatesEnum.yesterday,
+    selection: {
+      selectionType: DatesSelectionTypesEnum.single,
+      value: moment().subtract(1, 'days').utc(),
+    },
+  }),
+  [SimpleDatesEnum.last7]: () => ({
+    simpleDate: SimpleDatesEnum.last7,
+    selection: {
+      selectionType: DatesSelectionTypesEnum.range,
+      value: getLastDaysRange(7),
+    },
+  }),
+  [SimpleDatesEnum.last30]: () => ({
+    simpleDate: SimpleDatesEnum.last30,
+    selection: {
+      selectionType: DatesSelectionTypesEnum.range,
+      value: getLastDaysRange(30),
+    },
+  }),
 };
 
 export const simpleDatesOrder: SimpleDatesEnum[] = [
@@ -56,17 +91,14 @@ export const getInitialPieChartSelection = (): PieChartSelectionType => ({
   },
 });
 
+/**
+ * Начальные значения для столбчатого графика
+ */
 export const getInitialBarChartSelection = (): BarChartSelectionType => ({
   isLast7DaysMode: true,
   selection: {
     selectionType: DatesSelectionTypesEnum.range,
-    value: [
-      moment().utc(),
-      moment()
-        // (6 дней, так как текущий день включается в диапазон)
-        .subtract(DAYS_IN_WEEK - 1, 'days')
-        .utc(),
-    ],
+    value: getLastDaysRange(7),
   },
 });
 

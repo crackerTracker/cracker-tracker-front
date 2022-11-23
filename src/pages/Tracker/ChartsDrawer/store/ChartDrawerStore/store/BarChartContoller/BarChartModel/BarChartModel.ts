@@ -6,19 +6,21 @@ import {
   DatesSelectionTypesEnum,
   formBarChartDataConfig,
   normalizeBarChartApiData,
+  normalizeStatsCategory,
   PercentStatsCategoryType,
 } from '../../../../../types';
-import { BAR_CHART_OPTIONS } from '../../../../../config';
-import { action, makeObservable, runInAction } from 'mobx';
+import { BAR_CHART_OPTIONS, TrackerChartsEnum } from '../../../../../config';
+import { action, makeObservable, runInAction, toJS } from 'mobx';
 import { DatesStringSelectionType } from '../../types';
 import mockRequest from 'utils/mockRequest';
-import { mockApiBarChartData } from '../../../../../mock';
+import { mockApiBarChartData, mockApiPieChartData } from '../../../../../mock';
 import formZeroISOStringFromTimestamp from 'utils/formZeroISOStringFromTimestamp';
 import AbstractChartModel from '../../abstract/AbstractChartModel';
 
 type PrivateFields = '_load' | '_onSetDates';
 
 class BarChartModel extends AbstractChartModel<
+  TrackerChartsEnum,
   BarChartRawDataType,
   BarChartDataType,
   BarChartOptionsType
@@ -39,6 +41,12 @@ class BarChartModel extends AbstractChartModel<
     if (!this._rawData) {
       return null;
     }
+
+    console.log(
+      'go form config',
+      toJS(this._rawData),
+      formBarChartDataConfig(this._rawData)
+    );
 
     return formBarChartDataConfig(this._rawData);
   }
@@ -69,6 +77,8 @@ class BarChartModel extends AbstractChartModel<
       return null;
     }
 
+    console.log('go loading');
+
     this._meta.setLoading();
 
     await mockRequest();
@@ -82,21 +92,25 @@ class BarChartModel extends AbstractChartModel<
    * Инициализирует модель данных выбранными данными
    */
   async init(payload: DatesSelectionType): Promise<void> {
-    if (this._meta.isLoading || this._initialized) {
+    if (this._meta.isLoading || this._initialized || this._initializing) {
       return;
     }
 
-    this._meta.setLoading();
+    this._initializing = true;
 
-    const loaded = await this._onSetDates(payload);
+    await mockRequest();
+
+    const loaded = normalizeBarChartApiData(mockApiBarChartData);
+    // const loaded = await this._onSetDates(payload);
 
     // todo проверка на loaded
 
     if (loaded) {
       runInAction(() => {
         this._rawData = loaded;
+        this._initializing = false;
+        this._initialized = true;
       });
-      this._meta.setNotLoading();
       return;
     }
 

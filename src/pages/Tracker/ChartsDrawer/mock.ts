@@ -47,8 +47,8 @@ export const mockApiPieChartData: ApiStatsCategoryType[] = [
 
 export const mockApiBarChartData: BarChartApiDataType = {
   days: [
-    1667854800, 1667941200, 1668027600, 1668114000, 1668200400, 1668286800,
-    1668373200,
+    1667854800000, 1667941200000, 1668027600000, 1668114000000, 1668200400000,
+    1668286800000, 1668373200000,
   ],
   minutesPerCategory: [
     {

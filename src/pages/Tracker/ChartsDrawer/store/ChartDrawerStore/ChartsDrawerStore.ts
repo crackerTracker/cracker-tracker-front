@@ -39,6 +39,14 @@ class ChartsDrawerStore {
     return this._chartType === TrackerChartsEnum.pie;
   }
 
+  get pieChartController(): PieChartController {
+    return this._pieChartController;
+  }
+
+  get barChartController(): BarChartController {
+    return this._barChartController;
+  }
+
   // todo возможно, не понадобится
   private _setChartType = (value: TrackerChartsEnum): void => {
     this._chartType = value;

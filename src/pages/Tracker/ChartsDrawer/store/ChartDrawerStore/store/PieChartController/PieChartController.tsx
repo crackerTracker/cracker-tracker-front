@@ -1,6 +1,10 @@
+import * as React from 'react';
 import { computed, makeObservable } from 'mobx';
 import {
   getInitialPieChartSelection,
+  getSimpleDatesSelectionPayload,
+  SimpleDatesEnum,
+  simpleDatesOrder,
   simpleDatesTexts,
 } from '../../../../config';
 import { DatesSelectionTypesEnum } from '../../../../types';
@@ -9,6 +13,7 @@ import formatDatesRange from 'utils/formatDatesRange';
 import { PieChartSelectionType } from './types';
 import PieChartModel from './PieChartModel';
 import { AbstractChartController } from '../abstract';
+import { Menu } from 'antd';
 
 /**
  * Контроллер графика - слой между управляющими элементами и моделью данных
@@ -58,6 +63,30 @@ class PieChartController extends AbstractChartController<
 
     return '';
   }
+
+  private _selectDateBySimpleDate = async (simpleDate: SimpleDatesEnum) => {
+    await this.selectDate(getSimpleDatesSelectionPayload[simpleDate]());
+  };
+
+  // Предполагается, что closeDropdownCallback будет приходить извне,
+  // от использующего этот геттер компонента, контролирующего состояние
+  // выпадающего списка
+  simpleDatesOptionsGetter = (closeDropdownCallback: VoidFunction) => (
+    <Menu>
+      {simpleDatesOrder.map((simpleDate) => (
+        <Menu.Item
+          key={simpleDate}
+          // Без useCallback, так как в данном случае нецелесообразно
+          onClick={async () => {
+            closeDropdownCallback();
+            await this._selectDateBySimpleDate(simpleDate);
+          }}
+        >
+          {simpleDatesTexts[simpleDate]}
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
 }
 
 export default PieChartController;

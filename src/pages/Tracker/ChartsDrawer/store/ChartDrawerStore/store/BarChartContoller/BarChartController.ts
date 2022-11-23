@@ -8,6 +8,8 @@ import formatDatesRange from 'utils/formatDatesRange';
 import BarChartModel from './BarChartModel';
 import { BarChartSelectionType } from './types';
 import { AbstractChartController } from '../abstract';
+import getLastDaysRange from '../../../../../../../utils/getLastDaysRange';
+import { DAYS_IN_WEEK } from '../../../../../../../config/time';
 
 /**
  * Контроллер столбчатого графика. Слой между управляющими элементами
@@ -57,6 +59,16 @@ class BarChartController extends AbstractChartController<
 
     return '';
   }
+
+  selectLast7Days = async () => {
+    await this.selectDate({
+      isLast7DaysMode: true,
+      selection: {
+        selectionType: DatesSelectionTypesEnum.range,
+        value: getLastDaysRange(DAYS_IN_WEEK),
+      },
+    });
+  };
 }
 
 export default BarChartController;

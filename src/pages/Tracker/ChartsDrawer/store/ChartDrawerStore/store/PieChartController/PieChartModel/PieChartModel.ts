@@ -12,7 +12,7 @@ import {
 import { action, computed, makeObservable, runInAction } from 'mobx';
 import mockRequest from 'utils/mockRequest';
 import { mockApiPieChartData } from '../../../../../mock';
-import { PIE_CHART_OPTIONS } from '../../../../../config';
+import { PIE_CHART_OPTIONS, TrackerChartsEnum } from '../../../../../config';
 import { DatesStringSelectionType } from '../../types';
 import formZeroISOStringFromTimestamp from 'utils/formZeroISOStringFromTimestamp';
 import AbstractChartModel from '../../abstract/AbstractChartModel';
@@ -24,6 +24,7 @@ type PrivateFields = '_sumSpentMinutes' | '_load' | '_onSetDates';
  * и подготовливает конфиг графика
  */
 class PieChartModel extends AbstractChartModel<
+  TrackerChartsEnum,
   StatsCategoryType[],
   PieChartDataType,
   PieChartOptionsType
@@ -75,7 +76,7 @@ class PieChartModel extends AbstractChartModel<
     }
 
     return formPercentStatsCategories(
-      this._rawData.sort((a, b) => a.minutesSpent - b.minutesSpent),
+      this._rawData.slice().sort((a, b) => a.minutesSpent - b.minutesSpent),
       this._sumSpentMinutes
     );
   }
@@ -105,11 +106,11 @@ class PieChartModel extends AbstractChartModel<
    * Инициализирует модель данных выбранными данными
    */
   async init(payload: DatesSelectionType): Promise<void> {
-    if (this._meta.isLoading || this._initialized) {
+    if (this._meta.isLoading || this._initialized || this._initializing) {
       return;
     }
 
-    this._meta.setLoading();
+    this._initializing = true;
 
     await this._onSetDates(payload);
 
@@ -122,8 +123,9 @@ class PieChartModel extends AbstractChartModel<
     if (loaded) {
       runInAction(() => {
         this._rawData = loaded;
+        this._initializing = false;
+        this._initialized = true;
       });
-      this._meta.setNotLoading();
       return;
     }
 

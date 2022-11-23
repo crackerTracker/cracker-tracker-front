@@ -11,10 +11,22 @@ import {
   runInAction,
 } from 'mobx';
 import { DatesStringSelectionType } from '../types';
+import { TrackerChartsEnum } from '../../../../config';
+import { ChartData, ChartOptions, ChartType } from 'chart.js';
 
-type ProtectedFields = '_chartOptions' | '_meta' | '_initialized' | '_rawData';
+type ProtectedFields =
+  | '_chartOptions'
+  | '_meta'
+  | '_initialized'
+  | '_rawData'
+  | '_initializing';
 
-abstract class AbstractChartModel<RawDataT, ChartDataConfigT, ChartOptionT> {
+abstract class AbstractChartModel<
+  ChartT extends ChartType,
+  RawDataT,
+  ChartDataConfigT extends ChartData<ChartT, number[], string>,
+  ChartOptionT extends ChartOptions<ChartT>
+> {
   /**
    * Конфиг опций графика. Кладётся в пропс options графика
    */
@@ -31,6 +43,11 @@ abstract class AbstractChartModel<RawDataT, ChartDataConfigT, ChartOptionT> {
   protected _initialized = false;
 
   /**
+   * В процессе инициализации
+   */
+  protected _initializing = false;
+
+  /**
    * Список загруженных категорий для статистики
    */
   protected _rawData: RawDataT | null = null;
@@ -40,10 +57,12 @@ abstract class AbstractChartModel<RawDataT, ChartDataConfigT, ChartOptionT> {
       _chartOptions: observable.ref,
       _meta: observable,
       _initialized: observable,
+      _initializing: observable,
       _rawData: observable,
 
       meta: computed,
       initialized: computed,
+      initializing: computed,
 
       onSelectDates: action.bound,
     });
@@ -57,6 +76,14 @@ abstract class AbstractChartModel<RawDataT, ChartDataConfigT, ChartOptionT> {
 
   get initialized(): boolean {
     return this._initialized;
+  }
+
+  get initializing(): boolean {
+    return this._initializing;
+  }
+
+  get chartOptions(): ChartOptionT {
+    return this._chartOptions;
   }
 
   /**
