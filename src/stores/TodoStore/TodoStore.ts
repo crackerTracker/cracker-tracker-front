@@ -58,6 +58,10 @@ class TodoStore {
     }
   }
 
+  getLastAddedGroup = () => {
+    return this.groups[this.groups.length - 1];
+  };
+
   setTodosToggle = (toggle: TodosToggleEnum) => {
     this.currentTodosToggle = toggle;
   };
@@ -201,6 +205,22 @@ class TodoStore {
       }
     } catch (e: any) {
       console.log('TodoStore.getGroups', e.message);
+    }
+  };
+
+  createGroup = async (name: string) => {
+    try {
+      const data: TodoGroupType = await request({
+        ...endpoints.createGroup,
+        body: { name },
+        headers: getAuthHeader(this.token),
+      });
+
+      if (data) {
+        await this.getGroups();
+      }
+    } catch (e: any) {
+      console.log('TodoStore.createGroup', e.message);
     }
   };
 }

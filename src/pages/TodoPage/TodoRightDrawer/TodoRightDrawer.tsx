@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Col, ConfigProvider, Dropdown, Row } from 'antd';
 import locale from 'antd/lib/locale/ru_RU';
@@ -8,9 +8,6 @@ import RightSideDrawer from 'components/RightSideDrawer';
 import { images } from 'img/icons';
 import DrawerTodoCard from '../DrawerTodoCard';
 import {
-  GroupMenu,
-  GroupMenuHeader,
-  GroupMenuItem,
   StyledDatePicker,
   StyledIconButton,
   StyledTextArea,
@@ -18,6 +15,7 @@ import {
 import useTodo from '../useTodo';
 import formDateStringFromISO from 'utils/formDateStringFromISO';
 import { useTodoStore } from 'stores/hooks';
+import GroupsDropdownMenu from './GroupsDropdownMenu';
 
 type TodoRightDrawerProps = {
   _id: string;
@@ -58,8 +56,8 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
     getGroups();
   }, []);
 
-  const addToGroup = (groupId: string) => {
-    editTodo(
+  const addToGroup = async (groupId: string) => {
+    await editTodo(
       _id,
       todoName,
       isChecked,
@@ -70,24 +68,6 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
       groupId
     );
   };
-
-  // todo consider no groups case
-  const groupsMenu = useMemo(() => {
-    // todo change to li?
-    // "Menu is rendered as a ul ... its children should be Menu.* or encapsulated HOCs"
-    const MenuHeader = () => <GroupMenuHeader>Выбор группы</GroupMenuHeader>;
-
-    return (
-      <GroupMenu>
-        <MenuHeader />
-        {groups.map(({ _id, name }) => (
-          <GroupMenuItem key={_id} onClick={() => addToGroup(_id)}>
-            {name}
-          </GroupMenuItem>
-        ))}
-      </GroupMenu>
-    );
-  }, [groups]);
 
   return (
     <RightSideDrawer
@@ -129,7 +109,10 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
                 )}
 
                 <Col>
-                  <Dropdown overlay={groupsMenu} trigger={['click']}>
+                  <Dropdown
+                    overlay={GroupsDropdownMenu({ groups, addToGroup })}
+                    trigger={['click']}
+                  >
                     <IconButton
                       image={images.addToGroupBrown.default}
                       squareSide="35px"
