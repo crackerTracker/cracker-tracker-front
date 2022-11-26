@@ -1,18 +1,23 @@
 import * as React from 'react';
 import { Moment } from 'moment';
 import { observer } from 'mobx-react-lite';
-import SimpleDatesSelector from './components/SimpleDatesSelector';
-import DatePicker from './components/DatePicker';
 import { NoShrink, NoShrinkRow } from './Control.styles';
 import { RangeValue } from 'rc-picker/lib/interface';
-import RangePicker from './components/RangePicker';
 import { BAR_CHART_MAX_CHOOSING_DAYS } from 'pages/Tracker/ChartsDrawer/config';
 import { useChartsDrawerStore } from 'pages/Tracker/ChartsDrawer/store';
 import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
 import { CHART_DRAWER_CALENDAR_ICON_SIZE } from './uiConfig';
-import { DatesTitle } from './components/ui';
-import { DatesSelectionType, DatesSelectionTypesEnum } from '../../../../types';
+import {
+  DatesTitle,
+  RangePicker,
+  DatePicker,
+  SimpleDatesSelector,
+} from './components';
+import {
+  DatesSelectionType,
+  DatesSelectionTypesEnum,
+} from 'pages/Tracker/ChartsDrawer/types';
 
 const Control: React.FC = () => {
   const {

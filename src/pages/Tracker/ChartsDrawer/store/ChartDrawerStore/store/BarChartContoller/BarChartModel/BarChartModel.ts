@@ -4,16 +4,18 @@ import {
   BarChartRawDataType,
   DatesSelectionType,
   DatesSelectionTypesEnum,
-  formBarChartDataConfig,
   normalizeBarChartApiData,
-  normalizeStatsCategory,
   PercentStringStatsCategoryType,
-} from '../../../../../types';
-import { BAR_CHART_OPTIONS, TrackerChartsEnum } from '../../../../../config';
+  DatesStringSelectionType,
+} from 'pages/Tracker/ChartsDrawer/types';
+import {
+  BAR_CHART_OPTIONS,
+  TrackerChartsEnum,
+} from 'pages/Tracker/ChartsDrawer/config';
+import { formBarChartDataConfig } from 'pages/Tracker/ChartsDrawer/utils';
+import { mockApiBarChartData } from 'pages/Tracker/ChartsDrawer/mock';
 import { action, makeObservable, runInAction, toJS } from 'mobx';
-import { DatesStringSelectionType } from '../../types';
 import mockRequest from 'utils/mockRequest';
-import { mockApiBarChartData, mockApiPieChartData } from '../../../../../mock';
 import formZeroISOStringFromTimestamp from 'utils/formZeroISOStringFromTimestamp';
 import AbstractChartModel from '../../abstract/AbstractChartModel';
 
@@ -41,12 +43,6 @@ class BarChartModel extends AbstractChartModel<
     if (!this._rawData) {
       return null;
     }
-
-    console.log(
-      'go form config',
-      toJS(this._rawData),
-      formBarChartDataConfig(this._rawData)
-    );
 
     return formBarChartDataConfig(this._rawData);
   }
@@ -77,8 +73,6 @@ class BarChartModel extends AbstractChartModel<
     if (this._meta.isLoading) {
       return null;
     }
-
-    console.log('go loading');
 
     this._meta.setLoading();
 

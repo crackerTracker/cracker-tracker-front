@@ -5,11 +5,9 @@ import RightSideDrawer, {
 import { CategoriesBlock, ChartBlock } from './ChartsDrawer.styles';
 import { Row } from 'antd';
 import { images } from 'img/icons';
-import ToggleIconButton from './components/ToggleIconButton';
+import { ToggleIconButton, ChartPanel, CategoriesList } from './components';
 import { observer } from 'mobx-react-lite';
 import { TrackerChartsEnum } from './config';
-import ChartPanel from './components/ChartPanel';
-import CategoriesList from './components/List';
 import { useChartsDrawerStore, withChartsDrawerStoreProvider } from './store';
 
 type Props = Pick<RightSideDrawerProps, 'visible' | 'onDrawerClose'>;
@@ -30,8 +28,8 @@ const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
   }, []);
 
   const onClickChangeChartType = React.useCallback(
-    (chartType: TrackerChartsEnum) => () => {
-      onChangeChartType(chartType);
+    (chartType: TrackerChartsEnum) => async () => {
+      await onChangeChartType(chartType);
     },
     []
   );

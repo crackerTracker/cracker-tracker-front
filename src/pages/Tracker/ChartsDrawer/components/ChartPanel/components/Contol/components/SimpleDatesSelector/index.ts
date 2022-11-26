@@ -1,1 +1,1 @@
-export { default } from './SimpleDatesSelector';
+export { default as SimpleDatesSelector } from './SimpleDatesSelector';

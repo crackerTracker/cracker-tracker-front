@@ -1,5 +1,8 @@
 import styled from 'styled-components';
-import { LightCenteredText, Disabling } from '../../../ui';
+import {
+  LightCenteredText,
+  Disabling,
+} from 'pages/Tracker/ChartsDrawer/components/ui';
 import { animate, centerPos, square } from 'styles/mixins';
 
 export const Wrapper = styled.div`

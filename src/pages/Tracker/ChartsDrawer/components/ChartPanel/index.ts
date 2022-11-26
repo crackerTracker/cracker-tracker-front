@@ -1,1 +1,1 @@
-export { default } from './ChartPanel';
+export { default as ChartPanel } from './ChartPanel';

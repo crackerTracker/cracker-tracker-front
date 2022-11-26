@@ -6,11 +6,13 @@ import {
   SimpleDatesEnum,
   simpleDatesOrder,
   simpleDatesTexts,
-} from '../../../../config';
-import { DatesSelectionTypesEnum } from '../../../../types';
+} from 'pages/Tracker/ChartsDrawer/config';
+import {
+  DatesSelectionTypesEnum,
+  PieChartSelectionType,
+} from 'pages/Tracker/ChartsDrawer/types';
 import { CAPITAL_L_MOMENT_FORMAT } from 'config/ui';
 import formatDatesRange from 'utils/formatDatesRange';
-import { PieChartSelectionType } from './types';
 import PieChartModel from './PieChartModel';
 import { AbstractChartController } from '../abstract';
 import { Menu } from 'antd';

@@ -1,15 +1,17 @@
 import {
   getInitialBarChartSelection,
   LAST_7_DAYS_TEXT,
-} from '../../../../config';
+} from 'pages/Tracker/ChartsDrawer/config';
 import { computed, makeObservable } from 'mobx';
-import { DatesSelectionTypesEnum } from '../../../../types';
+import {
+  DatesSelectionTypesEnum,
+  BarChartSelectionType,
+} from 'pages/Tracker/ChartsDrawer/types';
 import formatDatesRange from 'utils/formatDatesRange';
 import BarChartModel from './BarChartModel';
-import { BarChartSelectionType } from './types';
 import { AbstractChartController } from '../abstract';
-import getLastDaysRange from '../../../../../../../utils/getLastDaysRange';
-import { DAYS_IN_WEEK } from '../../../../../../../config/time';
+import getLastDaysRange from 'utils/getLastDaysRange';
+import { DAYS_IN_WEEK } from 'config/time';
 
 /**
  * Контроллер столбчатого графика. Слой между управляющими элементами

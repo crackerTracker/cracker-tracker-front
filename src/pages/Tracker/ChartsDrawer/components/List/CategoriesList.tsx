@@ -2,10 +2,10 @@ import * as React from 'react';
 import { List } from 'antd';
 
 import { AntList, Color, ScrollContainer } from './CategoriesList.styles';
-import { useChartsDrawerStore } from '../../store';
+import { useChartsDrawerStore } from 'pages/Tracker/ChartsDrawer/store';
+import { NO_DATA_TEXT } from 'pages/Tracker/ChartsDrawer/config';
 import { observer } from 'mobx-react-lite';
 import { LightCenteredText, Loader } from '../ui';
-import { NO_DATA_TEXT } from '../../config';
 
 const CategoriesList: React.FC = () => {
   const {

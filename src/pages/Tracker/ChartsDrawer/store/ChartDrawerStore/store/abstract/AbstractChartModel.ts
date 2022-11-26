@@ -2,7 +2,8 @@ import MetaModel from 'stores/models/MetaModel';
 import {
   DatesSelectionType,
   PercentStringStatsCategoryType,
-} from '../../../../types';
+  DatesStringSelectionType,
+} from 'pages/Tracker/ChartsDrawer/types';
 import {
   action,
   computed,
@@ -10,8 +11,6 @@ import {
   observable,
   runInAction,
 } from 'mobx';
-import { DatesStringSelectionType } from '../types';
-import { TrackerChartsEnum } from '../../../../config';
 import { ChartData, ChartOptions, ChartType } from 'chart.js';
 
 type ProtectedFields =
@@ -64,6 +63,7 @@ abstract class AbstractChartModel<
       meta: computed,
       initialized: computed,
       initializing: computed,
+      chartOptions: computed,
 
       onSelectDates: action.bound,
     });

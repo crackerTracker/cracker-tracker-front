@@ -1,7 +1,6 @@
 import AbstractChartModel from './AbstractChartModel';
-import { ChartDatesBaseSelectionType } from '../../../../types';
-import { action, computed, makeObservable, observable, toJS } from 'mobx';
-import { ChartType } from 'chart.js';
+import { ChartDatesBaseSelectionType } from 'pages/Tracker/ChartsDrawer/types';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 type PrivateFields = '_chartModel' | '_selectedDate';
 
@@ -25,6 +24,7 @@ abstract class AbstractChartController<
       _selectedDate: observable,
 
       chartModel: computed,
+      isModelLoading: computed,
 
       selectDate: action.bound,
       initModel: action.bound,

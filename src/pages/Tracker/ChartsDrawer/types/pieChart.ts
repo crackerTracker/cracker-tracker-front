@@ -1,5 +1,24 @@
-import { ChartDatesBaseSelectionType } from '../../../../types';
-import { SimpleDatesEnum } from '../../../../config';
+import { ChartData, ChartOptions } from 'chart.js';
+import { SimpleDatesEnum, TrackerChartsEnum } from '../config';
+import { ChartDatesBaseSelectionType } from './common';
+
+/* Типы конфигов: */
+
+/**
+ * Алиас для типа конфига с данными для кругового графика
+ */
+export type PieChartDataType = ChartData<
+  TrackerChartsEnum.pie,
+  number[],
+  string
+>;
+
+/**
+ * Алиас для типа опций кругового графика
+ */
+export type PieChartOptionsType = ChartOptions<TrackerChartsEnum.pie>;
+
+/* Типы данных: */
 
 /**
  * Даты для кругового графика можно выбрать тремя способами:

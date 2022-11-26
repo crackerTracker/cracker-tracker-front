@@ -1,6 +1,5 @@
 import * as React from 'react';
-import Chart from './components/Chart';
-import Control from './components/Contol';
+import { Chart, Control } from './components';
 
 const ChartPanel: React.FC = () => {
   return (

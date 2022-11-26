@@ -1,25 +1,35 @@
+import { action, computed, makeObservable, runInAction } from 'mobx';
 import {
   DatesSelectionType,
   DatesSelectionTypesEnum,
-  formPercentStatsCategories,
-  formPieChartDataConfig,
   normalizeStatsCategory,
   OthersCategoriesItemType,
-  OthersExtendedPercentStatsCategoriesType,
   PercentStringStatsCategoryType,
   PieChartDataType,
   PieChartOptionsType,
   StatsCategoryType,
-} from '../../../../../types';
-import { action, computed, makeObservable, runInAction } from 'mobx';
+  DatesStringSelectionType,
+} from 'pages/Tracker/ChartsDrawer/types';
+import {
+  formPercentStatsCategories,
+  formPieChartDataConfig,
+  OthersExtendedPercentStatsCategoriesType,
+} from 'pages/Tracker/ChartsDrawer/utils';
+import { mockApiPieChartData } from 'pages/Tracker/ChartsDrawer/mock';
+import {
+  PIE_CHART_OPTIONS,
+  TrackerChartsEnum,
+} from 'pages/Tracker/ChartsDrawer/config';
 import mockRequest from 'utils/mockRequest';
-import { mockApiPieChartData } from '../../../../../mock';
-import { PIE_CHART_OPTIONS, TrackerChartsEnum } from '../../../../../config';
-import { DatesStringSelectionType } from '../../types';
 import formZeroISOStringFromTimestamp from 'utils/formZeroISOStringFromTimestamp';
 import AbstractChartModel from '../../abstract/AbstractChartModel';
 
-type PrivateFields = '_sumSpentMinutes' | '_load' | '_onSetDates';
+type PrivateFields =
+  | '_sumSpentMinutes'
+  | '_load'
+  | '_onSetDates'
+  | '_formattedCategoriesWithOthers'
+  | 'othersCategories';
 
 /**
  * Модель данных кругового графика. Загружает данные
@@ -36,7 +46,9 @@ class PieChartModel extends AbstractChartModel<
     makeObservable<this, PrivateFields>(this, {
       chartDataConfig: computed,
       _sumSpentMinutes: computed,
+      _formattedCategoriesWithOthers: computed,
       formattedCategoriesList: computed,
+      othersCategories: computed,
 
       _load: action.bound, // просто для сохранения контекста
       init: action.bound,
@@ -69,6 +81,9 @@ class PieChartModel extends AbstractChartModel<
     );
   }
 
+  /**
+   * Отформатированные для отображения в списке категории вместе с блоком "другое"
+   */
   private get _formattedCategoriesWithOthers(): OthersExtendedPercentStatsCategoriesType | null {
     if (!this._rawData) {
       return null;
@@ -88,6 +103,9 @@ class PieChartModel extends AbstractChartModel<
     return this._formattedCategoriesWithOthers.categories;
   }
 
+  /**
+   * Блок "другое"
+   */
   get othersCategories(): OthersCategoriesItemType | null {
     if (!this._formattedCategoriesWithOthers) {
       return null;

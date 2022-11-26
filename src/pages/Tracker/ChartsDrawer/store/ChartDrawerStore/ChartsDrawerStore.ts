@@ -1,7 +1,6 @@
-import { TrackerChartsEnum } from '../../config';
+import { TrackerChartsEnum } from 'pages/Tracker/ChartsDrawer/config';
 import { action, computed, makeObservable, observable } from 'mobx';
-import { PieChartController } from './store/PieChartController';
-import { BarChartController } from './store/BarChartContoller';
+import { PieChartController, BarChartController } from './store';
 
 export type PrivateFields = '_chartType' | '_setChartType';
 
@@ -16,8 +15,6 @@ class ChartsDrawerStore {
 
   private readonly _barChartController: BarChartController =
     new BarChartController();
-
-  // private _barChartStore: BarChartStore;
 
   constructor() {
     makeObservable<this, PrivateFields>(this, {
@@ -73,7 +70,6 @@ class ChartsDrawerStore {
     );
   }
 
-  // todo возможно, не понадобится
   private _setChartType = (value: TrackerChartsEnum): void => {
     this._chartType = value;
   };
