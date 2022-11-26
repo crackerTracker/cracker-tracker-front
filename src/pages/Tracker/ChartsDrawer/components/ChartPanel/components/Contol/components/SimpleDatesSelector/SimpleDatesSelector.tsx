@@ -15,9 +15,15 @@ type Props = {
   // Выбранная дата: либо SimpleDatesEnum,
   // либо строка, образованная от выбранной пикером даты
   selected: SimpleDatesEnum | string;
+
+  disabled?: boolean;
 };
 
-const SimpleDatesSelector: React.FC<Props> = ({ optionsGetter, selected }) => {
+const SimpleDatesSelector: React.FC<Props> = ({
+  optionsGetter,
+  selected,
+  disabled = false,
+}) => {
   const [visible, setVisible] = React.useState(false);
 
   const closeDropdown = React.useCallback(() => setVisible(false), []);
@@ -38,6 +44,7 @@ const SimpleDatesSelector: React.FC<Props> = ({ optionsGetter, selected }) => {
       trigger={['click']}
       visible={visible}
       onVisibleChange={setVisible}
+      disabled={disabled}
     >
       <AntRow align="middle">
         <Space>

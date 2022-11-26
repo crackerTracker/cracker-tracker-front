@@ -69,6 +69,7 @@ class BarChartModel extends AbstractChartModel<
    * дат строки с нулями на месте часов, минут, секунд и миллисекунд.
    * (Столбчатый график грузит только по диапазону)
    */
+  // todo при прикрутке бэка сделать
   protected async _load({
     selectionType,
     value,
@@ -85,12 +86,15 @@ class BarChartModel extends AbstractChartModel<
 
     // todo проверка
 
+    this._meta.setNotLoading();
+
     return normalizeBarChartApiData(mockApiBarChartData);
   }
 
   /**
    * Инициализирует модель данных выбранными данными
    */
+  // todo при прикрутке бэка сделать
   async init(payload: DatesSelectionType): Promise<void> {
     if (this._meta.isLoading || this._initialized || this._initializing) {
       return;
@@ -100,21 +104,15 @@ class BarChartModel extends AbstractChartModel<
 
     await mockRequest();
 
-    const loaded = normalizeBarChartApiData(mockApiBarChartData);
-    // const loaded = await this._onSetDates(payload);
+    const loaded = await this._onSetDates(payload);
 
     // todo проверка на loaded
 
-    if (loaded) {
-      runInAction(() => {
-        this._rawData = loaded;
-        this._initializing = false;
-        this._initialized = true;
-      });
-      return;
-    }
-
-    this._meta.setError();
+    runInAction(() => {
+      this._rawData = loaded ?? null;
+      this._initializing = false;
+      this._initialized = true;
+    });
   }
 
   /**

@@ -76,6 +76,9 @@ export const simpleDatesOrder: SimpleDatesEnum[] = [
   SimpleDatesEnum.last30,
 ];
 
+export const NO_DATA_TEXT = 'Не удалось получить данные о категориях';
+export const NO_DATA_TEXT_EXTRA = 'Попробуйте выбрать другие даты статистики';
+
 export const LAST_7_DAYS_TEXT = 'За последние 7 дней';
 
 /**

@@ -14,10 +14,10 @@ import { CHART_DRAWER_CALENDAR_ICON_SIZE } from './uiConfig';
 import { DatesTitle } from './components/ui';
 import { DatesSelectionType, DatesSelectionTypesEnum } from '../../../../types';
 
-// todo выбор "за последние 7 дней"
 const Control: React.FC = () => {
   const {
     isPieChart,
+    toShowLoader,
     pieChartController: {
       selectDate: selectPieChartDate,
       selectedDateTitle: pieChartSelectedDateTitle,
@@ -87,6 +87,7 @@ const Control: React.FC = () => {
         <SimpleDatesSelector
           optionsGetter={simpleDatesOptionsGetter}
           selected={pieChartSelectedDateTitle}
+          disabled={toShowLoader}
         />
       ) : (
         <DatesTitle>{barChartSelectedDateTitle}</DatesTitle>
@@ -95,20 +96,22 @@ const Control: React.FC = () => {
       <NoShrink>
         {isPieChart ? (
           <>
-            <DatePicker onPick={onPickDate} />
-            <RangePicker onPick={onPickRange} />
+            <DatePicker onPick={onPickDate} disabled={toShowLoader} />
+            <RangePicker onPick={onPickRange} disabled={toShowLoader} />
           </>
         ) : (
           <>
             <RangePicker
               onPick={onPickRange}
               maxDaysToSelect={BAR_CHART_MAX_CHOOSING_DAYS}
+              disabled={toShowLoader}
             />
             <IconButton
               image={images.calendarWithClockBrown.default}
               squareSide={CHART_DRAWER_CALENDAR_ICON_SIZE}
               paddings="0"
               onClick={barChartSelectLast7Days}
+              isDisabled={toShowLoader}
             />
           </>
         )}

@@ -9,10 +9,11 @@ import locale from 'antd/es/date-picker/locale/ru_RU';
 import { CHART_DRAWER_CALENDAR_ICON_SIZE } from '../../uiConfig';
 
 type Props = {
+  disabled?: boolean;
   onPick?: (moment: null | Moment) => void;
 };
 
-const DatePicker: React.FC<Props> = ({ onPick }) => {
+const DatePicker: React.FC<Props> = ({ onPick, disabled = false }) => {
   const [opened, setOpened] = React.useState(false);
 
   const toggleOpened = React.useCallback(() => {
@@ -32,6 +33,7 @@ const DatePicker: React.FC<Props> = ({ onPick }) => {
         onClick={toggleOpened}
         squareSide={CHART_DRAWER_CALENDAR_ICON_SIZE}
         paddings="0"
+        isDisabled={disabled}
       />
     </Relative>
   );

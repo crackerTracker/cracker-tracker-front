@@ -11,11 +11,16 @@ import { images } from 'img/icons';
 import { CHART_DRAWER_CALENDAR_ICON_SIZE } from '../../uiConfig';
 
 type Props = {
+  disabled?: boolean;
   onPick?: (value: RangeValue<Moment>) => void;
   maxDaysToSelect?: number | null;
 };
 
-const RangePicker: React.FC<Props> = ({ onPick, maxDaysToSelect = null }) => {
+const RangePicker: React.FC<Props> = ({
+  onPick,
+  maxDaysToSelect = null,
+  disabled = false,
+}) => {
   const {
     value,
     disableButtonTimer,
@@ -60,7 +65,7 @@ const RangePicker: React.FC<Props> = ({ onPick, maxDaysToSelect = null }) => {
       <IconButton
         image={images.datesCalendarBrown.default}
         onClick={onClickButton}
-        isDisabled={!!disableButtonTimer}
+        isDisabled={!!disableButtonTimer || disabled}
         squareSide={CHART_DRAWER_CALENDAR_ICON_SIZE}
         paddings="0"
       />

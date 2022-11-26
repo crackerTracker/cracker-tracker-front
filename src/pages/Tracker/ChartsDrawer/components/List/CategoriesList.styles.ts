@@ -1,8 +1,19 @@
 import styled from 'styled-components';
 
-import { square } from 'styles/mixins';
+import { scroller, square } from 'styles/mixins';
 import colors from 'styles/colors';
 import { List } from 'antd';
+import { Disabling } from '../ui';
+
+export const ScrollContainer = styled(Disabling)`
+  ${scroller};
+  ${square('100%')};
+  padding: 12px 24px;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
 
 export const Color = styled.div<{ color: string }>`
   ${square('35px')};

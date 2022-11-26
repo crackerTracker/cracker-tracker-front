@@ -35,6 +35,10 @@ abstract class AbstractChartController<
     return this._chartModel;
   }
 
+  get isModelLoading(): boolean {
+    return this._chartModel.initializing || this._chartModel.meta.isLoading;
+  }
+
   /**
    * Выбранная дата в виде текста
    */

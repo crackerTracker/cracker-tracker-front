@@ -2,11 +2,7 @@ import * as React from 'react';
 import RightSideDrawer, {
   RightSideDrawerProps,
 } from 'components/RightSideDrawer';
-import {
-  CategoriesBlock,
-  ChartBlock,
-  ScrollContainer,
-} from './ChartsDrawer.styles';
+import { CategoriesBlock, ChartBlock } from './ChartsDrawer.styles';
 import { Row } from 'antd';
 import { images } from 'img/icons';
 import ToggleIconButton from './components/ToggleIconButton';
@@ -64,9 +60,7 @@ const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
         <ChartPanel />
       </ChartBlock>
       <CategoriesBlock>
-        <ScrollContainer>
-          <CategoriesList />
-        </ScrollContainer>
+        <CategoriesList />
       </CategoriesBlock>
     </RightSideDrawer>
   );

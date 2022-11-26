@@ -1,13 +1,17 @@
 import * as React from 'react';
 import { List } from 'antd';
 
-import { AntList, Color } from './CategoriesList.styles';
+import { AntList, Color, ScrollContainer } from './CategoriesList.styles';
 import { useChartsDrawerStore } from '../../store';
 import { observer } from 'mobx-react-lite';
+import { LightCenteredText, Loader } from '../ui';
+import { NO_DATA_TEXT } from '../../config';
 
 const CategoriesList: React.FC = () => {
   const {
     isPieChart,
+    toShowLoader,
+    toShowNoData,
     pieChartController: {
       chartModel: {
         formattedCategoriesList: pieChartFormattedCategoriesList,
@@ -46,32 +50,47 @@ const CategoriesList: React.FC = () => {
     isPieChart && listToRender && pieChartOthersCategories;
 
   return (
-    <AntList
-      dataSource={listToRender}
-      renderItem={({ id, name, color, percentString }, index) => (
-        <>
-          <List.Item key={id} actions={[<>{percentString ?? ''}</>]}>
+    <>
+      <ScrollContainer turnOnDisabling={toShowLoader}>
+        <AntList
+          dataSource={listToRender}
+          locale={{
+            emptyText: toShowNoData ? (
+              <LightCenteredText>{NO_DATA_TEXT}</LightCenteredText>
+            ) : (
+              ' '
+            ),
+          }}
+          renderItem={({ id, name, color, percentString }, index) => (
             <>
-              <List.Item.Meta title={name} avatar={<Color color={color} />} />
-              {/* Ant-список не предоставляет рефа, чтобы проскроллить
+              <List.Item key={id} actions={[<>{percentString ?? ''}</>]}>
+                <>
+                  <List.Item.Meta
+                    title={name}
+                    avatar={<Color color={color} />}
+                  />
+                  {/* Ant-список не предоставляет рефа, чтобы проскроллить
                 к началу списка, поэтому использую кастыль */}
-              {index === 0 && <div ref={firstItemRef} />}
+                  {index === 0 && <div ref={firstItemRef} />}
+                </>
+              </List.Item>
+              {/*  */}
+              {toRenderOthersCategories && index === listToRender.length - 1 && (
+                <List.Item
+                  actions={[<>{pieChartOthersCategories.percentString}</>]}
+                >
+                  <List.Item.Meta
+                    title={pieChartOthersCategories.name}
+                    avatar={<Color color={pieChartOthersCategories.color} />}
+                  />
+                </List.Item>
+              )}
             </>
-          </List.Item>
-          {/*  */}
-          {toRenderOthersCategories && index === listToRender.length - 1 && (
-            <List.Item
-              actions={[<>{pieChartOthersCategories.percentString}</>]}
-            >
-              <List.Item.Meta
-                title={pieChartOthersCategories.name}
-                avatar={<Color color={pieChartOthersCategories.color} />}
-              />
-            </List.Item>
           )}
-        </>
-      )}
-    />
+        />
+      </ScrollContainer>
+      <Loader visible={toShowLoader} />
+    </>
   );
 };
 

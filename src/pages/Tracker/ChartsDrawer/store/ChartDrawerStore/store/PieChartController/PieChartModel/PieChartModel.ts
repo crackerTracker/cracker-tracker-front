@@ -100,6 +100,7 @@ class PieChartModel extends AbstractChartModel<
    * Загружает и нормализует данные. Принимает в качестве значения выбранных
    * дат строки с нулями на месте часов, минут, секунд и миллисекунд
    */
+  // todo при прикрутке бэка сделать
   protected async _load({
     selectionType,
     value,
@@ -114,12 +115,15 @@ class PieChartModel extends AbstractChartModel<
 
     // todo проверка
 
+    this._meta.setNotLoading();
+
     return mockApiPieChartData.map(normalizeStatsCategory);
   }
 
   /**
    * Инициализирует модель данных выбранными данными
    */
+  // todo при прикрутке бэка сделать
   async init(payload: DatesSelectionType): Promise<void> {
     if (this._meta.isLoading || this._initialized || this._initializing) {
       return;
@@ -127,24 +131,17 @@ class PieChartModel extends AbstractChartModel<
 
     this._initializing = true;
 
-    await this._onSetDates(payload);
-
     await mockRequest();
 
-    const loaded = mockApiPieChartData.map(normalizeStatsCategory);
+    const loaded = await this._onSetDates(payload);
 
     // todo проверка на loaded
 
-    if (loaded) {
-      runInAction(() => {
-        this._rawData = loaded;
-        this._initializing = false;
-        this._initialized = true;
-      });
-      return;
-    }
-
-    this._meta.setError();
+    runInAction(() => {
+      this._rawData = loaded ?? null;
+      this._initializing = false;
+      this._initialized = true;
+    });
   }
 
   /**

@@ -38,7 +38,8 @@ abstract class AbstractChartModel<
   protected readonly _meta: MetaModel = new MetaModel();
 
   /**
-   * Проинициализирована ли модель
+   * Проинициализирована ли модель (модель считается проинициализированой
+   * даже если при первой загрузке произошла ошибка или данные не загрузились)
    */
   protected _initialized = false;
 

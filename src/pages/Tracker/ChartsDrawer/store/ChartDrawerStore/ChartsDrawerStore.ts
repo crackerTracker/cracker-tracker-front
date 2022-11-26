@@ -25,6 +25,8 @@ class ChartsDrawerStore {
 
       chartType: computed,
       isPieChart: computed,
+      toShowLoader: computed,
+      toShowNoData: computed,
 
       _setChartType: action,
       onChangeChartType: action,
@@ -45,6 +47,30 @@ class ChartsDrawerStore {
 
   get barChartController(): BarChartController {
     return this._barChartController;
+  }
+
+  get toShowLoader(): boolean {
+    return this.isPieChart
+      ? this._pieChartController.isModelLoading
+      : this._barChartController.isModelLoading;
+  }
+
+  /**
+   * Показывать ли уведомление об остутствии данных.
+   * Показываем уведомление, если
+   * * В это же время не нужно показывать лоадер и данные не грузятся и
+   * * Модель проинициализирована и данных действительно нет
+   * (наличие данных проверяется по списку категорий)
+   */
+  get toShowNoData(): boolean {
+    return (
+      !this.toShowLoader &&
+      (this.isPieChart
+        ? this._pieChartController.chartModel.initialized &&
+          !this._pieChartController.chartModel.formattedCategoriesList
+        : this._barChartController.chartModel.initialized &&
+          !this._barChartController.chartModel.formattedCategoriesList)
+    );
   }
 
   // todo возможно, не понадобится
