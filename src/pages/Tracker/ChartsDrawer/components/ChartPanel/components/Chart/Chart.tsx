@@ -32,6 +32,7 @@ const Chart: React.FC = () => {
     isPieChart,
     toShowLoader,
     toShowNoData,
+    cleanData,
     pieChartController: {
       chartModel: {
         chartOptions: pieChartOptions,
@@ -47,7 +48,8 @@ const Chart: React.FC = () => {
   } = useChartsDrawerStore();
 
   return (
-    <Wrapper>
+    // todo убрать клик после тестов
+    <Wrapper onClick={cleanData}>
       <DisablingContainer turnOnDisabling={toShowLoader}>
         {isPieChart
           ? pieChartDataConfig && (

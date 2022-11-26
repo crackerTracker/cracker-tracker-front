@@ -66,6 +66,9 @@ abstract class AbstractChartModel<
       chartOptions: computed,
 
       onSelectDates: action.bound,
+
+      // todo убрать после тестов
+      cleanData: action.bound,
     });
 
     this._chartOptions = chartDataOptions;
@@ -139,6 +142,11 @@ abstract class AbstractChartModel<
       this._rawData = loaded;
       this._meta.setNotLoading();
     });
+  }
+
+  // todo убрать после тестов
+  cleanData(): void {
+    this._rawData = null;
   }
 }
 

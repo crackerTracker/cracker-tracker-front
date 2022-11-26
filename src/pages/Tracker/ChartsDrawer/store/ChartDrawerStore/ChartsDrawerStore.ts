@@ -95,6 +95,12 @@ class ChartsDrawerStore {
       await this._barChartController.initModel();
     }
   };
+
+  // todo убрать после тестов
+  cleanData = (): void => {
+    this._pieChartController.chartModel.cleanData();
+    this._barChartController.chartModel.cleanData();
+  };
 }
 
 export default ChartsDrawerStore;

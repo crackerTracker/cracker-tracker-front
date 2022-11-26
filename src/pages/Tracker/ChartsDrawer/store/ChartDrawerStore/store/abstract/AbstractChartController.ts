@@ -28,6 +28,9 @@ abstract class AbstractChartController<
 
       selectDate: action.bound,
       initModel: action.bound,
+
+      // todo убрать после тестов
+      cleanData: action.bound,
     });
   }
 
@@ -62,6 +65,11 @@ abstract class AbstractChartController<
     }
 
     await this._chartModel.init(this._selectedDate.selection);
+  }
+
+  // todo убрать после тестов
+  cleanData(): void {
+    this._chartModel.cleanData();
   }
 }
 
