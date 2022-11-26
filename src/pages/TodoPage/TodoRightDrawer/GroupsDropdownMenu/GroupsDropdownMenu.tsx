@@ -26,6 +26,8 @@ const GroupsDropdownMenu = ({ groups, addToGroup }: Props) => {
   }, []);
 
   const addGroupHandler = async () => {
+    if (!inputValue) return;
+
     await createGroup(inputValue);
     await addToGroup(getLastAddedGroup()._id);
     setInputValue('');
