@@ -43,11 +43,12 @@ export type TasksByMonthsApiResponseType = {
   months: TaskMonthApiType[];
 };
 
-export const normalizeBaseCategory = (
-  data: ApiBaseCategoryType
-): BaseCategoryType => ({
-  id: data._id,
-  ...data,
+export const normalizeBaseCategory = ({
+  _id,
+  ...rest
+}: ApiBaseCategoryType): BaseCategoryType => ({
+  id: _id,
+  ...rest,
 });
 
 export const normalizeCategory = ({
