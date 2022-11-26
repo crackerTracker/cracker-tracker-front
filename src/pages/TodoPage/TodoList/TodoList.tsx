@@ -1,6 +1,6 @@
 import React, { FC, memo } from 'react';
 import { TodoType } from 'stores/TodoStore/types';
-import TodoItem from '../TodoItem';
+import TodoItem from './TodoItem';
 import { Todos, StyledList } from './TodoList.styles';
 
 type Props = {
