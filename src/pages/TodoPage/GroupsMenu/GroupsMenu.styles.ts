@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Input } from 'antd';
+import { Link } from 'react-router-dom';
 import colors, { halfOpacityColors, shadowColors } from 'styles/colors';
 import { flex, animate } from 'styles/mixins';
 
@@ -24,11 +25,13 @@ export const ContentBlock = styled.div`
   background-color: ${halfOpacityColors.lightBrown};
 `;
 
-export const GroupItem = styled.div`
+export const GroupItem = styled(Link)`
+  display: block;
   margin-bottom: 10px;
   padding: 7px 14px;
 
   font-size: 16px;
+  color: ${colors.textBlack};
 
   border-radius: 4px;
   background-color: ${colors.lightBrown};
@@ -40,6 +43,7 @@ export const GroupItem = styled.div`
   ${animate('transform', 'box-shadow')};
 
   :hover {
+    color: ${colors.textBlack};
     box-shadow: 0px 6px 20px ${shadowColors.brown};
     transform: translate3d(0px, -2px, 0px);
   }

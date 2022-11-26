@@ -10,6 +10,7 @@ import {
   GroupItem,
   InputGroup,
 } from './GroupsMenu.styles';
+import { MainRoutesEnum } from 'config/routes';
 
 const GroupsMenu: FC = () => {
   const { groups, createGroup } = useTodoStore();
@@ -34,7 +35,7 @@ const GroupsMenu: FC = () => {
       <ContentBlock>
         {groups.map(({ name, _id }) => {
           return (
-            <GroupItem key={_id} onClick={() => {}}>
+            <GroupItem to={`/${MainRoutesEnum.todo}/group/${name}`} key={_id}>
               {name}
             </GroupItem>
           );

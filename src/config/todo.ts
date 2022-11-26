@@ -17,12 +17,19 @@ export enum TodoNavigateEnum {
   all = 'all',
   week = 'week',
   day = 'day',
+  group = 'group',
 }
 
-export const todosNavigateIcons: Record<TodoNavigateEnum, string> = {
-  [TodoNavigateEnum.all]: images.todoNavigateAll.default,
-  [TodoNavigateEnum.week]: images.todoNavigateWeek.default,
-  [TodoNavigateEnum.day]: images.todoNavigateDay.default,
+export enum TodoPageDisplayType {
+  all = TodoNavigateEnum.all,
+  week = TodoNavigateEnum.week,
+  day = TodoNavigateEnum.day,
+}
+
+export const todosNavigateIcons: Record<TodoPageDisplayType, string> = {
+  [TodoPageDisplayType.all]: images.todoNavigateAll.default,
+  [TodoPageDisplayType.week]: images.todoNavigateWeek.default,
+  [TodoPageDisplayType.day]: images.todoNavigateDay.default,
 };
 
 export const enum TodosToggleEnum {

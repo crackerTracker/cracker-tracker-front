@@ -9,6 +9,7 @@ import Tracker from './Tracker';
 import TodoPage from './TodoPage';
 import TodoWeek from './TodoPage/TodoWeek';
 import TodoAll from './TodoPage/TodoAll';
+import GroupPage from './TodoPage/GroupPage';
 
 type Props = {
   isAuthenticated: boolean;
@@ -26,6 +27,9 @@ const Router: React.FC<Props> = ({ isAuthenticated }) => {
             <Route path={MainRoutesEnum.todo} element={<TodoPage />}>
               <Route index element={<TodoAll />} />
               <Route path="week" element={<TodoWeek />} />
+              <Route path="group">
+                <Route path=":name" element={<GroupPage />} />
+              </Route>
             </Route>
             <Route path="*" element={<Navigate to="/todo" replace />} />
           </Routes>

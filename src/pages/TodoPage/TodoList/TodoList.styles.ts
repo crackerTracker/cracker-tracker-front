@@ -1,7 +1,7 @@
+import { List } from 'antd';
 import styled from 'styled-components';
 import { shadowColors } from 'styles/colors';
 import { flex, scroller } from 'styles/mixins';
-import { List } from 'antd';
 
 export const Todos = styled.div`
   margin-top: 45px;
