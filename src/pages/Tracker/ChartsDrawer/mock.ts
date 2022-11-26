@@ -1,10 +1,6 @@
 import { CategoryType } from 'stores/TrackerStore/types';
 
-import {
-  ApiStatsCategoryType,
-  BarChartApiDataType,
-  DaysMapApiStatsCategoryType,
-} from './types';
+import { ApiStatsCategoryType, BarChartApiDataType } from './types';
 
 export const mockApiPieChartData: ApiStatsCategoryType[] = [
   {
@@ -72,6 +68,14 @@ export const mockApiBarChartData: BarChartApiDataType = {
         _id: '3',
         name: 'Useful',
         color: 'yellow',
+      },
+      minutesPerDay: [80, 200, 50, 0, 120, 100, 200],
+    },
+    {
+      category: {
+        _id: '4',
+        name: 'Useful2',
+        color: 'orange',
       },
       minutesPerDay: [80, 200, 50, 0, 120, 100, 200],
     },

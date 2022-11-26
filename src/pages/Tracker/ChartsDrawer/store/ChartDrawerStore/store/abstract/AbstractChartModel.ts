@@ -1,7 +1,7 @@
 import MetaModel from 'stores/models/MetaModel';
 import {
   DatesSelectionType,
-  PercentStatsCategoryType,
+  PercentStringStatsCategoryType,
 } from '../../../../types';
 import {
   action,
@@ -94,7 +94,9 @@ abstract class AbstractChartModel<
   /**
    * Массив категорий для отображения
    */
-  abstract get formattedCategoriesList(): PercentStatsCategoryType[] | null;
+  abstract get formattedCategoriesList():
+    | PercentStringStatsCategoryType[]
+    | null;
 
   /**
    * Загружает и нормализует данные. Принимает в качестве значения выбранных

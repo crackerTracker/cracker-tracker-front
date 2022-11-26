@@ -7,7 +7,7 @@ import {
   formBarChartDataConfig,
   normalizeBarChartApiData,
   normalizeStatsCategory,
-  PercentStatsCategoryType,
+  PercentStringStatsCategoryType,
 } from '../../../../../types';
 import { BAR_CHART_OPTIONS, TrackerChartsEnum } from '../../../../../config';
 import { action, makeObservable, runInAction, toJS } from 'mobx';
@@ -54,13 +54,13 @@ class BarChartModel extends AbstractChartModel<
   /**
    * Массив категорий для отображения
    */
-  get formattedCategoriesList(): PercentStatsCategoryType[] | null {
+  get formattedCategoriesList(): PercentStringStatsCategoryType[] | null {
     if (!this._rawData) {
       return null;
     }
 
     return this._rawData.minutesPerCategory.map(
-      ({ category }): PercentStatsCategoryType => category
+      ({ category }): PercentStringStatsCategoryType => category
     );
   }
 

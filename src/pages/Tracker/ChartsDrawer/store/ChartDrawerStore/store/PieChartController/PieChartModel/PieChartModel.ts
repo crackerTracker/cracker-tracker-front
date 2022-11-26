@@ -4,7 +4,9 @@ import {
   formPercentStatsCategories,
   formPieChartDataConfig,
   normalizeStatsCategory,
-  PercentStatsCategoryType,
+  OthersCategoriesItemType,
+  OthersExtendedPercentStatsCategoriesType,
+  PercentStringStatsCategoryType,
   PieChartDataType,
   PieChartOptionsType,
   StatsCategoryType,
@@ -67,18 +69,31 @@ class PieChartModel extends AbstractChartModel<
     );
   }
 
-  /**
-   * Массив категорий для отображения
-   */
-  get formattedCategoriesList(): PercentStatsCategoryType[] | null {
+  private get _formattedCategoriesWithOthers(): OthersExtendedPercentStatsCategoriesType | null {
     if (!this._rawData) {
       return null;
     }
 
-    return formPercentStatsCategories(
-      this._rawData.slice().sort((a, b) => a.minutesSpent - b.minutesSpent),
-      this._sumSpentMinutes
-    );
+    return formPercentStatsCategories(this._rawData, this._sumSpentMinutes);
+  }
+
+  /**
+   * Массив категорий для отображения
+   */
+  get formattedCategoriesList(): PercentStringStatsCategoryType[] | null {
+    if (!this._formattedCategoriesWithOthers) {
+      return null;
+    }
+
+    return this._formattedCategoriesWithOthers.categories;
+  }
+
+  get othersCategories(): OthersCategoriesItemType | null {
+    if (!this._formattedCategoriesWithOthers) {
+      return null;
+    }
+
+    return this._formattedCategoriesWithOthers.others;
   }
 
   /**

@@ -3,15 +3,18 @@ import {
   BarChartDataType,
   BarChartOptionsType,
   DatesSelectionTypesEnum,
+  OthersCategoriesItemType,
   PieChartDataType,
   PieChartOptionsType,
 } from './types';
 import { getMinsAndHoursStringFromMins } from 'utils/getMinsAndHoursFromMins';
-import { PieChartSelectionType } from './store/ChartDrawerStore/store/PieChartController';
-import moment, { Moment } from 'moment';
-import { BarChartSelectionType } from './store/ChartDrawerStore/store/BarChartContoller';
-import { DAYS_IN_WEEK } from 'config/time';
-import getLastDaysRange from '../../../utils/getLastDaysRange';
+import {
+  PieChartSelectionType,
+  BarChartSelectionType,
+} from './store/ChartDrawerStore/store';
+import moment from 'moment';
+import getLastDaysRange from 'utils/getLastDaysRange';
+import colors from 'styles/colors';
 
 export enum TrackerChartsEnum {
   pie = 'pie',
@@ -81,6 +84,28 @@ export const LAST_7_DAYS_TEXT = 'За последние 7 дней';
 export const BAR_CHART_MAX_CHOOSING_DAYS = 7;
 
 /**
+ * Процент затраченного времени на категорию от суммарного времени
+ * на все категории за промежуток времени, ниже которого (включительно)
+ * категории будут включаться в блок "другое" в списке категорий
+ */
+export const CATEGORIES_LIST_PERCENT_TO_PACK = 10;
+
+/**
+ * Для случая, если все категории имеют процент от суммарного времени
+ * за все категории за промежуток времени меньше граничного процента -
+ * сколько задач показать вверху списка
+ */
+export const FIRST_CATEGORIES_TO_SHOW_AMOUNT = 5;
+
+export const getOthersCategoriesData = (
+  percentString: string
+): OthersCategoriesItemType => ({
+  name: 'Другое',
+  color: colors.gray,
+  percentString,
+});
+
+/**
  * Начальные значения для кругового графика
  */
 export const getInitialPieChartSelection = (): PieChartSelectionType => ({
@@ -108,6 +133,7 @@ export const getDefaultPieChartData = (): PieChartDataType => ({
     {
       data: [],
       backgroundColor: [],
+      borderWidth: 0,
     },
   ],
 });
