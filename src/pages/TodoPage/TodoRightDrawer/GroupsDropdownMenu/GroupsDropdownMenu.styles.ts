@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Input, Menu } from 'antd';
 import colors, { halfOpacityColors } from 'styles/colors';
-import { flex, text } from 'styles/mixins';
+import { flex, scroller, text } from 'styles/mixins';
 
 export const GroupMenu = styled(Menu)`
   padding-bottom: 8px;
@@ -24,9 +24,26 @@ export const GroupMenuHeader = styled.li`
   background-color: ${colors.peach};
 `;
 
+export const GroupsWrapper = styled.div`
+  margin: 5px 5px 5px 0;
+  max-height: 270px;
+  overflow-y: auto;
+  ${scroller};
+`;
+
 export const GroupMenuItem = styled(Menu.Item)`
   ${text};
   line-height: 1.5;
+`;
+
+export const NoGroupsMessage = styled.div`
+  padding: 10px 12px;
+
+  font-size: 19px;
+  color: ${halfOpacityColors.brown};
+  text-align: center;
+
+  user-select: none;
 `;
 
 export const GroupMenuFooter = styled(Input.Group)`
@@ -40,6 +57,8 @@ export const StyledInput = styled(Input)`
   border: none;
   background-color: ${halfOpacityColors.lightBrown};
   border-radius: 6px;
+
+  color: ${colors.textBlack};
 
   :focus {
     box-shadow: none;

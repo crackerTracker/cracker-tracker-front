@@ -8,6 +8,8 @@ import {
   GroupMenuFooter,
   GroupMenuHeader,
   GroupMenuItem,
+  GroupsWrapper,
+  NoGroupsMessage,
   StyledInput,
 } from './GroupsDropdownMenu.styles';
 
@@ -37,12 +39,17 @@ const GroupsDropdownMenu = ({ groups, addToGroup }: Props) => {
     <GroupMenu>
       <GroupMenuHeader>Выбор группы</GroupMenuHeader>
 
-      {/* todo consider no groups case */}
-      {groups.map(({ _id, name }) => (
-        <GroupMenuItem key={_id} onClick={() => addToGroup(_id)}>
-          {name}
-        </GroupMenuItem>
-      ))}
+      <GroupsWrapper>
+        {!!groups.length &&
+          groups.map(({ _id, name }) => (
+            <GroupMenuItem key={_id} onClick={() => addToGroup(_id)}>
+              {name}
+            </GroupMenuItem>
+          ))}
+        {!groups.length && (
+          <NoGroupsMessage>Не создано ни одной группы</NoGroupsMessage>
+        )}
+      </GroupsWrapper>
 
       <GroupMenuFooter size="small">
         <IconButton
