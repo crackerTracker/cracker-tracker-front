@@ -18,9 +18,15 @@ type Props = {
   groups: TodoGroupType[];
   addToGroup: (_id: string) => void;
   todoId: string;
+  setIsOpen: (isOpen: boolean) => void;
 };
 
-const GroupsDropdownMenu = ({ groups, addToGroup, todoId }: Props) => {
+const GroupsDropdownMenu = ({
+  groups,
+  addToGroup,
+  todoId,
+  setIsOpen,
+}: Props) => {
   const [inputValue, setInputValue] = useState('');
 
   const { createGroup, getLastAddedGroup, deleteFromGroup, findTodoById } =
@@ -38,6 +44,8 @@ const GroupsDropdownMenu = ({ groups, addToGroup, todoId }: Props) => {
     setInputValue('');
   };
 
+  const closeDropdownMenu = useCallback(() => setIsOpen(false), []);
+
   const todoGroupId = findTodoById(todoId)?.group?._id;
 
   const groupItems = useMemo(
@@ -46,7 +54,7 @@ const GroupsDropdownMenu = ({ groups, addToGroup, todoId }: Props) => {
         // if selected todo is in that group
         if (todoGroupId === _id) {
           return (
-            <GroupMenuItem key={_id} eventKey={_id}>
+            <GroupMenuItem key={_id} eventKey={_id} onClick={closeDropdownMenu}>
               <GroupWithIcon>
                 <span>{name}</span>
                 <IconButton

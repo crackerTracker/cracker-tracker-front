@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Col, ConfigProvider, Dropdown, Row } from 'antd';
 import locale from 'antd/lib/locale/ru_RU';
@@ -57,6 +57,8 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
     getGroups();
   }, []);
 
+  const [isGroupDropdownOpen, setIsGroupDropdownOpen] = useState(false);
+
   const addToGroup = async (groupId: string) => {
     await editTodo(
       _id,
@@ -68,6 +70,7 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
       undefined,
       groupId
     );
+    setIsGroupDropdownOpen(false);
   };
 
   return (
@@ -115,8 +118,11 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
                       groups,
                       addToGroup,
                       todoId: _id,
+                      setIsOpen: setIsGroupDropdownOpen,
                     })}
                     trigger={['click']}
+                    visible={isGroupDropdownOpen}
+                    onVisibleChange={setIsGroupDropdownOpen}
                   >
                     <IconButton
                       image={images.addToGroupBrown.default}
