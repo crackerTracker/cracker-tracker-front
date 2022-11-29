@@ -11,6 +11,8 @@ export type TodoType = {
   note: string;
   subTodos: SubtodoType[];
   group: TodoGroupType;
+  isImportant: boolean;
+  today: boolean;
 };
 
 export type SubtodoType = {

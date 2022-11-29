@@ -111,7 +111,11 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
 
                 <Col>
                   <Dropdown
-                    overlay={GroupsDropdownMenu({ groups, addToGroup })}
+                    overlay={GroupsDropdownMenu({
+                      groups,
+                      addToGroup,
+                      todoId: _id,
+                    })}
                     trigger={['click']}
                   >
                     <IconButton

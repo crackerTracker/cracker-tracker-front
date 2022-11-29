@@ -155,7 +155,7 @@ class TodoStore {
     subTodos?: { name: string; done?: boolean }[]
   ) => {
     try {
-      await request({
+      const data: TodoType = await request({
         url: endpoints.editTodo.url,
         method: endpoints.editTodo.method,
         headers: { Authorization: `Bearer ${this.token}` },
@@ -172,7 +172,9 @@ class TodoStore {
         },
       });
 
-      await this.requestTodos();
+      if (data) {
+        await this.requestTodos();
+      }
     } catch (e: any) {
       console.log('TodoStore.editTodo', e.message);
     }
@@ -221,6 +223,37 @@ class TodoStore {
       }
     } catch (e: any) {
       console.log('TodoStore.createGroup', e.message);
+    }
+  };
+
+  findTodoById = (todoId: string): TodoType => {
+    return this.todos.find(({ _id }) => _id === todoId) || ({} as TodoType);
+  };
+
+  deleteFromGroup = async (todoId: string) => {
+    try {
+      const {
+        _id: toEditId,
+        name,
+        done,
+        deadline,
+        note,
+        isImportant,
+        today,
+      }: TodoType = this.findTodoById(todoId);
+
+      await this.editTodo(
+        toEditId,
+        name,
+        done,
+        deadline,
+        note,
+        isImportant,
+        today,
+        null
+      );
+    } catch (e: any) {
+      console.log('TodoStore.deleteFromGroup', e.message);
     }
   };
 }

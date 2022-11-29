@@ -36,6 +36,11 @@ export const GroupMenuItem = styled(Menu.Item)`
   line-height: 1.5;
 `;
 
+export const GroupWithIcon = styled.div`
+  ${flex({ align: 'center', justify: 'space-between' })}
+  cursor: default;
+`;
+
 export const NoGroupsMessage = styled.div`
   padding: 10px 12px;
 
