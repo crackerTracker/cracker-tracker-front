@@ -16,7 +16,6 @@ import useTodo from '../useTodo';
 import formDateStringFromISO from 'utils/formDateStringFromISO';
 import { useTodoStore } from 'stores/hooks';
 import GroupsDropdownMenu from './GroupsDropdownMenu';
-import GroupsMenu from '../GroupsMenu';
 
 type TodoRightDrawerProps = {
   _id: string;
@@ -147,8 +146,6 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
       }
     >
       <DrawerTodoCard _id={_id} />
-
-      <GroupsMenu />
 
       <div>
         <StyledTextArea

@@ -12,6 +12,7 @@ import {
   GroupItemWrapper,
 } from './GroupsMenu.styles';
 import { MainRoutesEnum } from 'config/routes';
+import { observer } from 'mobx-react-lite';
 
 const GroupsMenu: FC = () => {
   const { groups, createGroup, deleteGroup } = useTodoStore();
@@ -76,4 +77,4 @@ const GroupsMenu: FC = () => {
   );
 };
 
-export default GroupsMenu;
+export default observer(GroupsMenu);
