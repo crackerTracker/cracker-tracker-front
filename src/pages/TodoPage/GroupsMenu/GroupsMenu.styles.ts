@@ -25,13 +25,11 @@ export const ContentBlock = styled.div`
   background-color: ${halfOpacityColors.lightBrown};
 `;
 
-export const GroupItem = styled(Link)`
-  display: block;
+export const GroupItemWrapper = styled(Link)`
   margin-bottom: 10px;
   padding: 7px 14px;
 
-  font-size: 16px;
-  color: ${colors.textBlack};
+  ${flex({ align: 'center', justify: 'space-between' })};
 
   border-radius: 4px;
   background-color: ${colors.lightBrown};
@@ -43,10 +41,14 @@ export const GroupItem = styled(Link)`
   ${animate('transform', 'box-shadow')};
 
   :hover {
-    color: ${colors.textBlack};
     box-shadow: 0px 6px 20px ${shadowColors.brown};
     transform: translate3d(0px, -2px, 0px);
   }
+`;
+
+export const GroupItem = styled.span`
+  font-size: 16px;
+  color: ${colors.textBlack};
 `;
 
 export const InputGroup = styled(Input.Group)`

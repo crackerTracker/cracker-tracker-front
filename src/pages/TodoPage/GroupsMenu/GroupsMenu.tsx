@@ -9,11 +9,12 @@ import {
   ContentBlock,
   GroupItem,
   InputGroup,
+  GroupItemWrapper,
 } from './GroupsMenu.styles';
 import { MainRoutesEnum } from 'config/routes';
 
 const GroupsMenu: FC = () => {
-  const { groups, createGroup } = useTodoStore();
+  const { groups, createGroup, deleteGroup } = useTodoStore();
 
   const [inputValue, setInputValue] = useState('');
 
@@ -28,6 +29,11 @@ const GroupsMenu: FC = () => {
     setInputValue('');
   };
 
+  const deleteGroupHandler = (groupId: string) => async (e: MouseEvent) => {
+    e.preventDefault();
+    await deleteGroup(groupId);
+  };
+
   return (
     <GroupsWrapper>
       <GroupsHeader>Группы</GroupsHeader>
@@ -35,9 +41,18 @@ const GroupsMenu: FC = () => {
       <ContentBlock>
         {groups.map(({ name, _id }) => {
           return (
-            <GroupItem to={`/${MainRoutesEnum.todo}/group/${name}`} key={_id}>
-              {name}
-            </GroupItem>
+            <GroupItemWrapper
+              to={`/${MainRoutesEnum.todo}/group/${name}`}
+              key={_id}
+            >
+              <GroupItem>{name}</GroupItem>
+              <IconButton
+                image={images.deletePeach.default}
+                squareSide="20px"
+                paddings="0"
+                onClick={deleteGroupHandler(_id)}
+              />
+            </GroupItemWrapper>
           );
         })}
 

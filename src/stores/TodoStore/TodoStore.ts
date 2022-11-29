@@ -256,6 +256,23 @@ class TodoStore {
       console.log('TodoStore.deleteFromGroup', e.message);
     }
   };
+
+  deleteGroup = async (toDeleteId: string) => {
+    try {
+      const data: TodoGroupType = await request({
+        ...endpoints.deleteGroup,
+        body: { toDeleteId },
+        headers: getAuthHeader(this.token),
+      });
+
+      if (data) {
+        await this.getGroups();
+        await this.requestTodos();
+      }
+    } catch (e: any) {
+      console.log('TodoStore.deleteGroup', e.message);
+    }
+  };
 }
 
 export default TodoStore;
