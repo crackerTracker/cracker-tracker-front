@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useCallback } from 'react';
+import React, { useState, FormEvent, useCallback, useMemo } from 'react';
 import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
 import { useTodoStore } from 'stores/hooks';
@@ -40,24 +40,38 @@ const GroupsDropdownMenu = ({ groups, addToGroup, todoId }: Props) => {
 
   const todoGroupId = findTodoById(todoId)?.group?._id;
 
-  const groupItems = groups.map(({ _id, name }) =>
-    todoGroupId === _id ? (
-      <GroupMenuItem key={_id}>
-        <GroupWithIcon>
-          <span>{name}</span>
-          <IconButton
-            image={images.closeBrown.default}
-            squareSide="15px"
-            paddings="0"
-            onClick={() => deleteFromGroup(todoId)}
-          />
-        </GroupWithIcon>
-      </GroupMenuItem>
-    ) : (
-      <GroupMenuItem key={_id} onClick={() => addToGroup(_id)}>
-        {name}
-      </GroupMenuItem>
-    )
+  const groupItems = useMemo(
+    () =>
+      groups.map(({ _id, name }) => {
+        // if selected todo is in that group
+        if (todoGroupId === _id) {
+          return (
+            <GroupMenuItem key={_id} eventKey={_id}>
+              <GroupWithIcon>
+                <span>{name}</span>
+                <IconButton
+                  image={images.closeBrown.default}
+                  squareSide="15px"
+                  paddings="0"
+                  onClick={() => deleteFromGroup(todoId)}
+                />
+              </GroupWithIcon>
+            </GroupMenuItem>
+          );
+        }
+
+        // for the rest groups
+        return (
+          <GroupMenuItem
+            key={_id}
+            eventKey={_id}
+            onClick={() => addToGroup(_id)}
+          >
+            {name}
+          </GroupMenuItem>
+        );
+      }),
+    [groups, todoGroupId]
   );
 
   return (
