@@ -53,10 +53,6 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
     editTodo(_id, todoName, isChecked, null);
   };
 
-  useEffect(() => {
-    getGroups();
-  }, []);
-
   const [isGroupDropdownOpen, setIsGroupDropdownOpen] = useState(false);
 
   const addToGroup = useCallback(async (groupId: string) => {
