@@ -87,9 +87,8 @@ class TodoStore {
 
     try {
       const data = await request({
-        url: endpoints.getTodos.url,
-        method: endpoints.getTodos.method,
-        headers: { Authorization: `Bearer ${this.token}` },
+        ...endpoints.getTodos,
+        headers: getAuthHeader(this.token),
       });
 
       runInAction(() => {
@@ -118,9 +117,8 @@ class TodoStore {
   ) => {
     try {
       await request({
-        url: endpoints.createTodo.url,
-        method: endpoints.createTodo.method,
-        headers: { Authorization: `Bearer ${this.token}` },
+        ...endpoints.createTodo,
+        headers: getAuthHeader(this.token),
         body: {
           name,
           done,
@@ -156,9 +154,8 @@ class TodoStore {
   ) => {
     try {
       const data: TodoType = await request({
-        url: endpoints.editTodo.url,
-        method: endpoints.editTodo.method,
-        headers: { Authorization: `Bearer ${this.token}` },
+        ...endpoints.editTodo,
+        headers: getAuthHeader(this.token),
         body: {
           toEditId,
           name,
@@ -183,9 +180,8 @@ class TodoStore {
   deleteTodo = async (toDeleteId: string) => {
     try {
       await request({
-        url: endpoints.deleteTodo.url,
-        method: endpoints.deleteTodo.method,
-        headers: { Authorization: `Bearer ${this.token}` },
+        ...endpoints.deleteTodo,
+        headers: getAuthHeader(this.token),
         body: { toDeleteId },
       });
 
@@ -214,8 +210,8 @@ class TodoStore {
     try {
       const data: TodoGroupType = await request({
         ...endpoints.createGroup,
-        body: { name },
         headers: getAuthHeader(this.token),
+        body: { name },
       });
 
       if (data) {
@@ -251,8 +247,8 @@ class TodoStore {
     try {
       const data: TodoGroupType = await request({
         ...endpoints.deleteGroup,
-        body: { toDeleteId },
         headers: getAuthHeader(this.token),
+        body: { toDeleteId },
       });
 
       if (data) {
