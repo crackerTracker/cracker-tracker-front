@@ -232,24 +232,14 @@ class TodoStore {
 
   deleteFromGroup = async (todoId: string) => {
     try {
-      const {
-        _id: toEditId,
-        name,
-        done,
-        deadline,
-        note,
-        isImportant,
-        today,
-      }: TodoType = this.findTodoById(todoId);
-
       await this.editTodo(
-        toEditId,
-        name,
-        done,
-        deadline,
-        note,
-        isImportant,
-        today,
+        todoId,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
         null
       );
     } catch (e: any) {

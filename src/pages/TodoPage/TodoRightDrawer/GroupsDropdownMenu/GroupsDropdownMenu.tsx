@@ -16,7 +16,7 @@ import {
 
 type Props = {
   groups: TodoGroupType[];
-  addToGroup: (_id: string) => void;
+  addToGroup: (_id: string) => Promise<void>;
   todoId: string;
   setIsOpen: (isOpen: boolean) => void;
 };

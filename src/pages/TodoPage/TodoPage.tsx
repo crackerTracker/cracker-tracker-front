@@ -21,7 +21,6 @@ import useTodo from './useTodo';
 import { useTodoStore } from 'stores/hooks';
 import {
   TodoNavigateEnum,
-  TodoPageDisplayType,
   todosNavigateIcons,
   todosToggleIcons,
   todosTogglesChangeMap,
@@ -116,7 +115,7 @@ const TodoPage: FC = () => {
                   <Link to="/todo">
                     <IconButton
                       backgroundColor={colors.brown}
-                      image={todosNavigateIcons[TodoPageDisplayType.all]}
+                      image={todosNavigateIcons[TodoNavigateEnum.all]}
                       onClick={navButtonChange(TodoNavigateEnum.all)}
                       isDisabled={nav === TodoNavigateEnum.all}
                     />
@@ -126,7 +125,7 @@ const TodoPage: FC = () => {
                   <Link to="week">
                     <IconButton
                       backgroundColor={colors.brown}
-                      image={todosNavigateIcons[TodoPageDisplayType.week]}
+                      image={todosNavigateIcons[TodoNavigateEnum.week]}
                       onClick={navButtonChange(TodoNavigateEnum.week)}
                       isDisabled={nav === TodoNavigateEnum.week}
                     />

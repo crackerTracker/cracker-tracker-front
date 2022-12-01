@@ -20,16 +20,15 @@ export enum TodoNavigateEnum {
   group = 'group',
 }
 
-export enum TodoPageDisplayType {
-  all = TodoNavigateEnum.all,
-  week = TodoNavigateEnum.week,
-  day = TodoNavigateEnum.day,
-}
+export type TodoPageDisplayType =
+  | TodoNavigateEnum.all
+  | TodoNavigateEnum.week
+  | TodoNavigateEnum.day;
 
 export const todosNavigateIcons: Record<TodoPageDisplayType, string> = {
-  [TodoPageDisplayType.all]: images.todoNavigateAll.default,
-  [TodoPageDisplayType.week]: images.todoNavigateWeek.default,
-  [TodoPageDisplayType.day]: images.todoNavigateDay.default,
+  [TodoNavigateEnum.all]: images.todoNavigateAll.default,
+  [TodoNavigateEnum.week]: images.todoNavigateWeek.default,
+  [TodoNavigateEnum.day]: images.todoNavigateDay.default,
 };
 
 export const enum TodosToggleEnum {

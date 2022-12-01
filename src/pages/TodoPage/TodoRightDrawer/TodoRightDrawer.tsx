@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Col, ConfigProvider, Dropdown, Row } from 'antd';
 import locale from 'antd/lib/locale/ru_RU';
@@ -16,6 +16,7 @@ import useTodo from '../useTodo';
 import formDateStringFromISO from 'utils/formDateStringFromISO';
 import { useTodoStore } from 'stores/hooks';
 import GroupsDropdownMenu from './GroupsDropdownMenu';
+import GroupsMenu from '../GroupsMenu';
 
 type TodoRightDrawerProps = {
   _id: string;
@@ -58,19 +59,20 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
 
   const [isGroupDropdownOpen, setIsGroupDropdownOpen] = useState(false);
 
-  const addToGroup = async (groupId: string) => {
+  const addToGroup = useCallback(async (groupId: string) => {
+    // todo move to store?
     await editTodo(
       _id,
-      todoName,
-      isChecked,
-      deadline,
-      note,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
       undefined,
       undefined,
       groupId
     );
     setIsGroupDropdownOpen(false);
-  };
+  }, []);
 
   return (
     <RightSideDrawer
@@ -146,6 +148,8 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
       }
     >
       <DrawerTodoCard _id={_id} />
+
+      <GroupsMenu />
 
       <div>
         <StyledTextArea
