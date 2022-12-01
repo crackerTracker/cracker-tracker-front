@@ -13,6 +13,12 @@ import {
 } from './GroupsMenu.styles';
 import { MainRoutesEnum } from 'config/routes';
 import { observer } from 'mobx-react-lite';
+import {
+  getGroupNameInputStatus,
+  handleGroupNameInputError,
+  isGroupNameInputStatusNotOk,
+} from '../TodoPage.utils';
+import { TodoNavigateEnum } from 'config/todo';
 
 const GroupsMenu: FC = () => {
   const { groups, createGroup, deleteGroup } = useTodoStore();
@@ -25,6 +31,11 @@ const GroupsMenu: FC = () => {
 
   const addGroupHandler = async () => {
     if (!inputValue) return;
+
+    if (isGroupNameInputStatusNotOk(inputValue)) {
+      handleGroupNameInputError(inputValue);
+      return;
+    }
 
     await createGroup(inputValue);
     setInputValue('');
@@ -43,7 +54,7 @@ const GroupsMenu: FC = () => {
         {groups.map(({ name, _id }) => {
           return (
             <GroupItemWrapper
-              to={`/${MainRoutesEnum.todo}/group/${name}`}
+              to={`/${MainRoutesEnum.todo}/${TodoNavigateEnum.group}/${name}`}
               key={_id}
             >
               <GroupItem>{name}</GroupItem>
@@ -65,11 +76,13 @@ const GroupsMenu: FC = () => {
             paddings="0"
           />
           <StyledInput
-            bordered={false}
+            // red borders are not displayed when bordered === false
+            bordered={isGroupNameInputStatusNotOk(inputValue)}
             placeholder="Создать группу"
             value={inputValue}
             onChange={onInputChange}
             onPressEnter={addGroupHandler}
+            status={getGroupNameInputStatus(inputValue)}
           />
         </InputGroup>
       </ContentBlock>

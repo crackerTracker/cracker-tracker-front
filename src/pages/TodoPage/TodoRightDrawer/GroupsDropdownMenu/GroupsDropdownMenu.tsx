@@ -13,6 +13,11 @@ import {
   NoGroupsMessage,
   StyledInput,
 } from './GroupsDropdownMenu.styles';
+import {
+  getGroupNameInputStatus,
+  handleGroupNameInputError,
+  isGroupNameInputStatusNotOk,
+} from 'pages/TodoPage/TodoPage.utils';
 
 type Props = {
   groups: TodoGroupType[];
@@ -38,6 +43,11 @@ const GroupsDropdownMenu = ({
 
   const addGroupHandler = async () => {
     if (!inputValue) return;
+
+    if (isGroupNameInputStatusNotOk(inputValue)) {
+      handleGroupNameInputError(inputValue);
+      return;
+    }
 
     await createGroup(inputValue);
     await addToGroup(getLastAddedGroup()._id);
@@ -101,11 +111,13 @@ const GroupsDropdownMenu = ({
           paddings="0"
         />
         <StyledInput
-          bordered={false}
+          // red borders are not displayed when bordered === false
+          bordered={isGroupNameInputStatusNotOk(inputValue)}
           placeholder="Создать группу"
           value={inputValue}
           onChange={onInputChange}
           onPressEnter={addGroupHandler}
+          status={getGroupNameInputStatus(inputValue)}
         />
       </GroupMenuFooter>
     </GroupMenu>
