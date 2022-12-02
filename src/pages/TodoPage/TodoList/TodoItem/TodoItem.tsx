@@ -3,9 +3,9 @@ import IconButton from 'components/IconButton';
 import useDrawer from 'utils/hooks/useDrawer';
 import { images } from 'img/icons';
 import React, { FC } from 'react';
-import useTodo from '../useTodo';
+import useTodo from '../../useTodo';
 import { StyledCheckbox, ListTodoItem } from './TodoItem.styles';
-import TodoRightDrawer from '../TodoRightDrawer';
+import TodoRightDrawer from '../../TodoRightDrawer';
 import { observer } from 'mobx-react-lite';
 
 const TodoItem: FC<{ _id: string }> = ({ _id }) => {

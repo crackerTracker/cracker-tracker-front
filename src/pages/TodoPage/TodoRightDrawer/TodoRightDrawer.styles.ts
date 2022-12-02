@@ -1,6 +1,7 @@
+import styled from 'styled-components';
 import { DatePicker } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import styled from 'styled-components';
+import IconButton from 'components/IconButton';
 import colors, { halfOpacityColors } from 'styles/colors';
 
 export const StyledDatePicker = styled(DatePicker)<{ open: boolean }>`
@@ -10,6 +11,10 @@ export const StyledDatePicker = styled(DatePicker)<{ open: boolean }>`
   .ant-picker-input {
     display: none;
   }
+`;
+
+export const StyledIconButton = styled(IconButton)<{ margin?: string }>`
+  margin: ${({ margin }) => margin || '0 10px 0 0'};
 `;
 
 export const StyledTextArea = styled(TextArea)`

@@ -1,16 +1,22 @@
-import { Col, ConfigProvider, Row } from 'antd';
+import React, { FC, useCallback, useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { Col, ConfigProvider, Dropdown, Row } from 'antd';
+import locale from 'antd/lib/locale/ru_RU';
+import 'moment/locale/ru';
 import IconButton from 'components/IconButton';
 import RightSideDrawer from 'components/RightSideDrawer';
 import { images } from 'img/icons';
-import React, { FC } from 'react';
 import DrawerTodoCard from '../DrawerTodoCard';
-import { StyledDatePicker, StyledTextArea } from './TodoRightDrawer.styles';
+import {
+  StyledDatePicker,
+  StyledIconButton,
+  StyledTextArea,
+} from './TodoRightDrawer.styles';
 import useTodo from '../useTodo';
-import { observer } from 'mobx-react-lite';
 import formDateStringFromISO from 'utils/formDateStringFromISO';
 import { useTodoStore } from 'stores/hooks';
-import 'moment/locale/ru';
-import locale from 'antd/lib/locale/ru_RU';
+import GroupsDropdownMenu from './GroupsDropdownMenu';
+import GroupsMenu from '../GroupsMenu';
 
 type TodoRightDrawerProps = {
   _id: string;
@@ -36,7 +42,7 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
     datePickerHandler,
   } = useTodo({ _id });
 
-  const { editTodo } = useTodoStore();
+  const { editTodo, getGroups, groups } = useTodoStore();
 
   const onTextareaBlur = () => {
     editTodo(_id, todoName, isChecked, deadline, note);
@@ -46,6 +52,23 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
     deleteDeadline();
     editTodo(_id, todoName, isChecked, null);
   };
+
+  const [isGroupDropdownOpen, setIsGroupDropdownOpen] = useState(false);
+
+  const addToGroup = useCallback(async (groupId: string) => {
+    // todo move to store?
+    await editTodo(
+      _id,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      groupId
+    );
+    setIsGroupDropdownOpen(false);
+  }, []);
 
   return (
     <RightSideDrawer
@@ -66,7 +89,7 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
                     onChange={onDeadlineChange}
                     bordered={false}
                   />
-                  <IconButton
+                  <StyledIconButton
                     image={images.clock.default}
                     squareSide="35px"
                     onClick={datePickerHandler}
@@ -75,15 +98,36 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
                 </Col>
 
                 {!!deadline && (
-                  <Col offset={1}>
-                    <IconButton
+                  <Col>
+                    <StyledIconButton
                       image={images.closeBrown.default}
                       squareSide="15px"
                       onClick={onDeadlineDelete}
                       paddings="0"
+                      margin="0 20px 0 0"
                     />
                   </Col>
                 )}
+
+                <Col>
+                  <Dropdown
+                    overlay={GroupsDropdownMenu({
+                      groups,
+                      addToGroup,
+                      todoId: _id,
+                      setIsOpen: setIsGroupDropdownOpen,
+                    })}
+                    trigger={['click']}
+                    visible={isGroupDropdownOpen}
+                    onVisibleChange={setIsGroupDropdownOpen}
+                  >
+                    <IconButton
+                      image={images.addToGroupBrown.default}
+                      squareSide="35px"
+                      paddings="0"
+                    />
+                  </Dropdown>
+                </Col>
               </Row>
             </Col>
 
@@ -100,6 +144,8 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
       }
     >
       <DrawerTodoCard _id={_id} />
+
+      <GroupsMenu />
 
       <div>
         <StyledTextArea
