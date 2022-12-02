@@ -1,11 +1,20 @@
-import { Drawer } from 'antd';
+import { Drawer, DrawerProps } from 'antd';
 import styled from 'styled-components';
 import colors from 'styles/colors';
 import { flex, scroller } from 'styles/mixins';
 import zIndexes from 'styles/z-indexes';
 
-export const StyledDrawer = styled(Drawer)`
-  z-index: ${zIndexes.rightDrawer};
+const leftSidebarWidth = '95px';
+
+export const StyledDrawer: React.FC<DrawerProps> = styled(Drawer)`
+  z-index: ${zIndexes.leftDrawer};
+
+  .ant-drawer-content-wrapper {
+    transform: ${({ visible }) =>
+      visible
+        ? `translateX(${leftSidebarWidth})`
+        : `translateX(calc(-100% - ${leftSidebarWidth}))`};
+  }
 
   .ant-drawer-body {
     background-color: ${colors.peach};
