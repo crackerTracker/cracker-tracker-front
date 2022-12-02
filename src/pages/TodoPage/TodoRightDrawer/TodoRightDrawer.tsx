@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Col, ConfigProvider, Dropdown, Row } from 'antd';
 import locale from 'antd/lib/locale/ru_RU';
@@ -16,7 +16,6 @@ import useTodo from '../useTodo';
 import formDateStringFromISO from 'utils/formDateStringFromISO';
 import { useTodoStore } from 'stores/hooks';
 import GroupsDropdownMenu from './GroupsDropdownMenu';
-import GroupsMenu from '../GroupsMenu';
 
 type TodoRightDrawerProps = {
   _id: string;
@@ -42,7 +41,7 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
     datePickerHandler,
   } = useTodo({ _id });
 
-  const { editTodo, getGroups, groups } = useTodoStore();
+  const { editTodo, groups } = useTodoStore();
 
   const onTextareaBlur = () => {
     editTodo(_id, todoName, isChecked, deadline, note);
@@ -144,8 +143,6 @@ const TodoRightDrawer: FC<TodoRightDrawerProps> = ({
       }
     >
       <DrawerTodoCard _id={_id} />
-
-      <GroupsMenu />
 
       <div>
         <StyledTextArea
