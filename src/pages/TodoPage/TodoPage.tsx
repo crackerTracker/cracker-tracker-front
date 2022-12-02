@@ -18,16 +18,39 @@ import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import TodoModal from './TodoModal';
 import useTodo from './useTodo';
-import { useTodoStore } from 'stores/hooks';
+import { useNavbarStore, useTodoStore } from 'stores/hooks';
 import {
   TodoNavigateEnum,
+  TodoSectionEnum,
   todosNavigateIcons,
   todosToggleIcons,
   todosTogglesChangeMap,
   todosTogglesTitle,
 } from 'config/todo';
+import useDrawer from 'utils/hooks/useDrawer';
+import useInitSectionNavbar from 'utils/hooks/useInitSectionNavbar';
+import { todoNavbarIcons } from 'config/navbar';
+import LeftSideDrawer from 'components/LeftSideDrawer/LeftSideDrawer';
+import GroupsMenu from './GroupsMenu';
 
 const TodoPage: FC = () => {
+  const { setActiveSection } = useNavbarStore();
+  const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
+
+  const onDrawerOpenHandler = useCallback(() => {
+    setActiveSection(TodoSectionEnum.leftDrawer);
+    onDrawerOpen();
+  }, []);
+
+  const onDrawerCloseHandler = useCallback(() => {
+    setActiveSection(null);
+    onDrawerClose();
+  }, []);
+
+  useInitSectionNavbar<TodoSectionEnum>(todoNavbarIcons, {
+    [TodoSectionEnum.leftDrawer]: onDrawerOpenHandler,
+  });
+
   const param = useParams();
 
   const location = useLocation();
@@ -81,92 +104,100 @@ const TodoPage: FC = () => {
   const navButtonChange = (nav: TodoNavigateEnum) => () => setNav(nav);
 
   return (
-    <Wrapper>
-      <Container>
-        <Header>
-          <Row justify="space-between">
-            <Col span={16}>
-              <TitleGroup>
-                <Title title={nav === TodoNavigateEnum.group ? groupName : ''}>
-                  {nav === TodoNavigateEnum.all && 'Все задачи'}
-                  {nav === TodoNavigateEnum.week && 'Неделя'}
-                  {nav === TodoNavigateEnum.group && groupName}
-                </Title>
+    <>
+      <Wrapper>
+        <Container>
+          <Header>
+            <Row justify="space-between">
+              <Col span={16}>
+                <TitleGroup>
+                  <Title
+                    title={nav === TodoNavigateEnum.group ? groupName : ''}
+                  >
+                    {nav === TodoNavigateEnum.all && 'Все задачи'}
+                    {nav === TodoNavigateEnum.week && 'Неделя'}
+                    {nav === TodoNavigateEnum.group && groupName}
+                  </Title>
 
-                {nav === TodoNavigateEnum.all && (
-                  <Toggle title={todosTogglesTitle[currentTodosToggle]}>
-                    <IconButton
-                      backgroundColor={colors.lightBrown}
-                      image={todosToggleIcons[currentTodosToggle]}
-                      onClick={toggleClick}
-                      squareSide="35px"
-                      paddings="0"
-                    />
-                  </Toggle>
+                  {nav === TodoNavigateEnum.all && (
+                    <Toggle title={todosTogglesTitle[currentTodosToggle]}>
+                      <IconButton
+                        backgroundColor={colors.lightBrown}
+                        image={todosToggleIcons[currentTodosToggle]}
+                        onClick={toggleClick}
+                        squareSide="35px"
+                        paddings="0"
+                      />
+                    </Toggle>
+                  )}
+                </TitleGroup>
+                {nav === TodoNavigateEnum.week && (
+                  <SubTitle>{headerDate}</SubTitle>
                 )}
-              </TitleGroup>
-              {nav === TodoNavigateEnum.week && (
-                <SubTitle>{headerDate}</SubTitle>
-              )}
-            </Col>
-            <Col span={8}>
-              <Row justify="end">
-                <Col>
-                  <Link to="/todo">
-                    <IconButton
-                      backgroundColor={colors.brown}
-                      image={todosNavigateIcons[TodoNavigateEnum.all]}
-                      onClick={navButtonChange(TodoNavigateEnum.all)}
-                      isDisabled={nav === TodoNavigateEnum.all}
-                    />
-                  </Link>
-                </Col>
-                <Col offset={1}>
-                  <Link to="week">
-                    <IconButton
-                      backgroundColor={colors.brown}
-                      image={todosNavigateIcons[TodoNavigateEnum.week]}
-                      onClick={navButtonChange(TodoNavigateEnum.week)}
-                      isDisabled={nav === TodoNavigateEnum.week}
-                    />
-                  </Link>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Header>
+              </Col>
+              <Col span={8}>
+                <Row justify="end">
+                  <Col>
+                    <Link to="/todo">
+                      <IconButton
+                        backgroundColor={colors.brown}
+                        image={todosNavigateIcons[TodoNavigateEnum.all]}
+                        onClick={navButtonChange(TodoNavigateEnum.all)}
+                        isDisabled={nav === TodoNavigateEnum.all}
+                      />
+                    </Link>
+                  </Col>
+                  <Col offset={1}>
+                    <Link to="week">
+                      <IconButton
+                        backgroundColor={colors.brown}
+                        image={todosNavigateIcons[TodoNavigateEnum.week]}
+                        onClick={navButtonChange(TodoNavigateEnum.week)}
+                        isDisabled={nav === TodoNavigateEnum.week}
+                      />
+                    </Link>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Header>
 
-        <Outlet />
+          <Outlet />
 
-        <InputContainer>
-          <StyledInput
-            placeholder="Добавить задачу"
-            size="large"
-            value={todoName}
-            onChange={inputChangeHandler}
-            onBlur={onInputBlur}
+          <InputContainer>
+            <StyledInput
+              placeholder="Добавить задачу"
+              size="large"
+              value={todoName}
+              onChange={inputChangeHandler}
+              onBlur={onInputBlur}
+            />
+            <Space size="large">
+              <IconButton
+                image={images.openTodoModalArrow.default}
+                onClick={onModalOpen}
+                squareSide="70px"
+              />
+              <IconButton
+                image={images.plusGrayishBlue.default}
+                onClick={addTodoHandler}
+                squareSide="50px"
+              />
+            </Space>
+          </InputContainer>
+
+          <TodoModal
+            isVisible={isModalVisible}
+            onCancel={onModalCancel}
+            clearMainInputValue={clearValue}
           />
-          <Space size="large">
-            <IconButton
-              image={images.openTodoModalArrow.default}
-              onClick={onModalOpen}
-              squareSide="70px"
-            />
-            <IconButton
-              image={images.plusGrayishBlue.default}
-              onClick={addTodoHandler}
-              squareSide="50px"
-            />
-          </Space>
-        </InputContainer>
+        </Container>
+      </Wrapper>
 
-        <TodoModal
-          isVisible={isModalVisible}
-          onCancel={onModalCancel}
-          clearMainInputValue={clearValue}
-        />
-      </Container>
-    </Wrapper>
+      <LeftSideDrawer onDrawerClose={onDrawerCloseHandler} visible={visible}>
+        <GroupsMenu />
+      </LeftSideDrawer>
+    </>
   );
 };
 

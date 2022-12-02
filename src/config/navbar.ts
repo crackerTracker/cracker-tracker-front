@@ -1,5 +1,6 @@
 import { images } from 'img/icons';
 import { MainRoutesEnum } from './routes';
+import { TodoSectionEnum } from './todo';
 import { TrackerSectionsEnum } from './tracker';
 
 export const mainRoutesIcons: Record<MainRoutesEnum, string> = {
@@ -10,4 +11,8 @@ export const mainRoutesIcons: Record<MainRoutesEnum, string> = {
 
 export const trackerNavbarIcons: Record<TrackerSectionsEnum, string> = {
   [TrackerSectionsEnum.categories]: images.menuGrayishBlue.default,
+};
+
+export const todoNavbarIcons: Record<TodoSectionEnum, string> = {
+  [TodoSectionEnum.leftDrawer]: images.menuGrayishBlue.default,
 };

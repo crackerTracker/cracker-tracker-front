@@ -1,6 +1,6 @@
 import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import {
   StyledDrawer,
   Date,
@@ -51,4 +51,4 @@ const LeftSideDrawer: FC<LeftSideDrawerProps> = ({
   );
 };
 
-export default LeftSideDrawer;
+export default memo(LeftSideDrawer);
