@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useEffect } from 'react';
+import React, { FC, useCallback, useState, useEffect, useMemo } from 'react';
 import { Col, Row, Space } from 'antd';
 import {
   Wrapper,
@@ -47,8 +47,13 @@ const TodoPage: FC = () => {
     onDrawerClose();
   }, []);
 
+  const leftDrawerSectionCallback = useMemo(
+    () => (visible ? onDrawerCloseHandler : onDrawerOpenHandler),
+    [visible]
+  );
+
   useInitSectionNavbar<TodoSectionEnum>(todoNavbarIcons, {
-    [TodoSectionEnum.leftDrawer]: onDrawerOpenHandler,
+    [TodoSectionEnum.leftDrawer]: leftDrawerSectionCallback,
   });
 
   const param = useParams();
