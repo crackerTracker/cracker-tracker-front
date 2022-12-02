@@ -53,11 +53,11 @@ const GroupsMenu: FC = () => {
 
       <ContentBlock>
         {groups.map(({ name, _id }) => {
+          const encodedGroupName = encodeURIComponent(name);
+          const groupPageLink = `/${MainRoutesEnum.todo}/${TodoNavigateEnum.group}/${encodedGroupName}`;
+
           return (
-            <GroupItemWrapper
-              to={`/${MainRoutesEnum.todo}/${TodoNavigateEnum.group}/${name}`}
-              key={_id}
-            >
+            <GroupItemWrapper to={groupPageLink} key={_id}>
               <GroupItem>{name}</GroupItem>
               <StyledIconButton
                 image={images.deletePeach.default}
