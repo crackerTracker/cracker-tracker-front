@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { Input } from 'antd';
 import { Link } from 'react-router-dom';
 import colors, { halfOpacityColors, shadowColors } from 'styles/colors';
-import { flex, animate } from 'styles/mixins';
+import { flex, animate, textElipsisOverflow } from 'styles/mixins';
+import IconButton from 'components/IconButton';
 
 export const GroupsWrapper = styled.div`
   margin-bottom: 20px;
@@ -49,6 +50,11 @@ export const GroupItemWrapper = styled(Link)`
 export const GroupItem = styled.span`
   font-size: 16px;
   color: ${colors.textBlack};
+  ${textElipsisOverflow};
+`;
+
+export const StyledIconButton = styled(IconButton)`
+  flex-shrink: 0;
 `;
 
 export const InputGroup = styled(Input.Group)`

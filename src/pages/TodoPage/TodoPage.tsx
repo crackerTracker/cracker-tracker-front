@@ -87,7 +87,7 @@ const TodoPage: FC = () => {
           <Row justify="space-between">
             <Col span={16}>
               <TitleGroup>
-                <Title>
+                <Title title={nav === TodoNavigateEnum.group ? groupName : ''}>
                   {nav === TodoNavigateEnum.all && 'Все задачи'}
                   {nav === TodoNavigateEnum.week && 'Неделя'}
                   {nav === TodoNavigateEnum.group && groupName}

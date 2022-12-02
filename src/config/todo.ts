@@ -13,7 +13,7 @@ export const weekDaysNames = [
 
 export const weekPageHeaderDateFormat = 'MMMM Y';
 
-export const GROUP_NAME_MAX_LENGTH = 50;
+export const GROUP_NAME_MAX_LENGTH = 40;
 
 export enum TodoNavigateEnum {
   all = 'all',

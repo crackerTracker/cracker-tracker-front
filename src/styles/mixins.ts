@@ -84,3 +84,18 @@ export const centerPosX = () => css`
 export const backgroundImageContain = (src: string) => css`
   background: url(${src}) no-repeat center/contain;
 `;
+
+export const textElipsisOverflow = css`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`;
+
+export const textElipsisOnSomeLines = (linesAmount = 2) => css`
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  display: -webkit-box;
+  -webkit-line-clamp: ${linesAmount};
+  -webkit-box-orient: vertical;
+`;

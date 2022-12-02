@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Input, Menu } from 'antd';
 import colors, { halfOpacityColors } from 'styles/colors';
-import { flex, scroller, text } from 'styles/mixins';
+import { flex, scroller, text, textElipsisOverflow } from 'styles/mixins';
 
 export const GroupMenu = styled(Menu)`
   padding-bottom: 8px;
@@ -26,7 +26,10 @@ export const GroupMenuHeader = styled.li`
 
 export const GroupsWrapper = styled.div`
   margin: 5px 5px 5px 0;
+
+  max-width: 400px;
   max-height: 270px;
+
   overflow-y: auto;
   ${scroller};
 `;
@@ -34,11 +37,23 @@ export const GroupsWrapper = styled.div`
 export const GroupMenuItem = styled(Menu.Item)`
   ${text};
   line-height: 1.5;
+
+  // .ant-dropdown-menu-title-content
+  & > span {
+    ${flex({ align: 'center', justify: 'space-between' })};
+    overflow: hidden;
+  }
 `;
 
-export const GroupWithIcon = styled.div`
-  ${flex({ align: 'center', justify: 'space-between' })}
-  cursor: default;
+export const GroupName = styled.span<{ isSelected: boolean }>`
+  ${textElipsisOverflow};
+
+  ${({ isSelected }) =>
+    isSelected &&
+    css`
+      margin-right: 10px;
+      cursor: default;
+    `};
 `;
 
 export const NoGroupsMessage = styled.div`

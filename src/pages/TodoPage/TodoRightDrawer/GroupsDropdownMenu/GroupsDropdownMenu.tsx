@@ -8,8 +8,8 @@ import {
   GroupMenuFooter,
   GroupMenuHeader,
   GroupMenuItem,
+  GroupName,
   GroupsWrapper,
-  GroupWithIcon,
   NoGroupsMessage,
   StyledInput,
 } from './GroupsDropdownMenu.styles';
@@ -62,30 +62,23 @@ const GroupsDropdownMenu = ({
     () =>
       groups.map(({ _id, name }) => {
         // if selected todo is in that group
-        if (todoGroupId === _id) {
-          return (
-            <GroupMenuItem key={_id} eventKey={_id} onClick={closeDropdownMenu}>
-              <GroupWithIcon>
-                <span>{name}</span>
-                <IconButton
-                  image={images.closeBrown.default}
-                  squareSide="15px"
-                  paddings="0"
-                  onClick={() => deleteFromGroup(todoId)}
-                />
-              </GroupWithIcon>
-            </GroupMenuItem>
-          );
-        }
+        const isSelectedGroup = todoGroupId === _id;
 
-        // for the rest groups
+        const clickHandler = isSelectedGroup
+          ? closeDropdownMenu
+          : () => addToGroup(_id);
+
         return (
-          <GroupMenuItem
-            key={_id}
-            eventKey={_id}
-            onClick={() => addToGroup(_id)}
-          >
-            {name}
+          <GroupMenuItem key={_id} eventKey={_id} onClick={clickHandler}>
+            <GroupName isSelected={isSelectedGroup}>{name}</GroupName>
+            {isSelectedGroup && (
+              <IconButton
+                image={images.closeBrown.default}
+                squareSide="15px"
+                paddings="0"
+                onClick={() => deleteFromGroup(todoId)}
+              />
+            )}
           </GroupMenuItem>
         );
       }),

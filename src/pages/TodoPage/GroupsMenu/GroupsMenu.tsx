@@ -10,6 +10,7 @@ import {
   GroupItem,
   InputGroup,
   GroupItemWrapper,
+  StyledIconButton,
 } from './GroupsMenu.styles';
 import { MainRoutesEnum } from 'config/routes';
 import { observer } from 'mobx-react-lite';
@@ -58,7 +59,7 @@ const GroupsMenu: FC = () => {
               key={_id}
             >
               <GroupItem>{name}</GroupItem>
-              <IconButton
+              <StyledIconButton
                 image={images.deletePeach.default}
                 squareSide="20px"
                 paddings="0"
