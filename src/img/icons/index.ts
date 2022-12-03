@@ -20,6 +20,7 @@ export const images = {
 
   clock: require('./clock.svg'),
   deleteBrown: require('./deleteBrown.svg'),
+  addToGroupBrown: require('./addToGroupBrown.svg'),
   plusBrown: require('./plusBrown.svg'),
   closeBrown: require('./closeBrown.svg'),
   closeDarkBrown: require('./closeDarkBrown.svg'),

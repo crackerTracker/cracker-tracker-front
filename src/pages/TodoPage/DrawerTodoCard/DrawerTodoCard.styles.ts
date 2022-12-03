@@ -60,6 +60,12 @@ export const StyledCheckbox = styled(Checkbox)<{ checked: boolean }>`
     `}
 `;
 
+export const GroupName = styled.div`
+  margin-top: -6px;
+  padding-left: 12px;
+  color: ${colors.brown};
+`;
+
 export const InputGroup = styled(Input.Group)`
   ${flex({ align: 'center' })}
 `;

@@ -13,13 +13,21 @@ export const weekDaysNames = [
 
 export const weekPageHeaderDateFormat = 'MMMM Y';
 
+export const GROUP_NAME_MAX_LENGTH = 40;
+
 export enum TodoNavigateEnum {
   all = 'all',
   week = 'week',
   day = 'day',
+  group = 'group',
 }
 
-export const todosNavigateIcons: Record<TodoNavigateEnum, string> = {
+export type TodoPageDisplayType =
+  | TodoNavigateEnum.all
+  | TodoNavigateEnum.week
+  | TodoNavigateEnum.day;
+
+export const todosNavigateIcons: Record<TodoPageDisplayType, string> = {
   [TodoNavigateEnum.all]: images.todoNavigateAll.default,
   [TodoNavigateEnum.week]: images.todoNavigateWeek.default,
   [TodoNavigateEnum.day]: images.todoNavigateDay.default,

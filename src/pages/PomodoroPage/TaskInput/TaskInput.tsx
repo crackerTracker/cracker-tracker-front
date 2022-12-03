@@ -21,7 +21,7 @@ const TaskInput: FC = () => {
     if (value && amount && +amount - Math.trunc(+amount) === 0) {
       if (lastPomo && value.trim() === lastPomo.name) {
         editPlannedPomo(
-          lastPomo._id,
+          lastPomo.id,
           lastPomo.name,
           Number(amount) + lastPomo.pomodorosAmount
         );

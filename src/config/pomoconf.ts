@@ -10,6 +10,9 @@ export const defaultPomoTime = 50;
 // pomodoro series key name in local storage
 export const pomoSeriesItem = 'pomoSeries';
 
+// for corresponding local storage item name
+export const pomoRestSettings = 'pomoRestSettings';
+
 // max count of pomodoro series before long break (count from 0)
 export const maxSeriesCount = 3;
 
@@ -29,3 +32,10 @@ export enum TimerStatesEnum {
   rest = 'rest',
   off = 'off',
 }
+
+export enum RestType {
+  short = 'short',
+  long = 'long',
+}
+
+export type RestMinutesType = Record<RestType, number>;

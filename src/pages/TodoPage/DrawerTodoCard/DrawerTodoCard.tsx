@@ -1,12 +1,13 @@
+import React, { FC, FormEvent, useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import { Input, List } from 'antd';
 import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
-import { observer } from 'mobx-react-lite';
-import React, { FC, FormEvent, useEffect, useState } from 'react';
 import { useTodoStore } from 'stores/hooks';
 import SubtodoItem from './SubtodoItem';
 import useTodo from '../useTodo';
 import {
+  GroupName,
   InputGroup,
   StyledCard,
   StyledCheckbox,
@@ -117,6 +118,9 @@ const DrawerTodoCard: FC<DrawerTodoCardProps> = ({ _id, name }) => {
             onChange={_id ? inputChangeHandler : onModalNameChange}
             onBlur={blurHandler}
           />
+          {todoData?.group?.name && (
+            <GroupName>{todoData.group.name}</GroupName>
+          )}
         </StyledCheckbox>
       }
     >

@@ -4,6 +4,7 @@ import {
   defaultRestMinutes,
   maxSeriesCount,
   OptionsEnum,
+  pomoRestSettings,
   pomoSeriesItem,
   TimerStatesEnum,
 } from 'config/pomoconf';
@@ -58,7 +59,7 @@ export const useTimer = () => {
     const spentMs = (initialMinutes * 60 - (minutes * 60 + seconds)) * 1000;
 
     const endTime = new Date();
-    const endTimeStamp = endTime.toISOString();
+    const endTimeISOString = endTime.toISOString();
 
     const startTime = new Date(endTime.getTime() - spentMs);
     const startTimeISOString = startTime.toISOString();
@@ -66,10 +67,10 @@ export const useTimer = () => {
     const minDiff = initialMinutes - minutes > 0 ? initialMinutes - minutes : 1;
 
     markPomoDone(
-      plannedPomosData[0]._id,
+      plannedPomosData[0].id,
       minDiff,
       startTimeISOString,
-      endTimeStamp
+      endTimeISOString
     );
 
     setSeconds(0);
@@ -132,6 +133,13 @@ export const useTimer = () => {
 
   const getCurrentRestMinutes = () => {
     const currentSeries = Number(localStorage.getItem(pomoSeriesItem));
+    const restSettings = localStorage.getItem(pomoRestSettings);
+
+    if (restSettings) {
+      const { short, long } = JSON.parse(restSettings);
+      return currentSeries === maxSeriesCount ? long : short;
+    }
+
     return currentSeries === maxSeriesCount
       ? defaultLongRestMinutes
       : defaultRestMinutes;
