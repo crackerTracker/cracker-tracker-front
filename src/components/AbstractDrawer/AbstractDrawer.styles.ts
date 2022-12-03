@@ -1,23 +1,25 @@
-import { Drawer, DrawerProps } from 'antd';
-import styled from 'styled-components';
+import { Drawer } from 'antd';
+import styled, { css } from 'styled-components';
 import colors from 'styles/colors';
 import { flex, scroller } from 'styles/mixins';
-import zIndexes from 'styles/z-indexes';
 
 const leftSidebarWidth = '95px';
 
-export const StyledDrawer: React.FC<DrawerProps> = styled(Drawer)`
-  z-index: ${zIndexes.leftDrawer};
-
-  .ant-drawer-content-wrapper {
-    transform: ${({ visible }) =>
-      visible
-        ? `translateX(${leftSidebarWidth})`
-        : `translateX(calc(-100% - ${leftSidebarWidth}))`};
-  }
+export const StyledAbstractDrawer = styled(Drawer)`
+  z-index: ${({ zIndex }) => zIndex};
 
   .ant-drawer-body {
     background-color: ${colors.peach};
+  }
+
+  .ant-drawer-content-wrapper {
+    ${({ placement, visible }) =>
+      placement === 'left' &&
+      css`
+        transform: ${visible
+          ? `translateX(${leftSidebarWidth})`
+          : `translateX(calc(-100% - ${leftSidebarWidth}))`};
+      `}
   }
 `;
 
@@ -32,7 +34,7 @@ export const Header = styled.header`
   margin-bottom: 35px;
 `;
 
-export const Date = styled.div`
+export const Title = styled.div`
   ${flex({ align: 'center', justify: 'center' })}
   flex: 1 1 auto;
 

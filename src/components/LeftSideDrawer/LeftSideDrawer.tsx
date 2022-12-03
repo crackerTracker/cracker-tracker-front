@@ -1,24 +1,9 @@
-import IconButton from 'components/IconButton';
-import { images } from 'img/icons';
+import AbstractDrawer from 'components/AbstractDrawer';
+import { AbstractDrawerProps } from 'components/AbstractDrawer/AbstractDrawer';
 import React, { FC, memo } from 'react';
-import {
-  StyledDrawer,
-  Date,
-  Container,
-  Header,
-  Content,
-  Footer,
-} from './LeftSideDrawer.styles';
+import zIndexes from 'styles/z-indexes';
 
-type LeftSideDrawerProps = {
-  onDrawerClose: VoidFunction;
-  visible: boolean;
-  headerTitle?: string;
-  children: JSX.Element;
-  footerChildren?: JSX.Element;
-};
-
-const LeftSideDrawer: FC<LeftSideDrawerProps> = ({
+const LeftSideDrawer: FC<AbstractDrawerProps> = ({
   onDrawerClose,
   visible,
   headerTitle = '',
@@ -26,28 +11,17 @@ const LeftSideDrawer: FC<LeftSideDrawerProps> = ({
   footerChildren = undefined,
 }) => {
   return (
-    <StyledDrawer
+    <AbstractDrawer
       size="default"
       placement="left"
-      onClose={onDrawerClose}
-      closable={false}
+      onDrawerClose={onDrawerClose}
       visible={visible}
+      headerTitle={headerTitle}
+      footerChildren={footerChildren}
+      zIndex={zIndexes.leftDrawer}
     >
-      <Container>
-        <Header>
-          <Date>{headerTitle}</Date>
-          <IconButton
-            image={images.closeBrown.default}
-            onClick={onDrawerClose}
-            squareSide="38px"
-          />
-        </Header>
-
-        <Content>{children}</Content>
-
-        <Footer>{footerChildren}</Footer>
-      </Container>
-    </StyledDrawer>
+      {children}
+    </AbstractDrawer>
   );
 };
 
