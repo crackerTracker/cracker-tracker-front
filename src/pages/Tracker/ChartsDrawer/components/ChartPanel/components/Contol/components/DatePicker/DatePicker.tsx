@@ -29,7 +29,7 @@ const DatePicker: React.FC<Props> = ({ onPick, disabled = false }) => {
         locale={locale}
       />
       <IconButton
-        image={images.datesCalendarBrown.default}
+        image={images.bigDateCalendarBrown.default}
         onClick={toggleOpened}
         squareSide={CHART_DRAWER_CALENDAR_ICON_SIZE}
         paddings="0"

@@ -28,8 +28,7 @@ type PrivateFields =
   | '_sumSpentMinutes'
   | '_load'
   | '_onSetDates'
-  | '_formattedCategoriesWithOthers'
-  | 'othersCategories';
+  | '_formattedCategoriesWithOthers';
 
 /**
  * Модель данных кругового графика. Загружает данные

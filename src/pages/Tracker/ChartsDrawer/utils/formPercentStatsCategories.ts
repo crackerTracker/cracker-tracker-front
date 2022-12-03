@@ -150,7 +150,7 @@ const formPercentStatsCategories = (
 
   return {
     others: getOthersCategoriesData(
-      formatPercent((sumPercentLessEqualEdge / totalSum) * 100)
+      formatPercent(getPercent(sumPercentLessEqualEdge, totalSum))
     ),
     categories: statsCategoriesToPercentString(
       sortEntitiesMinutesSpent(categoriesGreaterEdge),
