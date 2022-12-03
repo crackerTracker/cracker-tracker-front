@@ -32,6 +32,7 @@ import useInitSectionNavbar from 'utils/hooks/useInitSectionNavbar';
 import { todoNavbarIcons } from 'config/navbar';
 import LeftSideDrawer from 'components/LeftSideDrawer/LeftSideDrawer';
 import GroupsMenu from './GroupsMenu';
+import TodoLeftDrawer from './TodoLeftDrawer';
 
 const TodoPage: FC = () => {
   const { setActiveSection } = useNavbarStore();
@@ -199,9 +200,7 @@ const TodoPage: FC = () => {
         </Container>
       </Wrapper>
 
-      <LeftSideDrawer onDrawerClose={onDrawerCloseHandler} visible={visible}>
-        <GroupsMenu />
-      </LeftSideDrawer>
+      <TodoLeftDrawer onDrawerClose={onDrawerCloseHandler} visible={visible} />
     </>
   );
 };
