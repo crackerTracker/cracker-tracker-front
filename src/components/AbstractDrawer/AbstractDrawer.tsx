@@ -1,7 +1,7 @@
 import { DrawerProps } from 'antd';
 import IconButton from 'components/IconButton';
 import { images } from 'img/icons';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import zIndexes from 'styles/z-indexes';
 import {
   StyledAbstractDrawer,
@@ -54,4 +54,4 @@ const AbstractDrawer: FC<AbstractDrawerProps> = ({
   );
 };
 
-export default AbstractDrawer;
+export default memo(AbstractDrawer);

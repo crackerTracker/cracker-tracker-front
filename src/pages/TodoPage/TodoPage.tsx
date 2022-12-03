@@ -30,8 +30,6 @@ import {
 import useDrawer from 'utils/hooks/useDrawer';
 import useInitSectionNavbar from 'utils/hooks/useInitSectionNavbar';
 import { todoNavbarIcons } from 'config/navbar';
-import LeftSideDrawer from 'components/LeftSideDrawer/LeftSideDrawer';
-import GroupsMenu from './GroupsMenu';
 import TodoLeftDrawer from './TodoLeftDrawer';
 
 const TodoPage: FC = () => {
@@ -83,6 +81,13 @@ const TodoPage: FC = () => {
       setGroupName(param.name);
     }
   }, [param.name]);
+
+  // to close drawer on entering other page
+  useEffect(() => {
+    if (visible) {
+      onDrawerClose();
+    }
+  }, [location.pathname]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
