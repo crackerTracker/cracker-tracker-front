@@ -98,6 +98,9 @@ class TrackerStore {
     );
   }
 
+  /**
+   * Возвращает последний загруженный день (самый ранний)
+   */
   get lastLoadedDay(): DayType | null {
     const days = this.allDaysArray;
     return days[days.length - 1] ?? null;
@@ -569,8 +572,13 @@ class TrackerStore {
       if (!loadedMonthWithAddedTimestamp) {
         const loadedDaysAmount = this.allDaysArray.length;
 
-        // если при этом задач достаточно, чтобы они занимали весь экран
-        if (loadedDaysAmount >= daysAmountToLoad) {
+        // если при этом имеющихся задач достаточно, чтобы они занимали весь экран,
+        // и незагруженный месяц - раньше последнего загруженного (самого раннего)
+        if (
+          loadedDaysAmount >= daysAmountToLoad &&
+          this.lastLoadedDay &&
+          new Date(zeroTimestamp) < new Date(this.lastLoadedDay.timestamp)
+        ) {
           return;
         }
 
