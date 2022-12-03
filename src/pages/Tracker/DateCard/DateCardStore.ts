@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { DayType, TaskType } from 'stores/TrackerStore/types';
 import moment from 'moment';
-import { weekDayFormat } from 'config/tracker';
+import { WEEK_DAY_FORMAT } from 'config/tracker';
 import { getMinsAndHoursStringFromMins } from 'utils/getMinsAndHoursFromMins';
 
 // контролирует внутреннее состояние DateCard
@@ -20,7 +20,7 @@ class DateCardStore {
   }
 
   private get _weekDay(): string {
-    return moment(this._day.timestamp).format(weekDayFormat);
+    return moment(this._day.timestamp).format(WEEK_DAY_FORMAT);
   }
 
   get tasks(): TaskType[] {

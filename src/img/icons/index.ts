@@ -12,7 +12,7 @@ export const images = {
   deletePeach: require('./deletePeach.svg'),
 
   plusGrayishBlue: require('./plusGrayishBlue.svg'),
-  openTodoModalArrow: require('./openTodoModalArrow.svg'),
+  upArrowBrown: require('./upArrowBrown.svg'),
 
   todoToggleAll: require('./todoToggleAll.svg'),
   todoToggleWDate: require('./todoToggleWDate.svg'),
@@ -26,6 +26,11 @@ export const images = {
   closeDarkBrown: require('./closeDarkBrown.svg'),
   brushBrown: require('./brushBrown.svg'),
   checkBrown: require('./checkBrown.svg'),
+  solidGraphBrown: require('./solidGraphBrown.svg'),
+  solidPieChartBrown: require('./solidPieChartBrown.svg'),
+  calendarWithClockBrown: require('./calendarWithClockBrown.svg'),
+  bigDateCalendarBrown: require('./bigDateCalendarBrown.svg'),
+  datesCalendarBrown: require('./datesCalendarBrown.svg'),
 
   checkWhite: require('./checkWhite.svg'),
   crossWhite: require('./crossWhite.svg'),
