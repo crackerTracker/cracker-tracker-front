@@ -1,6 +1,8 @@
 import { request } from 'utils/request';
 import { makeAutoObservable } from 'mobx';
 import RootStore from './RootStore';
+import MetaModel from './models/MetaModel';
+import { endpoints } from 'config/endpoints';
 
 type PrivateFields = 'rootStore';
 
@@ -8,6 +10,8 @@ class AuthStore {
   private rootStore: RootStore;
 
   private _isAuthenticated = false;
+
+  protected readonly _meta: MetaModel = new MetaModel();
 
   private _token: null | string = null;
   private _userId: null | string = null;
@@ -21,6 +25,10 @@ class AuthStore {
     this.rootStore = rootStore;
   }
 
+  get meta(): MetaModel {
+    return this._meta;
+  }
+
   initUser = () => {
     const storageData = localStorage.getItem(this.storageName);
     const data = JSON.parse(String(storageData));
@@ -31,30 +39,44 @@ class AuthStore {
   };
 
   registerHandler = async (email: string, password: string) => {
+    this._meta.setLoading();
+
     try {
-      await request({
-        url: '/api/auth/register',
-        method: 'POST',
+      const data = await request({
+        ...endpoints.register,
         headers: {},
         body: { email, password },
       });
-      this.loginHandler(email, password);
+
+      if (data) {
+        this.loginHandler(email, password);
+      }
     } catch (e: any) {
       console.log('AuthStore.registerHandler', e);
+      this._meta.setError();
+    } finally {
+      this._meta.setNotLoading();
     }
   };
 
   loginHandler = async (email: string, password: string) => {
+    this._meta.setLoading();
+
     try {
       const data = await request({
-        url: '/api/auth/login',
-        method: 'POST',
+        ...endpoints.login,
         headers: {},
         body: { email, password },
       });
-      this.login(data.token, data.userId);
+
+      if (data) {
+        this.login(data.token, data.userId);
+      }
     } catch (e: any) {
       console.log('AuthStore.loginHandler', e);
+      this._meta.setError();
+    } finally {
+      this._meta.setNotLoading();
     }
   };
 
