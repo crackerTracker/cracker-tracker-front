@@ -4,7 +4,7 @@ import useDrawer from 'utils/hooks/useDrawer';
 import { images } from 'img/icons';
 import { observer } from 'mobx-react-lite';
 import TodoRightDrawer from 'pages/TodoPage/TodoRightDrawer';
-import useTodo from 'pages/TodoPage/useTodo';
+import { useTodo } from 'pages/TodoPage/hooks';
 import React, { FC } from 'react';
 import { SmallTodoListItem, TodoName } from './SmallTodoItem.styles';
 import IconButton from 'components/IconButton';

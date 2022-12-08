@@ -11,7 +11,7 @@ import {
 import { ModalContent, ModalHeader, StyledModal } from './TodoModal.styles';
 import { Date as ModalDate } from 'components/RightSideDrawer/RightSideDrawer.styles';
 import { observer } from 'mobx-react-lite';
-import useTodo from '../useTodo';
+import { useTodo } from '../hooks';
 import { useTodoStore } from 'stores/hooks';
 import formDateStringFromISO from 'utils/formDateStringFromISO';
 import 'moment/locale/ru';

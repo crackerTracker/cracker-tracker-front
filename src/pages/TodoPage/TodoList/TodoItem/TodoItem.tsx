@@ -3,7 +3,7 @@ import IconButton from 'components/IconButton';
 import useDrawer from 'utils/hooks/useDrawer';
 import { images } from 'img/icons';
 import React, { FC } from 'react';
-import useTodo from '../../useTodo';
+import { useTodo } from 'pages/TodoPage/hooks';
 import { StyledCheckbox, ListTodoItem } from './TodoItem.styles';
 import TodoRightDrawer from '../../TodoRightDrawer';
 import { observer } from 'mobx-react-lite';

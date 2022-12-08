@@ -17,43 +17,18 @@ import colors from 'styles/colors';
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import TodoModal from './TodoModal';
-import useTodo from './useTodo';
-import { useNavbarStore, useTodoStore } from 'stores/hooks';
+import { useTodoStore } from 'stores/hooks';
 import {
   TodoNavigateEnum,
-  TodoSectionEnum,
   todosNavigateIcons,
   todosToggleIcons,
   todosTogglesChangeMap,
   todosTogglesTitle,
 } from 'config/todo';
-import useDrawer from 'utils/hooks/useDrawer';
-import useInitSectionNavbar from 'utils/hooks/useInitSectionNavbar';
-import { todoNavbarIcons } from 'config/navbar';
 import TodoLeftDrawer from './TodoLeftDrawer';
+import { useGroupsDrawer, useTodo } from './hooks';
 
 const TodoPage: FC = () => {
-  const { setActiveSection } = useNavbarStore();
-  const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
-
-  const onDrawerOpenHandler = useCallback(() => {
-    setActiveSection(TodoSectionEnum.groups);
-    onDrawerOpen();
-  }, []);
-
-  const onDrawerCloseHandler = useCallback(() => {
-    setActiveSection(null);
-    onDrawerClose();
-  }, []);
-
-  const leftDrawerSectionCallback = visible
-    ? onDrawerCloseHandler
-    : onDrawerOpenHandler;
-
-  useInitSectionNavbar<TodoSectionEnum>(todoNavbarIcons, {
-    [TodoSectionEnum.groups]: leftDrawerSectionCallback,
-  });
-
   const param = useParams();
 
   const location = useLocation();
@@ -64,6 +39,8 @@ const TodoPage: FC = () => {
     useTodoStore();
 
   const { todoName, inputChangeHandler, addTodo, clearValue } = useTodo();
+
+  const { visible, onDrawerCloseHandler } = useGroupsDrawer();
 
   const [nav, setNav] = useState(currentLocation as TodoNavigateEnum);
 
@@ -80,13 +57,6 @@ const TodoPage: FC = () => {
       setGroupName(param.name);
     }
   }, [param.name]);
-
-  // to close drawer on entering other page
-  useEffect(() => {
-    if (visible) {
-      onDrawerCloseHandler();
-    }
-  }, [location.pathname]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
