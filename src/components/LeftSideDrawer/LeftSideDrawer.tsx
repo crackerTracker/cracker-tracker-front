@@ -1,6 +1,5 @@
-import AbstractDrawer from 'components/AbstractDrawer';
-import { AbstractDrawerProps } from 'components/AbstractDrawer/AbstractDrawer';
 import React, { FC, memo } from 'react';
+import AbstractDrawer, { AbstractDrawerProps } from 'components/AbstractDrawer';
 import zIndexes from 'styles/z-indexes';
 
 const LeftSideDrawer: FC<AbstractDrawerProps> = ({

@@ -1,17 +1,18 @@
 import styled from 'styled-components';
 import { Divider } from 'antd';
 import { Link } from 'react-router-dom';
-import { square } from 'styles/mixins';
+import { animate, square } from 'styles/mixins';
 import colors, { shadowColors } from 'styles/colors';
 
 export const StyledLink = styled(Link)`
   padding: 12px;
   background-color: ${colors.lightBrown};
   border-radius: 4px;
-  box-shadow: 0px 6px 20px ${shadowColors.brown};
+  box-shadow: 0 6px 20px ${shadowColors.brown};
+  ${animate('box-shadow')};
 
   :hover {
-    box-shadow: 0px 6px 20px rgba(208, 147, 106, 0.35);
+    box-shadow: 0 6px 20px rgba(208, 147, 106, 0.35);
   }
 `;
 

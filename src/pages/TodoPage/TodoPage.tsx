@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useState, useEffect } from 'react';
 import { Col, Row, Space } from 'antd';
 import {
   Wrapper,
@@ -37,7 +37,7 @@ const TodoPage: FC = () => {
   const { visible, onDrawerOpen, onDrawerClose } = useDrawer();
 
   const onDrawerOpenHandler = useCallback(() => {
-    setActiveSection(TodoSectionEnum.leftDrawer);
+    setActiveSection(TodoSectionEnum.groups);
     onDrawerOpen();
   }, []);
 
@@ -46,13 +46,12 @@ const TodoPage: FC = () => {
     onDrawerClose();
   }, []);
 
-  const leftDrawerSectionCallback = useMemo(
-    () => (visible ? onDrawerCloseHandler : onDrawerOpenHandler),
-    [visible]
-  );
+  const leftDrawerSectionCallback = visible
+    ? onDrawerCloseHandler
+    : onDrawerOpenHandler;
 
   useInitSectionNavbar<TodoSectionEnum>(todoNavbarIcons, {
-    [TodoSectionEnum.leftDrawer]: leftDrawerSectionCallback,
+    [TodoSectionEnum.groups]: leftDrawerSectionCallback,
   });
 
   const param = useParams();
@@ -85,7 +84,7 @@ const TodoPage: FC = () => {
   // to close drawer on entering other page
   useEffect(() => {
     if (visible) {
-      onDrawerClose();
+      onDrawerCloseHandler();
     }
   }, [location.pathname]);
 

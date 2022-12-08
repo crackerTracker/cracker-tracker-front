@@ -24,8 +24,8 @@ const AbstractDrawer: FC<AbstractDrawerProps> = ({
   onDrawerClose,
   placement = 'right',
   headerTitle = '',
-  children = undefined,
-  footerChildren = undefined,
+  children,
+  footerChildren,
   zIndex = zIndexes.rightDrawer,
 }) => {
   return (

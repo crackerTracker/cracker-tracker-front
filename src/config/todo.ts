@@ -16,7 +16,7 @@ export const weekPageHeaderDateFormat = 'MMMM Y';
 export const GROUP_NAME_MAX_LENGTH = 40;
 
 export enum TodoSectionEnum {
-  leftDrawer = 'leftDrawer',
+  groups = 'groups',
 }
 
 export enum TodoNavigateEnum {

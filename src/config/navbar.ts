@@ -14,5 +14,5 @@ export const trackerNavbarIcons: Record<TrackerSectionsEnum, string> = {
 };
 
 export const todoNavbarIcons: Record<TodoSectionEnum, string> = {
-  [TodoSectionEnum.leftDrawer]: images.menuGrayishBlue.default,
+  [TodoSectionEnum.groups]: images.menuGrayishBlue.default,
 };

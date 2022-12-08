@@ -1,9 +1,8 @@
 import { Drawer } from 'antd';
 import styled, { css } from 'styled-components';
 import colors from 'styles/colors';
+import { navbarWidth } from 'styles/consts';
 import { flex, scroller } from 'styles/mixins';
-
-const leftSidebarWidth = '95px';
 
 export const StyledAbstractDrawer = styled(Drawer)`
   z-index: ${({ zIndex }) => zIndex};
@@ -17,8 +16,8 @@ export const StyledAbstractDrawer = styled(Drawer)`
       placement === 'left' &&
       css`
         transform: ${visible
-          ? `translateX(${leftSidebarWidth})`
-          : `translateX(calc(-100% - ${leftSidebarWidth}))`};
+          ? `translate3d(${navbarWidth}, 0, 0)`
+          : `translate3d(calc(-100% - ${navbarWidth}), 0, 0)`};
       `}
   }
 `;
