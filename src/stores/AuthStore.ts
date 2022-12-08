@@ -11,7 +11,7 @@ class AuthStore {
 
   private _isAuthenticated = false;
 
-  protected readonly _meta: MetaModel = new MetaModel();
+  private readonly _meta: MetaModel = new MetaModel();
 
   private _token: null | string = null;
   private _userId: null | string = null;
