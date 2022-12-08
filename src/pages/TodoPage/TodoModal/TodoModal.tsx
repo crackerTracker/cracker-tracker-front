@@ -9,7 +9,7 @@ import {
   StyledTextArea,
 } from '../TodoRightDrawer/TodoRightDrawer.styles';
 import { ModalContent, ModalHeader, StyledModal } from './TodoModal.styles';
-import { Date as ModalDate } from 'components/RightSideDrawer/RightSideDrawer.styles';
+import { Title as ModalDate } from 'components/AbstractDrawer/AbstractDrawer.styles';
 import { observer } from 'mobx-react-lite';
 import { useTodo } from '../hooks';
 import { useTodoStore } from 'stores/hooks';

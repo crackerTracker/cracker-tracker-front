@@ -26,6 +26,7 @@ const AbstractDrawer: FC<AbstractDrawerProps> = ({
   headerTitle = '',
   children,
   footerChildren,
+  width,
   zIndex = zIndexes.rightDrawer,
 }) => {
   return (
@@ -34,6 +35,7 @@ const AbstractDrawer: FC<AbstractDrawerProps> = ({
       onClose={onDrawerClose}
       placement={placement}
       closable={false}
+      width={width}
       zIndex={zIndex}
     >
       <Container>
