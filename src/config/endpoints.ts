@@ -1,4 +1,13 @@
 export const endpoints = {
+  login: {
+    url: '/api/auth/login',
+    method: 'POST',
+  },
+  register: {
+    url: '/api/auth/register',
+    method: 'POST',
+  },
+
   requestAll: {
     url: '/api/pomodoro/pomodoros',
     method: 'GET',

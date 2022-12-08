@@ -2,6 +2,13 @@ import styled from 'styled-components';
 import colors from 'styles/colors';
 import { flex, square, text } from 'styles/mixins';
 
+export const LoaderContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+  ${flex({ justify: 'center', align: 'center' })}
+  background-color: ${colors.lightBrown};
+`;
+
 export const Wrapper = styled.div`
   margin: 0 auto;
   background: ${colors.lightBrown};
