@@ -11,6 +11,7 @@ export const mainRoutesIcons: Record<MainRoutesEnum, string> = {
 
 export const trackerNavbarIcons: Record<TrackerSectionsEnum, string> = {
   [TrackerSectionsEnum.categories]: images.menuGrayishBlue.default,
+  [TrackerSectionsEnum.charts]: images.graphGrayishBlue.default,
 };
 
 export const todoNavbarIcons: Record<TodoSectionEnum, string> = {

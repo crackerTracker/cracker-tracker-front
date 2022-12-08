@@ -13,6 +13,7 @@ const colors = {
   red: '#f17b81',
   grayishBlue: '#5f7d8a',
   lightRed: '#f8a4a8',
+  gray: '#bfbfbf',
 };
 
 export const shadowColors = {

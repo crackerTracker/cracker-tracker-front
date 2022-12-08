@@ -4,6 +4,7 @@ import colors, { halfOpacityColors } from 'styles/colors';
 export enum SpinnerSizesEnum {
   xs = 'xs',
   l = 'l',
+  xl = 'xl',
 }
 
 export enum SpinnerThemesEnum {
@@ -31,6 +32,10 @@ export const spinnerThemesColors: Record<
 };
 
 export const spinnerSizes: Record<SpinnerSizesEnum, SpinnerSizeType> = {
+  [SpinnerSizesEnum.xl]: {
+    size: 90,
+    thickness: 120,
+  },
   [SpinnerSizesEnum.l]: {
     size: 70,
     thickness: 150,

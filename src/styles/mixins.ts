@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import colors, { shadowColors } from './colors';
+import colors, { halfOpacityColors, shadowColors } from './colors';
 
 export const square = (value: string) => css`
   width: ${value};
@@ -81,8 +81,19 @@ export const centerPosX = () => css`
   transform: translate3d(-50%, 0, 0);
 `;
 
+export const centerPos = () => css`
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+`;
+
 export const backgroundImageContain = (src: string) => css`
   background: url(${src}) no-repeat center/contain;
+`;
+
+export const commonDrawerBlockStyles = () => css`
+  background-color: ${halfOpacityColors.lightBrown};
+  border-radius: 8px;
 `;
 
 export const textElipsisOverflow = css`
