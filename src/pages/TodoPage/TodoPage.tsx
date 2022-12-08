@@ -17,7 +17,6 @@ import colors from 'styles/colors';
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import TodoModal from './TodoModal';
-import useTodo from './useTodo';
 import { useTodoStore } from 'stores/hooks';
 import {
   TodoNavigateEnum,
@@ -26,6 +25,8 @@ import {
   todosTogglesChangeMap,
   todosTogglesTitle,
 } from 'config/todo';
+import TodoLeftDrawer from './TodoLeftDrawer';
+import { useGroupsDrawer, useTodo } from './hooks';
 
 const TodoPage: FC = () => {
   const param = useParams();
@@ -38,6 +39,8 @@ const TodoPage: FC = () => {
     useTodoStore();
 
   const { todoName, inputChangeHandler, addTodo, clearValue } = useTodo();
+
+  const { visible, onDrawerCloseHandler } = useGroupsDrawer();
 
   const [nav, setNav] = useState(currentLocation as TodoNavigateEnum);
 
@@ -81,92 +84,98 @@ const TodoPage: FC = () => {
   const navButtonChange = (nav: TodoNavigateEnum) => () => setNav(nav);
 
   return (
-    <Wrapper>
-      <Container>
-        <Header>
-          <Row justify="space-between">
-            <Col span={16}>
-              <TitleGroup>
-                <Title title={nav === TodoNavigateEnum.group ? groupName : ''}>
-                  {nav === TodoNavigateEnum.all && 'Все задачи'}
-                  {nav === TodoNavigateEnum.week && 'Неделя'}
-                  {nav === TodoNavigateEnum.group && groupName}
-                </Title>
+    <>
+      <Wrapper>
+        <Container>
+          <Header>
+            <Row justify="space-between">
+              <Col span={16}>
+                <TitleGroup>
+                  <Title
+                    title={nav === TodoNavigateEnum.group ? groupName : ''}
+                  >
+                    {nav === TodoNavigateEnum.all && 'Все задачи'}
+                    {nav === TodoNavigateEnum.week && 'Неделя'}
+                    {nav === TodoNavigateEnum.group && groupName}
+                  </Title>
 
-                {nav === TodoNavigateEnum.all && (
-                  <Toggle title={todosTogglesTitle[currentTodosToggle]}>
-                    <IconButton
-                      backgroundColor={colors.lightBrown}
-                      image={todosToggleIcons[currentTodosToggle]}
-                      onClick={toggleClick}
-                      squareSide="35px"
-                      paddings="0"
-                    />
-                  </Toggle>
+                  {nav === TodoNavigateEnum.all && (
+                    <Toggle title={todosTogglesTitle[currentTodosToggle]}>
+                      <IconButton
+                        backgroundColor={colors.lightBrown}
+                        image={todosToggleIcons[currentTodosToggle]}
+                        onClick={toggleClick}
+                        squareSide="35px"
+                        paddings="0"
+                      />
+                    </Toggle>
+                  )}
+                </TitleGroup>
+                {nav === TodoNavigateEnum.week && (
+                  <SubTitle>{headerDate}</SubTitle>
                 )}
-              </TitleGroup>
-              {nav === TodoNavigateEnum.week && (
-                <SubTitle>{headerDate}</SubTitle>
-              )}
-            </Col>
-            <Col span={8}>
-              <Row justify="end">
-                <Col>
-                  <Link to="/todo">
-                    <IconButton
-                      backgroundColor={colors.brown}
-                      image={todosNavigateIcons[TodoNavigateEnum.all]}
-                      onClick={navButtonChange(TodoNavigateEnum.all)}
-                      isDisabled={nav === TodoNavigateEnum.all}
-                    />
-                  </Link>
-                </Col>
-                <Col offset={1}>
-                  <Link to="week">
-                    <IconButton
-                      backgroundColor={colors.brown}
-                      image={todosNavigateIcons[TodoNavigateEnum.week]}
-                      onClick={navButtonChange(TodoNavigateEnum.week)}
-                      isDisabled={nav === TodoNavigateEnum.week}
-                    />
-                  </Link>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Header>
+              </Col>
+              <Col span={8}>
+                <Row justify="end">
+                  <Col>
+                    <Link to="/todo">
+                      <IconButton
+                        backgroundColor={colors.brown}
+                        image={todosNavigateIcons[TodoNavigateEnum.all]}
+                        onClick={navButtonChange(TodoNavigateEnum.all)}
+                        isDisabled={nav === TodoNavigateEnum.all}
+                      />
+                    </Link>
+                  </Col>
+                  <Col offset={1}>
+                    <Link to="week">
+                      <IconButton
+                        backgroundColor={colors.brown}
+                        image={todosNavigateIcons[TodoNavigateEnum.week]}
+                        onClick={navButtonChange(TodoNavigateEnum.week)}
+                        isDisabled={nav === TodoNavigateEnum.week}
+                      />
+                    </Link>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Header>
 
-        <Outlet />
+          <Outlet />
 
-        <InputContainer>
-          <StyledInput
-            placeholder="Добавить задачу"
-            size="large"
-            value={todoName}
-            onChange={inputChangeHandler}
-            onBlur={onInputBlur}
+          <InputContainer>
+            <StyledInput
+              placeholder="Добавить задачу"
+              size="large"
+              value={todoName}
+              onChange={inputChangeHandler}
+              onBlur={onInputBlur}
+            />
+            <Space size="large">
+              <IconButton
+                image={images.openTodoModalArrow.default}
+                onClick={onModalOpen}
+                squareSide="70px"
+              />
+              <IconButton
+                image={images.plusGrayishBlue.default}
+                onClick={addTodoHandler}
+                squareSide="50px"
+              />
+            </Space>
+          </InputContainer>
+
+          <TodoModal
+            isVisible={isModalVisible}
+            onCancel={onModalCancel}
+            clearMainInputValue={clearValue}
           />
-          <Space size="large">
-            <IconButton
-              image={images.upArrowBrown.default}
-              onClick={onModalOpen}
-              squareSide="70px"
-            />
-            <IconButton
-              image={images.plusGrayishBlue.default}
-              onClick={addTodoHandler}
-              squareSide="50px"
-            />
-          </Space>
-        </InputContainer>
+        </Container>
+      </Wrapper>
 
-        <TodoModal
-          isVisible={isModalVisible}
-          onCancel={onModalCancel}
-          clearMainInputValue={clearValue}
-        />
-      </Container>
-    </Wrapper>
+      <TodoLeftDrawer onDrawerClose={onDrawerCloseHandler} visible={visible} />
+    </>
   );
 };
 

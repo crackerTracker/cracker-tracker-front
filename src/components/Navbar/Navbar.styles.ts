@@ -11,6 +11,7 @@ import {
 import { images } from 'img/common';
 import { Divider } from 'antd';
 import IconButton from 'components/IconButton';
+import zIndexes from 'styles/z-indexes';
 
 export const MainPart = styled.div`
   ${flex({ direction: 'column', align: 'center' })}
@@ -27,6 +28,7 @@ export const Container = styled.div`
   padding: 45px 15px 110px;
 
   ${flex({ direction: 'column', align: 'center' })};
+  z-index: ${zIndexes.navbar};
 `;
 
 export const Logo = styled.div`

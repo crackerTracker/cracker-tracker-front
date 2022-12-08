@@ -1,4 +1,5 @@
 import { PomodoroSectionsEnum } from './pomoconf';
+import { TodoSectionEnum } from './todo';
 import { TrackerSectionsEnum } from './tracker';
 
 export enum MainRoutesEnum {
@@ -9,5 +10,7 @@ export enum MainRoutesEnum {
 
 export const mainRoutes = Object.keys(MainRoutesEnum);
 
-// todo добавить todo
-export type SectionEnumsType = TrackerSectionsEnum | PomodoroSectionsEnum;
+export type SectionEnumsType =
+  | TrackerSectionsEnum
+  | PomodoroSectionsEnum
+  | TodoSectionEnum;
