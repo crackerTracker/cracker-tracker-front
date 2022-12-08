@@ -2,7 +2,12 @@ import React, { FC, memo } from 'react';
 import AbstractDrawer, { AbstractDrawerProps } from 'components/AbstractDrawer';
 import zIndexes from 'styles/z-indexes';
 
-const LeftSideDrawer: FC<AbstractDrawerProps> = ({
+type LeftSideDrawerProps = Pick<
+  AbstractDrawerProps,
+  'children' | 'footerChildren' | 'headerTitle' | 'onDrawerClose' | 'visible'
+>;
+
+const LeftSideDrawer: FC<LeftSideDrawerProps> = ({
   onDrawerClose,
   visible,
   headerTitle = '',
