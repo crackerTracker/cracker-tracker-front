@@ -1,5 +1,8 @@
+import { Menu } from 'antd';
 import * as React from 'react';
 import { computed, makeObservable } from 'mobx';
+import RootStore from 'stores/RootStore';
+
 import {
   getInitialPieChartSelection,
   getSimpleDatesSelectionPayload,
@@ -13,9 +16,9 @@ import {
 } from 'pages/Tracker/ChartsDrawer/types';
 import { CAPITAL_L_MOMENT_FORMAT } from 'config/ui';
 import formatDatesRange from 'utils/formatDatesRange';
+
 import PieChartModel from './PieChartModel';
 import { AbstractChartController } from '../abstract';
-import { Menu } from 'antd';
 
 /**
  * Контроллер графика - слой между управляющими элементами и моделью данных
@@ -24,8 +27,8 @@ class PieChartController extends AbstractChartController<
   PieChartModel,
   PieChartSelectionType
 > {
-  constructor() {
-    super(() => new PieChartModel(), getInitialPieChartSelection);
+  constructor(rootStore: RootStore) {
+    super(() => new PieChartModel(rootStore), getInitialPieChartSelection);
     makeObservable(this, {
       selectedDateTitle: computed,
     });

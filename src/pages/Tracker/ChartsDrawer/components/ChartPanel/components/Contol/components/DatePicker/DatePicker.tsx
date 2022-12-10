@@ -27,6 +27,7 @@ const DatePicker: React.FC<Props> = ({ onPick, disabled = false }) => {
         onOpenChange={toggleOpened}
         onChange={onPick}
         locale={locale}
+        showToday={false}
       />
       <IconButton
         image={images.bigDateCalendarBrown.default}

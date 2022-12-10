@@ -24,9 +24,9 @@ const formBarChartDataConfig = ({
 
   // Формируем столбцы и слои столбцов столбчатого графика
   const datasets: BarChartDatasetType[] = minutesPerCategory.map(
-    ({ category, minutesPerDay }) => ({
-      label: category.name,
-      backgroundColor: category.color,
+    ({ categoryData, minutesPerDay }) => ({
+      label: categoryData.name,
+      backgroundColor: categoryData.color,
       data: minutesPerDay,
     })
   );

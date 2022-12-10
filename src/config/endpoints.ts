@@ -1,4 +1,5 @@
 export const endpoints = {
+  /* POMODORO SECTION STARTS */
   requestAll: {
     url: '/api/pomodoro/pomodoros',
     method: 'GET',
@@ -31,11 +32,9 @@ export const endpoints = {
     url: '/api/pomodoro/editDone',
     method: 'POST',
   },
+  /* POMODORO SECTION ENDS */
 
-  getAllTrackerTasks: {
-    url: '/api/tracker/tasks',
-    method: 'GET',
-  },
+  /* TRACKER SECTION STARTS */
   getTrackerTasksByMonths: {
     url: '/api/tracker/tasksByMonths',
     method: 'GET',
@@ -68,4 +67,9 @@ export const endpoints = {
     url: '/api/tracker/deleteCategory',
     method: 'POST',
   },
+  getStatistics: {
+    url: '/api/tracker/statistics',
+    method: 'GET',
+  },
+  /* TRACKER SECTION ENDS */
 };

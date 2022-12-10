@@ -1,38 +1,30 @@
+import { observer } from 'mobx-react-lite';
+import { Row } from 'antd';
 import * as React from 'react';
+
 import RightSideDrawer, {
   RightSideDrawerProps,
 } from 'components/RightSideDrawer';
-import { CategoriesBlock, ChartBlock } from './ChartsDrawer.styles';
-import { Row } from 'antd';
 import { images } from 'img/icons';
+
+import { CategoriesBlock, ChartBlock } from './ChartsDrawer.styles';
 import { ToggleIconButton, ChartPanel, CategoriesList } from './components';
-import { observer } from 'mobx-react-lite';
 import { TrackerChartsEnum } from './config';
 import { useChartsDrawerStore, withChartsDrawerStoreProvider } from './store';
 
 type Props = Pick<RightSideDrawerProps, 'visible' | 'onDrawerClose'>;
 
 const ChartsDrawer: React.FC<Props> = ({ onDrawerClose, visible }) => {
-  const {
-    chartType,
-    onChangeChartType,
-    barChartController,
-    pieChartController,
-    isPieChart,
-  } = useChartsDrawerStore();
+  const { chartType, onChangeChartType, handleChangeVisibility } =
+    useChartsDrawerStore();
 
   React.useEffect(() => {
-    isPieChart
-      ? pieChartController.initModel()
-      : barChartController.initModel();
-  }, []);
+    handleChangeVisibility(visible);
+  }, [visible]);
 
-  const onClickChangeChartType = React.useCallback(
-    (chartType: TrackerChartsEnum) => async () => {
-      await onChangeChartType(chartType);
-    },
-    []
-  );
+  const onClickChangeChartType = (chartType: TrackerChartsEnum) => async () => {
+    await onChangeChartType(chartType);
+  };
 
   return (
     <RightSideDrawer
