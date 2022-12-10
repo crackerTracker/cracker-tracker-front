@@ -1,7 +1,8 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import moment from 'moment';
 import 'moment/locale/ru';
-import { TodosToggleEnum, weekPageHeaderDateFormat } from 'config/todo';
+import { TodosToggleEnum } from 'config/todo';
+import { FULL_MONTH_YEAR_FORMAT } from 'config/datesTimeFormats';
 import RootStore from 'stores/RootStore';
 import { getAuthHeader } from 'utils/getAuthHeader';
 import { request } from 'utils/request';
@@ -16,9 +17,7 @@ class TodoStore {
   public isLoading = false;
 
   // current date in header of week page like 'июнь 2022'
-  public headerDate = String(
-    moment(new Date()).format(weekPageHeaderDateFormat)
-  );
+  public headerDate = String(moment(new Date()).format(FULL_MONTH_YEAR_FORMAT));
 
   public currentTodosToggle = TodosToggleEnum.all;
 

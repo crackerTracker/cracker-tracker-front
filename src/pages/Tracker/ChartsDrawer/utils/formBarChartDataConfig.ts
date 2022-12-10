@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { CAPITAL_L_MOMENT_FORMAT } from 'config/ui';
+import { LOCAL_EXTENDED_DATE_FORMAT } from 'config/datesTimeFormats';
 import {
   BarChartDatasetType,
   BarChartDataType,
@@ -19,7 +19,7 @@ const formBarChartDataConfig = ({
 }: BarChartRawDataType): BarChartDataType => {
   // Формируем массив дат
   const labels: string[] = days.map((zeroTimestamp) =>
-    moment(zeroTimestamp).utc().format(CAPITAL_L_MOMENT_FORMAT)
+    moment(zeroTimestamp).utc().format(LOCAL_EXTENDED_DATE_FORMAT)
   );
 
   // Формируем столбцы и слои столбцов столбчатого графика

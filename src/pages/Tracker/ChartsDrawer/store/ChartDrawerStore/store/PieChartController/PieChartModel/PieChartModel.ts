@@ -4,7 +4,7 @@ import { request } from 'utils/request';
 import { endpoints } from 'config/endpoints';
 import { getAuthHeader } from 'utils/getAuthHeader';
 import RootStore from 'stores/RootStore';
-import { USA_MINUS_DATE_FORMAT } from 'config/dates';
+import { USA_MINUS_DATE_FORMAT } from 'config/datesTimeFormats';
 import {
   DatesSelectionType,
   DatesSelectionTypesEnum,

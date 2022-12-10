@@ -14,7 +14,7 @@ import {
   DatesSelectionTypesEnum,
   PieChartSelectionType,
 } from 'pages/Tracker/ChartsDrawer/types';
-import { CAPITAL_L_MOMENT_FORMAT } from 'config/ui';
+import { LOCAL_EXTENDED_DATE_FORMAT } from 'config/datesTimeFormats';
 import formatDatesRange from 'utils/formatDatesRange';
 
 import PieChartModel from './PieChartModel';
@@ -49,7 +49,7 @@ class PieChartController extends AbstractChartController<
     const { value: selectedDateValue, selectionType } = selection;
 
     if (selectionType === DatesSelectionTypesEnum.single) {
-      return selectedDateValue.format(CAPITAL_L_MOMENT_FORMAT);
+      return selectedDateValue.format(LOCAL_EXTENDED_DATE_FORMAT);
     }
 
     if (!selectedDateValue) {
