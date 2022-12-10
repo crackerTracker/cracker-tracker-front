@@ -13,6 +13,10 @@ export const weekDaysNames = [
 
 export const GROUP_NAME_MAX_LENGTH = 40;
 
+export enum TodoSectionEnum {
+  groups = 'groups',
+}
+
 export enum TodoNavigateEnum {
   all = 'all',
   week = 'week',

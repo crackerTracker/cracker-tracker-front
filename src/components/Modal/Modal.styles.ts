@@ -2,6 +2,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import colors from 'styles/colors';
 import { scroller, flex, animate } from 'styles/mixins';
 import IconButton from 'components/IconButton';
+import zIndexes from 'styles/z-indexes';
 
 export const ModalTransitionStyle = createGlobalStyle`
     --scale-ratio: 1;
@@ -43,7 +44,7 @@ export const Background = styled.div`
   height: 100vh;
 
   position: fixed;
-  z-index: 100;
+  z-index: ${zIndexes.modalBackground};
 
   background-color: rgba(0, 0, 0, 0.5);
 
@@ -61,7 +62,7 @@ export const Container = styled.div<{
   position: fixed;
   left: 50%;
   top: 50%;
-  z-index: 101;
+  z-index: ${zIndexes.modalContainer};
 
   ${flex({ direction: 'column' })}
 

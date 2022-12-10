@@ -18,6 +18,8 @@ export const images = {
   todoToggleWDate: require('./todoToggleWDate.svg'),
   todoToggleWoutDate: require('./todoToggleWoutDate.svg'),
 
+  todolistBrown: require('./todolistBrown.svg'),
+
   clock: require('./clock.svg'),
   deleteBrown: require('./deleteBrown.svg'),
   addToGroupBrown: require('./addToGroupBrown.svg'),

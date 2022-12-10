@@ -1,11 +1,24 @@
 import { Drawer } from 'antd';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import colors from 'styles/colors';
+import { navbarWidth } from 'styles/consts';
 import { flex, scroller } from 'styles/mixins';
 
-export const StyledDrawer = styled(Drawer)`
+export const StyledAbstractDrawer = styled(Drawer)`
+  z-index: ${({ zIndex }) => zIndex};
+
   .ant-drawer-body {
     background-color: ${colors.peach};
+  }
+
+  .ant-drawer-content-wrapper {
+    ${({ placement, visible }) =>
+      placement === 'left' &&
+      css`
+        transform: ${visible
+          ? `translate3d(${navbarWidth}, 0, 0)`
+          : `translate3d(calc(-100% - ${navbarWidth}), 0, 0)`};
+      `}
   }
 `;
 
@@ -20,7 +33,7 @@ export const Header = styled.header`
   margin-bottom: 35px;
 `;
 
-export const Date = styled.div`
+export const Title = styled.div`
   ${flex({ align: 'center', justify: 'center' })}
   flex: 1 1 auto;
 

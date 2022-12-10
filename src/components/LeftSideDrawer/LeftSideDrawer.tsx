@@ -1,12 +1,13 @@
 import React, { FC, memo } from 'react';
 import AbstractDrawer, { AbstractDrawerProps } from 'components/AbstractDrawer';
+import zIndexes from 'styles/z-indexes';
 
-export type RightSideDrawerProps = Pick<
+type LeftSideDrawerProps = Pick<
   AbstractDrawerProps,
   'children' | 'footerChildren' | 'headerTitle' | 'onDrawerClose' | 'visible'
 >;
 
-const RightSideDrawer: FC<RightSideDrawerProps> = ({
+const LeftSideDrawer: FC<LeftSideDrawerProps> = ({
   onDrawerClose,
   visible,
   headerTitle = '',
@@ -15,16 +16,17 @@ const RightSideDrawer: FC<RightSideDrawerProps> = ({
 }) => {
   return (
     <AbstractDrawer
-      width={572}
-      placement="right"
+      size="default"
+      placement="left"
       onDrawerClose={onDrawerClose}
       visible={visible}
       headerTitle={headerTitle}
       footerChildren={footerChildren}
+      zIndex={zIndexes.leftDrawer}
     >
       {children}
     </AbstractDrawer>
   );
 };
 
-export default memo(RightSideDrawer);
+export default memo(LeftSideDrawer);

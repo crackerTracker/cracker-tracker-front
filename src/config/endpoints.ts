@@ -1,4 +1,15 @@
 export const endpoints = {
+  /* AUTH SECTION STARTS */
+  login: {
+    url: '/api/auth/login',
+    method: 'POST',
+  },
+  register: {
+    url: '/api/auth/register',
+    method: 'POST',
+  },
+  /* AUTH SECTION ENDS */
+
   /* POMODORO SECTION STARTS */
   requestAll: {
     url: '/api/pomodoro/pomodoros',

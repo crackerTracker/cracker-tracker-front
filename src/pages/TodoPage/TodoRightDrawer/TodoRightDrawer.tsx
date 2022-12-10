@@ -12,7 +12,7 @@ import {
   StyledIconButton,
   StyledTextArea,
 } from './TodoRightDrawer.styles';
-import useTodo from '../useTodo';
+import { useTodo } from '../hooks';
 import formDateStringFromISO from 'utils/formDateStringFromISO';
 import { useTodoStore } from 'stores/hooks';
 import GroupsDropdownMenu from './GroupsDropdownMenu';
