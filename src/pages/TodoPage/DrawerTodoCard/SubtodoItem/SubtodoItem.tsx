@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect, useState } from 'react';
 import { useTodoStore } from 'stores/hooks';
 import { TodoType } from 'stores/TodoStore/types';
-import useTodo from '../../useTodo';
+import { useTodo } from 'pages/TodoPage/hooks';
 import {
   SubtodoListItem,
   StyledCheckbox,

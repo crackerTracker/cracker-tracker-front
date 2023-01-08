@@ -1,11 +1,12 @@
-import { TodosToggleEnum, weekPageHeaderDateFormat } from 'config/todo';
 import { makeAutoObservable, runInAction } from 'mobx';
 import moment from 'moment';
 import 'moment/locale/ru';
+import { TodosToggleEnum, weekPageHeaderDateFormat } from 'config/todo';
 import RootStore from 'stores/RootStore';
-import request from 'utils/request';
+import { getAuthHeader } from 'utils/getAuthHeader';
+import { request } from 'utils/request';
 import { endpoints } from './endpoints';
-import { SubtodoType, TodoType } from './types';
+import { SubtodoType, TodoGroupType, TodoType } from './types';
 
 type PrivateFields = 'rootStore';
 
@@ -25,6 +26,8 @@ class TodoStore {
   public tempTodoName = '';
 
   private _todos: TodoType[] = [];
+
+  public groups: TodoGroupType[] = [];
 
   constructor(rootStore: RootStore) {
     makeAutoObservable<this, PrivateFields>(this, {
@@ -55,6 +58,10 @@ class TodoStore {
     }
   }
 
+  getLastAddedGroup = () => {
+    return this.groups[this.groups.length - 1];
+  };
+
   setTodosToggle = (toggle: TodosToggleEnum) => {
     this.currentTodosToggle = toggle;
   };
@@ -71,14 +78,17 @@ class TodoStore {
     this.headerDate = date;
   };
 
+  setGroups = (groups: TodoGroupType[]) => {
+    this.groups = groups;
+  };
+
   requestTodos = async () => {
     this.isLoading = true;
 
     try {
       const data = await request({
-        url: endpoints.getTodos.url,
-        method: endpoints.getTodos.method,
-        headers: { Authorization: `Bearer ${this.token}` },
+        ...endpoints.getTodos,
+        headers: getAuthHeader(this.token),
       });
 
       runInAction(() => {
@@ -107,9 +117,8 @@ class TodoStore {
   ) => {
     try {
       await request({
-        url: endpoints.createTodo.url,
-        method: endpoints.createTodo.method,
-        headers: { Authorization: `Bearer ${this.token}` },
+        ...endpoints.createTodo,
+        headers: getAuthHeader(this.token),
         body: {
           name,
           done,
@@ -144,10 +153,9 @@ class TodoStore {
     subTodos?: { name: string; done?: boolean }[]
   ) => {
     try {
-      await request({
-        url: endpoints.editTodo.url,
-        method: endpoints.editTodo.method,
-        headers: { Authorization: `Bearer ${this.token}` },
+      const data: TodoType = await request({
+        ...endpoints.editTodo,
+        headers: getAuthHeader(this.token),
         body: {
           toEditId,
           name,
@@ -161,7 +169,9 @@ class TodoStore {
         },
       });
 
-      await this.requestTodos();
+      if (data) {
+        await this.requestTodos();
+      }
     } catch (e: any) {
       console.log('TodoStore.editTodo', e.message);
     }
@@ -170,15 +180,83 @@ class TodoStore {
   deleteTodo = async (toDeleteId: string) => {
     try {
       await request({
-        url: endpoints.deleteTodo.url,
-        method: endpoints.deleteTodo.method,
-        headers: { Authorization: `Bearer ${this.token}` },
+        ...endpoints.deleteTodo,
+        headers: getAuthHeader(this.token),
         body: { toDeleteId },
       });
 
       await this.requestTodos();
     } catch (e: any) {
       console.log('TodoStore.deleteTodo', e.message);
+    }
+  };
+
+  getGroups = async () => {
+    try {
+      const data: TodoGroupType[] = await request({
+        ...endpoints.getGroups,
+        headers: getAuthHeader(this.token),
+      });
+
+      if (data) {
+        this.setGroups(data);
+      }
+    } catch (e: any) {
+      console.log('TodoStore.getGroups', e.message);
+    }
+  };
+
+  createGroup = async (name: string) => {
+    try {
+      const data: TodoGroupType = await request({
+        ...endpoints.createGroup,
+        headers: getAuthHeader(this.token),
+        body: { name },
+      });
+
+      if (data) {
+        await this.getGroups();
+      }
+    } catch (e: any) {
+      console.log('TodoStore.createGroup', e.message);
+    }
+  };
+
+  findTodoById = (todoId: string): TodoType => {
+    return this.todos.find(({ _id }) => _id === todoId) || ({} as TodoType);
+  };
+
+  deleteFromGroup = async (todoId: string) => {
+    try {
+      await this.editTodo(
+        todoId,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        null
+      );
+    } catch (e: any) {
+      console.log('TodoStore.deleteFromGroup', e.message);
+    }
+  };
+
+  deleteGroup = async (toDeleteId: string) => {
+    try {
+      const data: TodoGroupType = await request({
+        ...endpoints.deleteGroup,
+        headers: getAuthHeader(this.token),
+        body: { toDeleteId },
+      });
+
+      if (data) {
+        await this.getGroups();
+        await this.requestTodos();
+      }
+    } catch (e: any) {
+      console.log('TodoStore.deleteGroup', e.message);
     }
   };
 }

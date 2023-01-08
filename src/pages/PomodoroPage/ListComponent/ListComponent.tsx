@@ -1,11 +1,11 @@
 import { Empty, List } from 'antd';
 import { observer } from 'mobx-react-lite';
-import DoneInput from 'pages/PomodoroPage/DonePomoItem';
-import PlannedInput from 'pages/PomodoroPage/PlannedPomoItem';
-import TaskInput from 'pages/PomodoroPage/TaskInput';
 import React, { FC, useEffect } from 'react';
+import DonePomoItem from 'pages/PomodoroPage/DonePomoItem';
+import PlannedPomoItem from 'pages/PomodoroPage/PlannedPomoItem';
+import TaskInput from 'pages/PomodoroPage/TaskInput';
 import { usePomodoroStore } from 'stores/hooks';
-import { DonePomoType, PlannedPomoType } from 'stores/PomodoroStore';
+import { DonePomoType, PlannedPomoType } from 'stores/PomodoroStore/types';
 import { Container, StyledList, Title } from './ListComponent.style';
 
 type PlaceholderProps = {
@@ -40,8 +40,8 @@ const ListComponent: FC = () => {
         bordered
         dataSource={plannedPomosData}
         renderItem={(item) => (
-          <List.Item key={(item as PlannedPomoType)._id}>
-            <PlannedInput {...(item as PlannedPomoType)} />
+          <List.Item key={(item as PlannedPomoType).id}>
+            <PlannedPomoItem plannedPomo={item as PlannedPomoType} />
           </List.Item>
         )}
         locale={{
@@ -55,8 +55,8 @@ const ListComponent: FC = () => {
         bordered
         dataSource={donePomosData}
         renderItem={(item) => (
-          <List.Item key={(item as DonePomoType)._id}>
-            <DoneInput {...(item as DonePomoType)} />
+          <List.Item key={(item as DonePomoType).id}>
+            <DonePomoItem donePomo={item as DonePomoType} />
           </List.Item>
         )}
         locale={{

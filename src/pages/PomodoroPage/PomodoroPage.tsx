@@ -8,10 +8,10 @@ import { usePomodoroStore } from 'stores/hooks';
 import { observer } from 'mobx-react-lite';
 
 const PomodoroPage: FC = () => {
-  const { isTick } = usePomodoroStore();
+  const { timerState } = usePomodoroStore();
 
   return (
-    <Wrapper isTick={isTick}>
+    <Wrapper timerState={timerState}>
       <Container>
         <Row justify="center">
           <Col span={7}>

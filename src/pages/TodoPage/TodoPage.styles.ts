@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import colors, { halfOpacityColors, shadowColors } from 'styles/colors';
-import { flex } from 'styles/mixins';
+import { flex, textElipsisOnSomeLines } from 'styles/mixins';
 import { Input } from 'antd';
 
 export const Wrapper = styled.div`
@@ -41,6 +41,8 @@ export const Title = styled.h1`
   font-weight: 600;
   font-size: 50px;
   line-height: 61px;
+
+  ${textElipsisOnSomeLines(2)};
 
   // deleting space on the left
   ::first-letter {

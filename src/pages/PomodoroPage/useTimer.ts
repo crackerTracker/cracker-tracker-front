@@ -1,4 +1,13 @@
-import { defaultInitialMinutes } from 'config/pomoconf';
+import {
+  defaultInitialMinutes,
+  defaultLongRestMinutes,
+  defaultRestMinutes,
+  maxSeriesCount,
+  OptionsEnum,
+  pomoRestSettings,
+  pomoSeriesItem,
+  TimerStatesEnum,
+} from 'config/pomoconf';
 import { useEffect, useRef, useState } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
 
@@ -16,15 +25,18 @@ export const useTimer = () => {
   const { markPomoDone, plannedPomosData } = usePomodoroStore();
 
   const [option, setOption] = useState<OptionType>({
-    add: '1 минута',
-    diff: '1 минута',
+    add: OptionsEnum[1],
+    diff: OptionsEnum[1],
   });
 
   const timerId = useRef<NodeJS.Timeout | null>(null);
 
   const startTimer = () => {
+    if (store.timerState === TimerStatesEnum.off)
+      store.setTimerState(TimerStatesEnum.work);
+
     resetTimeout();
-    store.setIsTick(true);
+
     timerId.current = setTimeout(() => {
       setSeconds((s) => (s <= 0 ? 59 : s - 1));
       startTimer();
@@ -32,30 +44,49 @@ export const useTimer = () => {
   };
 
   const stopTimer = () => {
+    if (store.timerState === TimerStatesEnum.rest) {
+      stopRestTimer();
+    }
+
+    if (store.timerState === TimerStatesEnum.work) {
+      stopWorkTimer();
+      store.setTimerState(TimerStatesEnum.rest);
+      startTimer();
+    }
+  };
+
+  const stopWorkTimer = () => {
     const spentMs = (initialMinutes * 60 - (minutes * 60 + seconds)) * 1000;
 
     const endTime = new Date();
-    const endTimeStamp = endTime.toISOString();
+    const endTimeISOString = endTime.toISOString();
 
     const startTime = new Date(endTime.getTime() - spentMs);
-    const startTimeStamp = startTime.toISOString();
+    const startTimeISOString = startTime.toISOString();
 
     const minDiff = initialMinutes - minutes > 0 ? initialMinutes - minutes : 1;
 
-    if (store.isTick) {
-      markPomoDone(
-        plannedPomosData[0]._id,
-        minDiff,
-        startTimeStamp,
-        endTimeStamp
-      );
+    markPomoDone(
+      plannedPomosData[0].id,
+      minDiff,
+      startTimeISOString,
+      endTimeISOString
+    );
 
-      setSeconds(0);
-      setMinutes(defaultInitialMinutes);
-      setInitialMinutes(defaultInitialMinutes);
-      resetTimeout();
-      store.setIsTick(false);
-    }
+    setSeconds(0);
+    setMinutes(getCurrentRestMinutes());
+
+    resetTimeout();
+  };
+
+  const stopRestTimer = () => {
+    store.setTimerState(TimerStatesEnum.off);
+
+    setSeconds(0);
+    setMinutes(defaultInitialMinutes);
+    setInitialMinutes(defaultInitialMinutes);
+
+    resetTimeout();
   };
 
   const resetTimeout = () => {
@@ -91,6 +122,29 @@ export const useTimer = () => {
     }
   };
 
+  const changePomoSeries = () => {
+    const storageItem = localStorage.getItem(pomoSeriesItem);
+    const currentSeries = Number(storageItem);
+
+    !storageItem || currentSeries === maxSeriesCount
+      ? localStorage.setItem(pomoSeriesItem, '0')
+      : localStorage.setItem(pomoSeriesItem, String(currentSeries + 1));
+  };
+
+  const getCurrentRestMinutes = () => {
+    const currentSeries = Number(localStorage.getItem(pomoSeriesItem));
+    const restSettings = localStorage.getItem(pomoRestSettings);
+
+    if (restSettings) {
+      const { short, long } = JSON.parse(restSettings);
+      return currentSeries === maxSeriesCount ? long : short;
+    }
+
+    return currentSeries === maxSeriesCount
+      ? defaultLongRestMinutes
+      : defaultRestMinutes;
+  };
+
   useEffect(() => {
     if (seconds === 59) setMinutes((m) => m - 1);
     if (seconds === 0 && minutes === 0) stopTimer();
@@ -106,6 +160,7 @@ export const useTimer = () => {
     addMinutes,
     diffMinutes,
     setOption,
+    changePomoSeries,
     seconds,
     minutes,
     option,

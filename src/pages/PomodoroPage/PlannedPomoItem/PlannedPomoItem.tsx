@@ -1,109 +1,75 @@
 import { Col, Dropdown, Menu, Row } from 'antd';
-import { observer } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import React, { FC, useEffect } from 'react';
 import { usePomodoroStore } from 'stores/hooks';
 import { PlannedPomoType } from 'stores/PomodoroStore';
-import { usePomoItem } from '../usePomoItem';
 import {
   InputGroup,
   StyledButton,
   StyledInput,
   StyledInputNumber,
 } from './PlannedPomoItem.style';
+import { PlannedPomoStore } from './PlannedPomoStore';
 
-const PlannedPomoItem: FC<PlannedPomoType> = ({
-  _id,
-  name,
-  pomodorosAmount,
+type Props = {
+  plannedPomo: PlannedPomoType;
+};
+
+const PlannedPomoItem: FC<Props> = ({
+  plannedPomo: { id, name, pomodorosAmount },
 }) => {
+  const pomodoroStore = usePomodoroStore();
+
+  const plannedPomoStore = useLocalObservable(
+    () => new PlannedPomoStore(pomodoroStore, { id, name, pomodorosAmount })
+  );
+
   const {
     pomoName,
-    amount,
+    pomoAmount,
     isEdit,
-    setAmount,
-    menuEditClick,
-    menuDeleteClick,
+    isSetDisabled,
+    menuAddPomo,
+    menuMarkDone,
+    menuDeletePomo,
+    deletePomoStack,
+    setPomoAmount,
+    approveEditing,
     changeHandler,
+    menuEditClick,
     cancelChanges,
-    approveChanges,
-  } = usePomoItem({
-    name,
-    defaultAmount: pomodorosAmount,
-  });
+  } = plannedPomoStore;
 
-  const {
-    deletePlannedPomo,
-    deleteAllPlanned,
-    editPlannedPomo,
-    markPomoDone,
-    plannedPomosData,
-    isTick,
-  } = usePomodoroStore();
+  const { plannedPomosData } = pomodoroStore;
 
   useEffect(() => {
-    if (_id === plannedPomosData[0]._id) {
-      setAmount(plannedPomosData[0].pomodorosAmount);
+    const firstPomo = plannedPomosData[0];
+    const lastPomo = plannedPomosData[plannedPomosData.length - 1];
+    // to refresh first pomo amount when timer is over
+    if (id === firstPomo.id) {
+      setPomoAmount(firstPomo.pomodorosAmount);
     }
-    if (_id === plannedPomosData[plannedPomosData.length - 1]._id) {
-      setAmount(plannedPomosData[plannedPomosData.length - 1].pomodorosAmount);
+    // to refresh last pomo amount when adding pomo with the same name
+    if (id === lastPomo.id) {
+      setPomoAmount(lastPomo.pomodorosAmount);
     }
-  }, [plannedPomosData, _id]);
-
-  const menuAddPomo = () => {
-    setAmount((amount) => Number(amount) + 1);
-    editPlannedPomo(_id, pomoName, Number(amount) + 1);
-  };
-
-  const menuDeletePomo = () => {
-    setAmount((amount) => Number(amount) - 1);
-    deletePlannedPomo(_id);
-  };
-
-  const approveEditing = () => {
-    approveChanges();
-    editPlannedPomo(_id, pomoName, Number(amount));
-  };
-
-  const deletePomoStack = () => {
-    deleteAllPlanned(_id);
-    menuDeleteClick();
-  };
-
-  const isSetDisabled = () => {
-    return plannedPomosData[0]._id === _id && isTick;
-  };
-
-  const calculateTime = () => {
-    const spentMs = 50 * 60000;
-    const endTime = new Date();
-    const endTimeStamp = endTime.toISOString();
-
-    const startTime = new Date(endTime.getTime() - spentMs);
-    const startTimeStamp = startTime.toISOString();
-
-    return { endTimeStamp, startTimeStamp };
-  };
-
-  const menuMarkDone = () => {
-    const { endTimeStamp, startTimeStamp } = calculateTime();
-    return markPomoDone(_id, 50, startTimeStamp, endTimeStamp);
-  };
+  }, [plannedPomosData, id]);
 
   const menu = (
     <Menu>
-      <Menu.Item key="1" onClick={menuEditClick} disabled={isSetDisabled()}>
+      <Menu.Item key="1" onClick={menuEditClick} disabled={isSetDisabled}>
         Редактировать
       </Menu.Item>
-      <Menu.Item key="2" onClick={menuMarkDone} disabled={isSetDisabled()}>
+      <Menu.Item key="2" onClick={menuMarkDone} disabled={isSetDisabled}>
         Отметить выполненным
       </Menu.Item>
       <Menu.Item key="3" onClick={menuAddPomo}>
         Прибавить помидор
       </Menu.Item>
-      <Menu.Item key="4" onClick={menuDeletePomo} disabled={amount <= 1}>
+      <Menu.Item key="4" onClick={menuDeletePomo} disabled={pomoAmount <= 1}>
         Убавить помидор
       </Menu.Item>
-      <Menu.Item key="5" onClick={deletePomoStack} disabled={isSetDisabled()}>
+      <Menu.Item key="5" onClick={deletePomoStack} disabled={isSetDisabled}>
         Удалить
       </Menu.Item>
     </Menu>
@@ -118,8 +84,8 @@ const PlannedPomoItem: FC<PlannedPomoType> = ({
               min={1}
               disabled={!isEdit}
               bordered={false}
-              value={amount}
-              onChange={setAmount}
+              value={pomoAmount}
+              onChange={setPomoAmount}
             />
           </Col>
 

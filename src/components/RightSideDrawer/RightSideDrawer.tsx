@@ -1,22 +1,10 @@
-import IconButton from 'components/IconButton/IconButton';
-import { images } from 'img/icons';
-import React, { FC } from 'react';
-import {
-  StyledDrawer,
-  Date,
-  Header,
-  Content,
-  Footer,
-  Container,
-} from './RightSideDrawer.styles';
+import React, { FC, memo } from 'react';
+import AbstractDrawer, { AbstractDrawerProps } from 'components/AbstractDrawer';
 
-interface RightSideDrawerProps {
-  children?: React.ReactNode;
-  footerChildren?: React.ReactNode;
-  onDrawerClose: VoidFunction;
-  visible: boolean;
-  headerTitle?: string | null;
-}
+type RightSideDrawerProps = Pick<
+  AbstractDrawerProps,
+  'children' | 'footerChildren' | 'headerTitle' | 'onDrawerClose' | 'visible'
+>;
 
 const RightSideDrawer: FC<RightSideDrawerProps> = ({
   onDrawerClose,
@@ -26,29 +14,17 @@ const RightSideDrawer: FC<RightSideDrawerProps> = ({
   footerChildren = undefined,
 }) => {
   return (
-    <StyledDrawer
+    <AbstractDrawer
       width={572}
       placement="right"
-      onClose={onDrawerClose}
-      closable={false}
+      onDrawerClose={onDrawerClose}
       visible={visible}
+      headerTitle={headerTitle}
+      footerChildren={footerChildren}
     >
-      <Container>
-        <Header>
-          <Date>{headerTitle}</Date>
-          <IconButton
-            image={images.closeBrown.default}
-            onClick={onDrawerClose}
-            squareSide="38px"
-          />
-        </Header>
-
-        <Content>{children}</Content>
-
-        <Footer>{footerChildren}</Footer>
-      </Container>
-    </StyledDrawer>
+      {children}
+    </AbstractDrawer>
   );
 };
 
-export default RightSideDrawer;
+export default memo(RightSideDrawer);

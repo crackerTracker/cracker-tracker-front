@@ -15,10 +15,12 @@ const useForm = () => {
   }, []);
 
   const clickHandler = useCallback(
-    (e: FormEvent<HTMLButtonElement>) => {
+    async (e: FormEvent<HTMLButtonElement>) => {
       e.preventDefault();
 
-      isAuth ? loginHandler(email, password) : registerHandler(email, password);
+      isAuth
+        ? await loginHandler(email, password)
+        : await registerHandler(email, password);
 
       setEmail('');
       setPassword('');
