@@ -1,9 +1,10 @@
+import { Moment } from 'moment';
+import { RangeValue } from 'rc-picker/lib/interface';
+
 import {
   ApiBaseCategoryType,
   BaseCategoryType,
 } from 'stores/TrackerStore/types';
-import { Moment } from 'moment';
-import { RangeValue } from 'rc-picker/lib/interface';
 
 /**
  * Загрузить данные можно либо за один день, либо за диапазон дат
@@ -71,6 +72,11 @@ export type OthersCategoriesItemType = Omit<
   PercentStringStatsCategoryType,
   'id'
 >;
+
+export type StatisticsRequestDatesType = {
+  start: string;
+  end?: string;
+};
 
 export const normalizeStatsCategory = ({
   _id,

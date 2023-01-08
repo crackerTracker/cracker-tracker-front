@@ -32,7 +32,7 @@ export type BarChartOptionsType = ChartOptions<TrackerChartsEnum.bar>;
 /* Типы данных: */
 
 export type ApiMinutesPerCategoryType = {
-  category: ApiBaseCategoryType;
+  categoryData: ApiBaseCategoryType;
   // Сколько времени затрачено на данную категорию по каждому из дней
   // (индекс дня равен индексу затраченного времени за этот день)
   minutesPerDay: number[];
@@ -49,7 +49,7 @@ export type BarChartApiDataType = {
 };
 
 export type MinutesPerCategoryType = {
-  category: BaseCategoryType;
+  categoryData: BaseCategoryType;
   minutesPerDay: number[];
 };
 
@@ -76,8 +76,8 @@ export const normalizeBarChartApiData = ({
   minutesPerCategory,
 }: BarChartApiDataType): BarChartRawDataType => {
   const minutesSpentPerCategories = minutesPerCategory.map(
-    ({ category: apiCategory, minutesPerDay }): MinutesPerCategoryType => ({
-      category: normalizeBaseCategory(apiCategory),
+    ({ categoryData: apiCategory, minutesPerDay }): MinutesPerCategoryType => ({
+      categoryData: normalizeBaseCategory(apiCategory),
       minutesPerDay,
     })
   );

@@ -1,6 +1,6 @@
 import { Moment } from 'moment';
 
-import { CAPITAL_L_MOMENT_FORMAT } from 'config/ui';
+import { LOCAL_EXTENDED_DATE_FORMAT } from 'config/datesTimeFormats';
 import { DECODED_MID_DASH_STRING } from 'config/symbols';
 
 /**
@@ -12,7 +12,7 @@ import { DECODED_MID_DASH_STRING } from 'config/symbols';
  */
 const formatDatesRange = (
   [start, end]: [Moment, Moment],
-  format = CAPITAL_L_MOMENT_FORMAT,
+  format = LOCAL_EXTENDED_DATE_FORMAT,
   separator = ` ${DECODED_MID_DASH_STRING} `
 ) => `${start.format(format)}${separator}${end.format(format)}`;
 

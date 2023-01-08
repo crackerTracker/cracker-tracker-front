@@ -1,4 +1,10 @@
 import { action, computed, makeObservable, runInAction } from 'mobx';
+
+import { request } from 'utils/request';
+import { endpoints } from 'config/endpoints';
+import { getAuthHeader } from 'utils/getAuthHeader';
+import RootStore from 'stores/RootStore';
+import { USA_MINUS_DATE_FORMAT } from 'config/datesTimeFormats';
 import {
   DatesSelectionType,
   DatesSelectionTypesEnum,
@@ -9,19 +15,19 @@ import {
   PieChartOptionsType,
   StatsCategoryType,
   DatesStringSelectionType,
+  StatisticsRequestDatesType,
+  ApiStatsCategoryType,
 } from 'pages/Tracker/ChartsDrawer/types';
 import {
   formPercentStatsCategories,
   formPieChartDataConfig,
   OthersExtendedPercentStatsCategoriesType,
 } from 'pages/Tracker/ChartsDrawer/utils';
-import { mockApiPieChartData } from 'pages/Tracker/ChartsDrawer/mock';
 import {
   PIE_CHART_OPTIONS,
   TrackerChartsEnum,
 } from 'pages/Tracker/ChartsDrawer/config';
-import mockRequest from 'utils/mockRequest';
-import formZeroISOStringFromTimestamp from 'utils/formZeroISOStringFromTimestamp';
+
 import AbstractChartModel from '../../abstract/AbstractChartModel';
 
 type PrivateFields =
@@ -40,8 +46,8 @@ class PieChartModel extends AbstractChartModel<
   PieChartDataType,
   PieChartOptionsType
 > {
-  constructor(chartDataOptions = PIE_CHART_OPTIONS) {
-    super(chartDataOptions);
+  constructor(rootStore: RootStore, chartDataOptions = PIE_CHART_OPTIONS) {
+    super(rootStore, chartDataOptions);
     makeObservable<this, PrivateFields>(this, {
       chartDataConfig: computed,
       _sumSpentMinutes: computed,
@@ -94,9 +100,9 @@ class PieChartModel extends AbstractChartModel<
   /**
    * Массив категорий для отображения
    */
-  get formattedCategoriesList(): PercentStringStatsCategoryType[] | null {
+  get formattedCategoriesList(): PercentStringStatsCategoryType[] {
     if (!this._formattedCategoriesWithOthers) {
-      return null;
+      return [];
     }
 
     return this._formattedCategoriesWithOthers.categories;
@@ -117,7 +123,6 @@ class PieChartModel extends AbstractChartModel<
    * Загружает и нормализует данные. Принимает в качестве значения выбранных
    * дат строки с нулями на месте часов, минут, секунд и миллисекунд
    */
-  // todo при прикрутке бэка сделать
   protected async _load({
     selectionType,
     value,
@@ -126,21 +131,49 @@ class PieChartModel extends AbstractChartModel<
       return null;
     }
 
-    this._meta.setLoading();
+    try {
+      this._meta.setLoading();
 
-    await mockRequest();
+      const datesRequestBody: StatisticsRequestDatesType =
+        selectionType === DatesSelectionTypesEnum.single
+          ? {
+              start: value,
+            }
+          : {
+              start: value[0],
+              end: value[1],
+            };
 
-    // todo проверка
+      const response: ApiStatsCategoryType[] = await request({
+        ...endpoints.getStatistics,
+        headers: getAuthHeader(this._rootStore.authStore.token),
+        body: {
+          type: TrackerChartsEnum.pie,
+          ...datesRequestBody,
+        },
+      });
 
-    this._meta.setNotLoading();
+      // Проверить, не прислал ли сервер некорректные данные
+      if (!Array.isArray(response) && !response) {
+        this._meta.setError();
+        return null;
+      }
 
-    return mockApiPieChartData.map(normalizeStatsCategory);
+      const normalized = response.map(normalizeStatsCategory);
+
+      this._meta.setNotLoading();
+
+      return normalized;
+    } catch (e) {
+      console.log('PieCharModel._load error', e);
+    }
+
+    return null;
   }
 
   /**
    * Инициализирует модель данных выбранными данными
    */
-  // todo при прикрутке бэка сделать
   async init(payload: DatesSelectionType): Promise<void> {
     if (this._meta.isLoading || this._initialized || this._initializing) {
       return;
@@ -148,16 +181,18 @@ class PieChartModel extends AbstractChartModel<
 
     this._initializing = true;
 
-    await mockRequest();
-
     const loaded = await this._onSetDates(payload);
 
-    // todo проверка на loaded
-
     runInAction(() => {
-      this._rawData = loaded ?? null;
+      if (loaded === null) {
+        this._rawData = null;
+        this._initialized = false;
+      } else {
+        this._rawData = loaded;
+        this._initialized = true;
+      }
+
       this._initializing = false;
-      this._initialized = true;
     });
   }
 
@@ -171,7 +206,7 @@ class PieChartModel extends AbstractChartModel<
     if (selectionType === DatesSelectionTypesEnum.single) {
       return await this._load({
         selectionType,
-        value: formZeroISOStringFromTimestamp(value.valueOf()),
+        value: value.utc().format(USA_MINUS_DATE_FORMAT),
       });
     }
 
@@ -186,8 +221,8 @@ class PieChartModel extends AbstractChartModel<
       return await this._load({
         selectionType,
         value: [
-          formZeroISOStringFromTimestamp(startDate.valueOf()),
-          formZeroISOStringFromTimestamp(endDate.valueOf()),
+          startDate.utc().format(USA_MINUS_DATE_FORMAT),
+          endDate.utc().format(USA_MINUS_DATE_FORMAT),
         ],
       });
     }

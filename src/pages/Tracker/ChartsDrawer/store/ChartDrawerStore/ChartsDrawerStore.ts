@@ -1,33 +1,49 @@
-import { TrackerChartsEnum } from 'pages/Tracker/ChartsDrawer/config';
 import { action, computed, makeObservable, observable } from 'mobx';
-import { PieChartController, BarChartController } from './store';
 
-export type PrivateFields = '_chartType' | '_setChartType';
+import { TrackerChartsEnum } from 'pages/Tracker/ChartsDrawer/config';
+import RootStore from 'stores/RootStore';
+
+import { BarChartController, PieChartController } from './store';
+
+export type PrivateFields =
+  | '_chartType'
+  | '_setChartType'
+  | '_resetChart'
+  | '_pieChartController'
+  | '_barChartController';
 
 class ChartsDrawerStore {
+  private readonly _rootStore: RootStore;
+
   /**
    * Тип отображаемого в данный момент графика
    */
   private _chartType = TrackerChartsEnum.pie;
 
-  private readonly _pieChartController: PieChartController =
-    new PieChartController();
+  private _pieChartController: PieChartController;
 
-  private readonly _barChartController: BarChartController =
-    new BarChartController();
+  private _barChartController: BarChartController;
 
-  constructor() {
+  constructor(rootStore: RootStore) {
     makeObservable<this, PrivateFields>(this, {
       _chartType: observable,
+      _pieChartController: observable.ref,
+      _barChartController: observable.ref,
 
       chartType: computed,
       isPieChart: computed,
       toShowLoader: computed,
       toShowNoData: computed,
+      toShowError: computed,
 
       _setChartType: action,
       onChangeChartType: action,
+      _resetChart: action,
     });
+
+    this._rootStore = rootStore;
+    this._pieChartController = new PieChartController(rootStore);
+    this._barChartController = new BarChartController(rootStore);
   }
 
   get chartType(): TrackerChartsEnum {
@@ -64,9 +80,19 @@ class ChartsDrawerStore {
       !this.toShowLoader &&
       (this.isPieChart
         ? this._pieChartController.chartModel.initialized &&
-          !this._pieChartController.chartModel.formattedCategoriesList
+          !this._pieChartController.chartModel.formattedCategoriesList.length
         : this._barChartController.chartModel.initialized &&
-          !this._barChartController.chartModel.formattedCategoriesList)
+          !this._barChartController.chartModel.formattedCategoriesList.length)
+    );
+  }
+
+  get toShowError(): boolean {
+    return (
+      !this.toShowLoader &&
+      !this.toShowNoData &&
+      (this.isPieChart
+        ? this._pieChartController.chartModel.meta.isError
+        : this._barChartController.chartModel.meta.isError)
     );
   }
 
@@ -96,10 +122,28 @@ class ChartsDrawerStore {
     }
   };
 
-  // todo убрать после тестов
-  cleanData = (): void => {
-    this._pieChartController.chartModel.cleanData();
-    this._barChartController.chartModel.cleanData();
+  private _resetChart = (chartType: TrackerChartsEnum): void => {
+    chartType === TrackerChartsEnum.pie
+      ? (this._pieChartController = new PieChartController(this._rootStore))
+      : (this._barChartController = new BarChartController(this._rootStore));
+  };
+
+  handleChangeVisibility = (isVisible: boolean) => {
+    if (isVisible) {
+      this.isPieChart
+        ? this._pieChartController.initModel()
+        : this._barChartController.initModel();
+
+      return;
+    }
+
+    // Если у текущего выбранного графика при закрытии не было данных
+    // для отображения (из-за ошибки или потому, что просто не было
+    // что отображать), сбросить график, чтобы его можно было
+    // повторно инициализировать при следующем открытии
+    if (this.toShowNoData || this.toShowError) {
+      this._resetChart(this._chartType);
+    }
   };
 }
 

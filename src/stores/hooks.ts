@@ -1,6 +1,8 @@
 import { useContext } from 'react';
 import { StoresContext } from './StoresProvider';
 
+export const useRootStore = () => useContext(StoresContext);
+
 export const usePomodoroStore = () => useContext(StoresContext).pomodoroStore;
 
 export const useTrackerStore = () => useContext(StoresContext).trackerStore;

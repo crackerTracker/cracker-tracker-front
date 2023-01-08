@@ -1,5 +1,8 @@
+import { Menu } from 'antd';
 import * as React from 'react';
 import { computed, makeObservable } from 'mobx';
+import RootStore from 'stores/RootStore';
+
 import {
   getInitialPieChartSelection,
   getSimpleDatesSelectionPayload,
@@ -11,11 +14,11 @@ import {
   DatesSelectionTypesEnum,
   PieChartSelectionType,
 } from 'pages/Tracker/ChartsDrawer/types';
-import { CAPITAL_L_MOMENT_FORMAT } from 'config/ui';
+import { LOCAL_EXTENDED_DATE_FORMAT } from 'config/datesTimeFormats';
 import formatDatesRange from 'utils/formatDatesRange';
+
 import PieChartModel from './PieChartModel';
 import { AbstractChartController } from '../abstract';
-import { Menu } from 'antd';
 
 /**
  * Контроллер графика - слой между управляющими элементами и моделью данных
@@ -24,8 +27,8 @@ class PieChartController extends AbstractChartController<
   PieChartModel,
   PieChartSelectionType
 > {
-  constructor() {
-    super(() => new PieChartModel(), getInitialPieChartSelection);
+  constructor(rootStore: RootStore) {
+    super(() => new PieChartModel(rootStore), getInitialPieChartSelection);
     makeObservable(this, {
       selectedDateTitle: computed,
     });
@@ -46,7 +49,7 @@ class PieChartController extends AbstractChartController<
     const { value: selectedDateValue, selectionType } = selection;
 
     if (selectionType === DatesSelectionTypesEnum.single) {
-      return selectedDateValue.format(CAPITAL_L_MOMENT_FORMAT);
+      return selectedDateValue.format(LOCAL_EXTENDED_DATE_FORMAT);
     }
 
     if (!selectedDateValue) {

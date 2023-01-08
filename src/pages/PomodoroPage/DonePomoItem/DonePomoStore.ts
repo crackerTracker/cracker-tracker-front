@@ -1,6 +1,6 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 import moment from 'moment';
-import { format } from 'config/pomoconf';
+import { HOURS_MINUTES_EXTENDED_FORMAT } from 'config/datesTimeFormats';
 import PomodoroStore, { DonePomoType } from 'stores/PomodoroStore';
 import { PomoItemStore } from '../PomoItemStore';
 
@@ -61,7 +61,7 @@ export class DonePomoStore extends PomoItemStore {
 
   private _getTimeMoment = (date: string | Date): moment.Moment => {
     const timeString = new Date(date).toLocaleTimeString().slice(0, -3);
-    return moment(timeString, format);
+    return moment(timeString, HOURS_MINUTES_EXTENDED_FORMAT);
   };
 
   setSpentMinutes = (minutes: number | string): void => {

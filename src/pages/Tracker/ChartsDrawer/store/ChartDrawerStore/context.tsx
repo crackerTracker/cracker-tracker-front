@@ -1,6 +1,9 @@
-import * as React from 'react';
-import ChartsDrawerStore from './ChartsDrawerStore';
 import { useLocalObservable } from 'mobx-react-lite';
+import * as React from 'react';
+
+import { useRootStore } from 'stores/hooks';
+
+import ChartsDrawerStore from './ChartsDrawerStore';
 
 export const ChartsDrawerStoreContext =
   React.createContext<ChartsDrawerStore | null>(null);
@@ -25,7 +28,11 @@ export const withChartsDrawerStoreProvider = <T,>(
 ) => {
   // Записываю в отдельную переменную, чтобы не ругалось на отстуствтие DisplayName
   const WithChartsDrawerStore = (props: T) => {
-    const chartsDrawerStore = useLocalObservable(() => new ChartsDrawerStore());
+    const rootStore = useRootStore();
+
+    const chartsDrawerStore = useLocalObservable(
+      () => new ChartsDrawerStore(rootStore)
+    );
 
     return (
       <ChartsDrawerStoreContext.Provider value={chartsDrawerStore}>

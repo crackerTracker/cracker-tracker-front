@@ -41,8 +41,8 @@ const CategoriesList: React.FC = () => {
         : barChartFormattedCategoriesList ?? undefined,
     [
       isPieChart,
-      !!pieChartFormattedCategoriesList,
-      !!barChartFormattedCategoriesList,
+      pieChartFormattedCategoriesList,
+      barChartFormattedCategoriesList,
     ]
   );
 

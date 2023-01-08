@@ -11,8 +11,6 @@ export const weekDaysNames = [
   { id: 'Later', name: 'Когда-нибудь' },
 ];
 
-export const weekPageHeaderDateFormat = 'MMMM Y';
-
 export const GROUP_NAME_MAX_LENGTH = 40;
 
 export enum TodoSectionEnum {

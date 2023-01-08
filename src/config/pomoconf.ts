@@ -1,5 +1,3 @@
-export const format = 'HH:mm';
-
 export const defaultInitialMinutes = 50;
 
 export const defaultRestMinutes = 5;

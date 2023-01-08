@@ -1,3 +1,5 @@
+import { action, makeObservable, runInAction } from 'mobx';
+
 import {
   BarChartDataType,
   BarChartOptionsType,
@@ -7,16 +9,19 @@ import {
   normalizeBarChartApiData,
   PercentStringStatsCategoryType,
   DatesStringSelectionType,
+  BarChartApiDataType,
 } from 'pages/Tracker/ChartsDrawer/types';
 import {
   BAR_CHART_OPTIONS,
   TrackerChartsEnum,
 } from 'pages/Tracker/ChartsDrawer/config';
 import { formBarChartDataConfig } from 'pages/Tracker/ChartsDrawer/utils';
-import { mockApiBarChartData } from 'pages/Tracker/ChartsDrawer/mock';
-import { action, makeObservable, runInAction, toJS } from 'mobx';
-import mockRequest from 'utils/mockRequest';
-import formZeroISOStringFromTimestamp from 'utils/formZeroISOStringFromTimestamp';
+import RootStore from 'stores/RootStore';
+import { request } from 'utils/request';
+import { endpoints } from 'config/endpoints';
+import { getAuthHeader } from 'utils/getAuthHeader';
+import { USA_MINUS_DATE_FORMAT } from 'config/datesTimeFormats';
+
 import AbstractChartModel from '../../abstract/AbstractChartModel';
 
 type PrivateFields = '_load' | '_onSetDates';
@@ -27,8 +32,8 @@ class BarChartModel extends AbstractChartModel<
   BarChartDataType,
   BarChartOptionsType
 > {
-  constructor(chartDataOptions = BAR_CHART_OPTIONS) {
-    super(chartDataOptions);
+  constructor(rootStore: RootStore, chartDataOptions = BAR_CHART_OPTIONS) {
+    super(rootStore, chartDataOptions);
     makeObservable<this, PrivateFields>(this, {
       _load: action.bound, // просто для сохранения контекста
       init: action.bound,
@@ -40,7 +45,7 @@ class BarChartModel extends AbstractChartModel<
    * Создаёт конфиг данных для столбчатого графика
    */
   get chartDataConfig(): BarChartDataType | null {
-    if (!this._rawData) {
+    if (!this._rawData?.minutesPerCategory.length) {
       return null;
     }
 
@@ -50,13 +55,13 @@ class BarChartModel extends AbstractChartModel<
   /**
    * Массив категорий для отображения
    */
-  get formattedCategoriesList(): PercentStringStatsCategoryType[] | null {
-    if (!this._rawData) {
-      return null;
+  get formattedCategoriesList(): PercentStringStatsCategoryType[] {
+    if (!this._rawData || !this._rawData.minutesPerCategory.length) {
+      return [];
     }
 
     return this._rawData.minutesPerCategory.map(
-      ({ category }): PercentStringStatsCategoryType => category
+      ({ categoryData }): PercentStringStatsCategoryType => categoryData
     );
   }
 
@@ -65,30 +70,51 @@ class BarChartModel extends AbstractChartModel<
    * дат строки с нулями на месте часов, минут, секунд и миллисекунд.
    * (Столбчатый график грузит только по диапазону)
    */
-  // todo при прикрутке бэка сделать
   protected async _load({
     selectionType,
     value,
   }: DatesStringSelectionType): Promise<BarChartRawDataType | null> {
-    if (this._meta.isLoading) {
+    if (
+      this._meta.isLoading ||
+      selectionType === DatesSelectionTypesEnum.single
+    ) {
       return null;
     }
 
-    this._meta.setLoading();
+    try {
+      this._meta.setLoading();
 
-    await mockRequest();
+      const response: BarChartApiDataType = await request({
+        ...endpoints.getStatistics,
+        headers: getAuthHeader(this._rootStore.authStore.token),
+        body: {
+          type: TrackerChartsEnum.bar,
+          start: value[0],
+          end: value[1],
+        },
+      });
 
-    // todo проверка
+      // Проверить, не прислал ли сервер некорректные данные
+      if (!response || !response?.days || !response?.minutesPerCategory) {
+        this._meta.setError();
+        return null;
+      }
 
-    this._meta.setNotLoading();
+      const normalized = normalizeBarChartApiData(response);
 
-    return normalizeBarChartApiData(mockApiBarChartData);
+      this._meta.setNotLoading();
+
+      return normalized;
+    } catch (e) {
+      console.log('BarChartModel._load error', e);
+    }
+
+    return null;
   }
 
   /**
    * Инициализирует модель данных выбранными данными
    */
-  // todo при прикрутке бэка сделать
   async init(payload: DatesSelectionType): Promise<void> {
     if (this._meta.isLoading || this._initialized || this._initializing) {
       return;
@@ -96,16 +122,18 @@ class BarChartModel extends AbstractChartModel<
 
     this._initializing = true;
 
-    await mockRequest();
-
     const loaded = await this._onSetDates(payload);
 
-    // todo проверка на loaded
-
     runInAction(() => {
-      this._rawData = loaded ?? null;
+      if (loaded === null) {
+        this._rawData = null;
+        this._initialized = false;
+      } else {
+        this._rawData = loaded;
+        this._initialized = true;
+      }
+
       this._initializing = false;
-      this._initialized = true;
     });
   }
 
@@ -128,8 +156,8 @@ class BarChartModel extends AbstractChartModel<
       return await this._load({
         selectionType,
         value: [
-          formZeroISOStringFromTimestamp(startDate.valueOf()),
-          formZeroISOStringFromTimestamp(endDate.valueOf()),
+          startDate.utc().format(USA_MINUS_DATE_FORMAT),
+          endDate.utc().format(USA_MINUS_DATE_FORMAT),
         ],
       });
     }
