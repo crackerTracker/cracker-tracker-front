@@ -11,7 +11,7 @@ const getLastDaysRange = (range: number, isUTC = true): [Moment, Moment] => {
   // (range минус один день, так как текущий день включается в диапазон)
   const dayInPast = moment().subtract(range - 1, 'days');
 
-  return isUTC ? [moment().utc(), dayInPast.utc()] : [moment(), dayInPast];
+  return isUTC ? [dayInPast.utc(), moment().utc()] : [dayInPast, moment()];
 };
 
 export default getLastDaysRange;

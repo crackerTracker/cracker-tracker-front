@@ -1,4 +1,6 @@
+import { observer } from 'mobx-react-lite';
 import * as React from 'react';
+import { Bar, Pie } from 'react-chartjs-2';
 import {
   ArcElement,
   BarElement,
@@ -8,15 +10,15 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
+
 import { useChartsDrawerStore } from 'pages/Tracker/ChartsDrawer/store';
-import { observer } from 'mobx-react-lite';
-import { NoData, DisablingContainer, Wrapper } from './Chart.styles';
 import { Loader } from 'pages/Tracker/ChartsDrawer/components/ui';
 import {
   NO_DATA_TEXT,
   NO_DATA_TEXT_EXTRA,
 } from 'pages/Tracker/ChartsDrawer/config';
+
+import { MessageContainer, DisablingContainer, Wrapper } from './Chart.styles';
 
 ChartJS.register(
   ArcElement,
@@ -32,7 +34,7 @@ const Chart: React.FC = () => {
     isPieChart,
     toShowLoader,
     toShowNoData,
-    cleanData,
+    toShowError,
     pieChartController: {
       chartModel: {
         chartOptions: pieChartOptions,
@@ -48,8 +50,7 @@ const Chart: React.FC = () => {
   } = useChartsDrawerStore();
 
   return (
-    // todo убрать клик после тестов
-    <Wrapper onClick={cleanData}>
+    <Wrapper>
       <DisablingContainer turnOnDisabling={toShowLoader}>
         {isPieChart
           ? pieChartDataConfig && (
@@ -60,9 +61,12 @@ const Chart: React.FC = () => {
             )}
       </DisablingContainer>
       <Loader visible={toShowLoader} />
-      <NoData visible={toShowNoData}>
+      <MessageContainer visible={toShowNoData}>
         {NO_DATA_TEXT}. {NO_DATA_TEXT_EXTRA}
-      </NoData>
+      </MessageContainer>
+      <MessageContainer visible={toShowError}>
+        Произошла ошибка
+      </MessageContainer>
     </Wrapper>
   );
 };

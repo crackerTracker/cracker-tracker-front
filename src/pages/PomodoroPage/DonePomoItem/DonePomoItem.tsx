@@ -1,7 +1,7 @@
 import { Col, Dropdown, Menu, Row } from 'antd';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import React, { FC } from 'react';
-import { format } from 'config/pomoconf';
+import { HOURS_MINUTES_EXTENDED_FORMAT } from 'config/datesTimeFormats';
 import { usePomodoroStore } from 'stores/hooks';
 import { DonePomoType } from 'stores/PomodoroStore';
 import {
@@ -85,7 +85,7 @@ const DonePomoItem: FC<Props> = ({
             <Col>
               <StyledTimeRange>
                 <StyledTimePicker
-                  format={format}
+                  format={HOURS_MINUTES_EXTENDED_FORMAT}
                   value={startTimeMoment}
                   bordered={false}
                   allowClear={false}
@@ -93,7 +93,7 @@ const DonePomoItem: FC<Props> = ({
                 />
                 <StyledText>-</StyledText>
                 <StyledTimePicker
-                  format={format}
+                  format={HOURS_MINUTES_EXTENDED_FORMAT}
                   value={endTimeMoment}
                   bordered={false}
                   allowClear={false}

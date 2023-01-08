@@ -46,7 +46,7 @@ export const mockApiBarChartData: BarChartApiDataType = {
   ],
   minutesPerCategory: [
     {
-      category: {
+      categoryData: {
         _id: '1',
         name: 'Frontend',
         color: 'red',
@@ -54,7 +54,7 @@ export const mockApiBarChartData: BarChartApiDataType = {
       minutesPerDay: [180, 0, 50, 80, 120, 80, 20],
     },
     {
-      category: {
+      categoryData: {
         _id: '2',
         name: 'Backend',
         color: 'blue',
@@ -62,7 +62,7 @@ export const mockApiBarChartData: BarChartApiDataType = {
       minutesPerDay: [120, 50, 70, 0, 160, 10, 20],
     },
     {
-      category: {
+      categoryData: {
         _id: '3',
         name: 'Useful',
         color: 'yellow',
@@ -70,7 +70,7 @@ export const mockApiBarChartData: BarChartApiDataType = {
       minutesPerDay: [80, 200, 50, 0, 120, 100, 200],
     },
     {
-      category: {
+      categoryData: {
         _id: '4',
         name: 'Useful2',
         color: 'orange',

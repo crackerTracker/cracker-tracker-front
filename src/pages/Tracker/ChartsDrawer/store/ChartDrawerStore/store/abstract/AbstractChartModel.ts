@@ -1,9 +1,4 @@
-import MetaModel from 'stores/models/MetaModel';
-import {
-  DatesSelectionType,
-  PercentStringStatsCategoryType,
-  DatesStringSelectionType,
-} from 'pages/Tracker/ChartsDrawer/types';
+import { ChartData, ChartOptions, ChartType } from 'chart.js';
 import {
   action,
   computed,
@@ -11,7 +6,14 @@ import {
   observable,
   runInAction,
 } from 'mobx';
-import { ChartData, ChartOptions, ChartType } from 'chart.js';
+
+import {
+  DatesSelectionType,
+  PercentStringStatsCategoryType,
+  DatesStringSelectionType,
+} from 'pages/Tracker/ChartsDrawer/types';
+import RootStore from 'stores/RootStore';
+import MetaModel from 'stores/models/MetaModel';
 
 type ProtectedFields =
   | '_chartOptions'
@@ -26,6 +28,8 @@ abstract class AbstractChartModel<
   ChartDataConfigT extends ChartData<ChartT, number[], string>,
   ChartOptionT extends ChartOptions<ChartT>
 > {
+  protected readonly _rootStore: RootStore;
+
   /**
    * Конфиг опций графика. Кладётся в пропс options графика
    */
@@ -52,7 +56,7 @@ abstract class AbstractChartModel<
    */
   protected _rawData: RawDataT | null = null;
 
-  protected constructor(chartDataOptions: ChartOptionT) {
+  protected constructor(rootStore: RootStore, chartDataOptions: ChartOptionT) {
     makeObservable<this, ProtectedFields>(this, {
       _chartOptions: observable.ref,
       _meta: observable,
@@ -66,12 +70,10 @@ abstract class AbstractChartModel<
       chartOptions: computed,
 
       onSelectDates: action.bound,
-
-      // todo убрать после тестов
-      cleanData: action.bound,
     });
 
     this._chartOptions = chartDataOptions;
+    this._rootStore = rootStore;
   }
 
   get meta(): MetaModel {
@@ -98,9 +100,7 @@ abstract class AbstractChartModel<
   /**
    * Массив категорий для отображения
    */
-  abstract get formattedCategoriesList():
-    | PercentStringStatsCategoryType[]
-    | null;
+  abstract get formattedCategoriesList(): PercentStringStatsCategoryType[];
 
   /**
    * Загружает и нормализует данные. Принимает в качестве значения выбранных
@@ -133,20 +133,10 @@ abstract class AbstractChartModel<
 
     const loaded = await this._onSetDates(payload);
 
-    if (!loaded) {
-      this._meta.setError();
-      return;
-    }
-
     runInAction(() => {
       this._rawData = loaded;
       this._meta.setNotLoading();
     });
-  }
-
-  // todo убрать после тестов
-  cleanData(): void {
-    this._rawData = null;
   }
 }
 

@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
   margin-top: 16px;
 `;
 
-export const NoData = styled(LightCenteredText)<{ visible: boolean }>`
+export const MessageContainer = styled(LightCenteredText)<{ visible: boolean }>`
   position: absolute;
   pointer-events: none;
   ${animate('opacity')};

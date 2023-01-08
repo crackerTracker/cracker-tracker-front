@@ -1,17 +1,20 @@
+import { computed, makeObservable } from 'mobx';
+
 import {
   getInitialBarChartSelection,
   LAST_7_DAYS_TEXT,
 } from 'pages/Tracker/ChartsDrawer/config';
-import { computed, makeObservable } from 'mobx';
 import {
   DatesSelectionTypesEnum,
   BarChartSelectionType,
 } from 'pages/Tracker/ChartsDrawer/types';
 import formatDatesRange from 'utils/formatDatesRange';
-import BarChartModel from './BarChartModel';
-import { AbstractChartController } from '../abstract';
 import getLastDaysRange from 'utils/getLastDaysRange';
 import { DAYS_IN_WEEK } from 'config/time';
+import RootStore from 'stores/RootStore';
+
+import BarChartModel from './BarChartModel';
+import { AbstractChartController } from '../abstract';
 
 /**
  * Контроллер столбчатого графика. Слой между управляющими элементами
@@ -21,8 +24,8 @@ class BarChartController extends AbstractChartController<
   BarChartModel,
   BarChartSelectionType
 > {
-  constructor() {
-    super(() => new BarChartModel(), getInitialBarChartSelection);
+  constructor(rootStore: RootStore) {
+    super(() => new BarChartModel(rootStore), getInitialBarChartSelection);
     makeObservable(this, {
       selectedDateTitle: computed,
     });

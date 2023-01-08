@@ -1,7 +1,7 @@
 import React, { FC, memo } from 'react';
 import AbstractDrawer, { AbstractDrawerProps } from 'components/AbstractDrawer';
 
-type RightSideDrawerProps = Pick<
+export type RightSideDrawerProps = Pick<
   AbstractDrawerProps,
   'children' | 'footerChildren' | 'headerTitle' | 'onDrawerClose' | 'visible'
 >;

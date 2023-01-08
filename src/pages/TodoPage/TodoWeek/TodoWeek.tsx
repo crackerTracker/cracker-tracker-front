@@ -7,7 +7,8 @@ import 'moment/locale/ru';
 import locale from 'antd/lib/locale/ru_RU';
 import { observer } from 'mobx-react-lite';
 import formWeekDatesArray from 'utils/formWeekDatesArray';
-import { weekDaysNames, weekPageHeaderDateFormat } from 'config/todo';
+import { weekDaysNames } from 'config/todo';
+import { FULL_MONTH_YEAR_FORMAT } from 'config/datesTimeFormats';
 import { useTodoStore } from 'stores/hooks';
 import givenWeekDayToEdgeISOString from 'utils/givenWeekDayToEdgeISOString';
 
@@ -26,14 +27,12 @@ const TodoWeek: FC = () => {
       setDate(new Date());
       setMoment(null);
 
-      setHeaderDate(
-        String(moment(new Date()).format(weekPageHeaderDateFormat))
-      );
+      setHeaderDate(String(moment(new Date()).format(FULL_MONTH_YEAR_FORMAT)));
     } else {
       setDate(new Date(String(momentValue)));
       setMoment(momentValue);
 
-      setHeaderDate(String(momentValue.format(weekPageHeaderDateFormat)));
+      setHeaderDate(String(momentValue.format(FULL_MONTH_YEAR_FORMAT)));
     }
   };
 
